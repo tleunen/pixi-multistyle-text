@@ -1,0 +1,35 @@
+{
+  "name": "pixi-multistyle-text",
+  "version": "0.1.0",
+  "description": "Multi-Style Text for pixi.js",
+  "main": "pixi-multistyle-text.js",
+  "repository": {
+    "type": "git",
+    "url": "git://github.com/tleunen/pixi-multistyle-text.git"
+  },
+  "bugs": {
+    "url": "https://github.com/tleunen/pixi-multistyle-text/issues"
+  },
+  "homepage": "https://github.com/tleunen/pixi-multistyle-text",
+  "keywords": [
+    "pixi",
+    "pixi.js",
+    "text",
+    "multistyle",
+    "multi style",
+    "style",
+    "canvas",
+    "webgl",
+    "graphics",
+    "render",
+    "2d"
+  ],
+  "author": "Tommy Leunen <tommy.leunen@gmail.com> (http://tommyleunen.com/)",
+  "license": "MIT",
+  "dependencies": {},
+  "devDependencies": {
+    "grunt": "^0.4.5",
+    "grunt-contrib-jshint": "^0.10.0",
+    "grunt-contrib-uglify": "^0.6.0"
+  }
+}

@@ -1,0 +1,87 @@
+<!DOCTYPE HTML>
+<html>
+<head>
+    <title>Pixi MultiStyle Text demo</title>
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            background-color: #000000;
+        }
+    </style>
+
+    <script src="http://cdnjs.cloudflare.com/ajax/libs/pixi.js/2.0.0/pixi.dev.js"></script>
+    <script src="../pixi-multistyle-text.js"></script>
+</head>
+<body>
+    <script>
+        // create a renderer instance
+        var renderer = PIXI.autoDetectRenderer(620, 400);
+        // add the renderer view element to the DOM
+        document.body.appendChild(renderer.view);
+
+        // create an new instance of a pixi stage
+        var stage = new PIXI.Stage(0x66FF99);
+
+        // create some white text using the Snippet webfont
+        var textSample = new PIXI.MultiStyleText("<pixi>Pixi.js</pixi> can has <multiline>multiline</multiline>\nand <multistyle>multi-styles</multistyle> text!",
+            {
+                def: { font: "35px Snippet", fill: "white" },
+                multiline: { font: "35px Snippet", fill: "blue" },
+                pixi: { font: "35px Snippet", fill: "#D90057" },
+                multistyle: { font: "35px Snippet", fill: "red" }
+            }
+        );
+        textSample.position.x = 20;
+        textSample.position.y = 20;
+
+        // create a text object with a nice stroke
+        var spinningText = new PIXI.MultiStyleText("I'm <fun>fun</fun>!",
+            {
+                align: "center"
+            },
+            {
+                def: { font: "bold 60px Arial", fill: "#000" },
+                fun: { font: "bold 60px Arial", fill: "#cc00ff", stroke: "#FFFFFF", strokeThickness: 20 },
+            }
+        );
+
+        // setting the anchor point to 0.5 will center align the text... great for spinning!
+        spinningText.anchor.x = spinningText.anchor.y = 0.5;
+        spinningText.position.x = 620 / 2;
+        spinningText.position.y = 400 / 2;
+
+        // create a text object that will be updated..
+        var countingText = new PIXI.MultiStyleText("COUNT 4EVAR: <count>0</count>",
+            {
+                align: "center"
+            },
+            {
+                def: { font: "bold italic 60px Arvo", fill: "#3e1707" },
+                count: { font: "bold italic 60px Arvo", fill: "#3e1707", stroke: "#a4410e", strokeThickness: 7 }
+            }
+        );
+        countingText.position.x = 620 / 2;
+        countingText.position.y = 320;
+        countingText.anchor.x = 0.5;
+
+        stage.addChild(textSample);
+        stage.addChild(spinningText);
+        stage.addChild(countingText);
+
+        var count = 0;
+        var score = 0;
+        var remaining = 10;
+        function animate() {
+            requestAnimFrame(animate);
+            renderer.render(stage);
+
+            count+=0.1;
+            countingText.setText("COUNT 4EVAR: <count>" + (count | 0) + "</count>");
+        }
+
+        requestAnimFrame(animate);
+    </script>
+
+    </body>
+</html>
