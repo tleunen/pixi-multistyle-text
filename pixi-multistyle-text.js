@@ -1,6 +1,6 @@
 /**
  * @license
- * pixi-multistyle-text - v0.1.0
+ * pixi-multistyle-text - v0.1.1
  * Copyright (c) 2014, Tommy Leunen <tommy.leunen@gmail.com> (http://tommyleunen.com/)
  * Released under the MIT license
  * See https://github.com/tleunen/pixi-multistyle-text for more details
@@ -19,17 +19,17 @@ if(!PIXI) return;
  * @extends Text
  * @constructor
  * @param text {String} The copy that you would like the text to display
- * @param [globalStyle] {Object} The global style parameters
- * @param [globalStyle.align='left'] {String} Alignment for multiline text ('left', 'center' or 'right'), does not affect single line text
- * @param [globalStyle.wordWrap=false] {Boolean} Indicates if word wrap should be used
- * @param [globalStyle.wordWrapWidth=100] {Number} The width at which text will wrap, it needs wordWrap to be set to true
- * @param [textStyles] {Object} The text styles object parameters. A key of this object is a tag name, and the content must be a style object. The key `def` specifies the default styles. The style object is the same as the one in Pixi.Text.
+ * @param [textStyles] {Object.<string, Style>} The text styles object parameters. A key of this object is a tag name, and the content must be a style object. The key `def` specifies the default styles. The style object is the same as the one in Pixi.Text.
+ * @param [alignmentStyle] {Object} The global style parameters
+ * @param [alignmentStyle.align='left'] {String} Alignment for multiline text ('left', 'center' or 'right'), does not affect single line text
+ * @param [alignmentStyle.wordWrap=false] {Boolean} Indicates if word wrap should be used
+ * @param [alignmentStyle.wordWrapWidth=100] {Number} The width at which text will wrap, it needs wordWrap to be set to true
  */
-var MultiStyleText = function(text, globalStyle, textStyles)
+var MultiStyleText = function(text, textStyles, alignmentStyle)
 {
-    PIXI.Text.call(this, text, !textStyles ? null : globalStyle);
+    PIXI.Text.call(this, text, alignmentStyle);
 
-    this.setTextStyles(textStyles || globalStyle);
+    this.setTextStyles(textStyles);
 };
 
 // constructor
@@ -37,14 +37,15 @@ MultiStyleText.prototype = Object.create(PIXI.Text.prototype);
 MultiStyleText.prototype.constructor = MultiStyleText;
 
 /**
- * Set the global style of the text
+ * Set the global alignment style of the text
  *
- * @method setStyle
- * @param [style] {Object} The global style parameters
+ * @method setAlignmentStyle
+ * @param [style] {Object} The global alignment style parameters
  * @param [style.align='left'] {String} Alignment for multiline text ('left', 'center' or 'right'), does not affect single line text
  * @param [style.wordWrap=false] {Boolean} Indicates if word wrap should be used
  * @param [style.wordWrapWidth=100] {Number} The width at which text will wrap
  */
+MultiStyleText.prototype.setAlignmentStyle =
 MultiStyleText.prototype.setStyle = function(style)
 {
     style = style || {};

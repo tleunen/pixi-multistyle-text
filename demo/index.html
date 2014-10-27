@@ -38,11 +38,11 @@
         // create a text object with a nice stroke
         var spinningText = new PIXI.MultiStyleText("I'm <fun>fun</fun>!",
             {
-                align: "center"
-            },
-            {
                 def: { font: "bold 60px Arial", fill: "#000" },
                 fun: { font: "bold 60px Arial", fill: "#cc00ff", stroke: "#FFFFFF", strokeThickness: 20 },
+            },
+            {
+                align: "center"
             }
         );
 
@@ -54,11 +54,11 @@
         // create a text object that will be updated..
         var countingText = new PIXI.MultiStyleText("COUNT 4EVAR: <count>0</count>",
             {
-                align: "center"
-            },
-            {
                 def: { font: "bold italic 60px Arvo", fill: "#3e1707" },
                 count: { font: "bold italic 60px Arvo", fill: "#3e1707", stroke: "#a4410e", strokeThickness: 7 }
+            },
+            {
+                align: "center"
             }
         );
         countingText.position.x = 620 / 2;
