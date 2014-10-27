@@ -22,16 +22,9 @@ var textSample = new PIXI.MultiStyleText("<pixi>Pixi.js</pixi> can has <multilin
 
 ## Usage
 
-### `text = new PIXI.MultiStyleText(text, [globalStyle,] textStyles)`
+### `text = new PIXI.MultiStyleText(text, textStyles [,alignmentStyle])`
 
 Creates a new Multi-Styles Text with the given options
-
-#### `globalStyle`
-Type: `[Object]`
-
-- `align` {string} Alignment for multiline text ('left', 'center' or 'right'), does not affect single line text. Default left.
-- `wordWrap` {boolean} Indicates if word wrap should be used. Default false.
-- `wordWrapWidth` {Number} The width at which text will wrap. Default 100.
 
 #### `textStyles`
 Type: `[String:Object]`
@@ -48,6 +41,13 @@ The style object can have these properties:
 - `dropShadowColor` {object} A fill style to be used on the dropshadow. Can be a color, a gradient, or a pattern. Default black.
 - `dropShadowAngle` {number} Set a angle of the drop shadow. Default Math.PI/4.
 - `dropShadowDistance` {number} Set a distance of the drop shadow. Default 5.
+
+#### `alignmentStyle`
+Type: `[Object]`
+
+- `align` {string} Alignment for multiline text ('left', 'center' or 'right'), does not affect single line text. Default left.
+- `wordWrap` {boolean} Indicates if word wrap should be used. Default false.
+- `wordWrapWidth` {Number} The width at which text will wrap. Default 100.
 
 ## demo
 
