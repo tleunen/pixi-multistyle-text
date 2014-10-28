@@ -105,7 +105,9 @@ MultiStyleText.prototype.setTextStyles = function(styles)
 MultiStyleText.prototype._getTextDataPerLine = function(lines) {
     var outputTextData = [];
 
-    var re = /<\/?([a-z]+)>/g;
+    var tags = Object.keys(this.textStyles).join('|');
+    var re = new RegExp("<\/?("+tags+")>", "g");
+
     var currentStyle = this.textStyles.def;
 
     // determine the group of word for each line
@@ -128,6 +130,9 @@ MultiStyleText.prototype._getTextDataPerLine = function(lines) {
             // We got a match! add the text with the needed style
             var currentSearchIdx = 0;
             for(var j=0; j<matches.length; j++) {
+
+                // if index > 0, it means we have characters before the match,
+                // so we need to add it with the default style
                 if(matches[j].index > currentSearchIdx) {
                     lineTextData.push({
                         text: lines[i].substring(currentSearchIdx, matches[j].index),
