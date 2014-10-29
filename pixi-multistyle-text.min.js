@@ -1,6 +1,6 @@
 /**
  * @license
- * pixi-multistyle-text - v0.1.1
+ * pixi-multistyle-text - v0.2.0
  * Copyright (c) 2014, Tommy Leunen <tommy.leunen@gmail.com> (http://tommyleunen.com/)
  * Released under the MIT license
  * See https://github.com/tleunen/pixi-multistyle-text for more details
