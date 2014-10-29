@@ -20,14 +20,14 @@ if(!PIXI) return;
  * @constructor
  * @param text {String} The copy that you would like the text to display
  * @param [textStyles] {Object.<string, Style>} The text styles object parameters. A key of this object is a tag name, and the content must be a style object. The key `def` specifies the default styles. The style object is the same as the one in Pixi.Text.
- * @param [alignmentStyle] {Object} The global style parameters
- * @param [alignmentStyle.align='left'] {String} Alignment for multiline text ('left', 'center' or 'right'), does not affect single line text
- * @param [alignmentStyle.wordWrap=false] {Boolean} Indicates if word wrap should be used
- * @param [alignmentStyle.wordWrapWidth=100] {Number} The width at which text will wrap, it needs wordWrap to be set to true
+ * @param [lineStyle] {Object} The global style parameters
+ * @param [lineStyle.align='left'] {String} Alignment for multiline text ('left', 'center' or 'right'), does not affect single line text
+ * @param [lineStyle.wordWrap=false] {Boolean} Indicates if word wrap should be used
+ * @param [lineStyle.wordWrapWidth=100] {Number} The width at which text will wrap, it needs wordWrap to be set to true
  */
-var MultiStyleText = function(text, textStyles, alignmentStyle)
+var MultiStyleText = function(text, textStyles, lineStyle)
 {
-    PIXI.Text.call(this, text, alignmentStyle);
+    PIXI.Text.call(this, text, lineStyle);
 
     this.setTextStyles(textStyles);
 };
@@ -95,6 +95,16 @@ MultiStyleText.prototype.setTextStyles = function(styles)
     this.dirty = true;
 };
 
+function createTextData(text, style) {
+    return {
+        text: text,
+        style: style,
+        width: 0,
+        height: 0,
+        fontProperties: null
+    };
+}
+
 /**
  * Get the text data with each text group using specific styles
  *
@@ -121,10 +131,7 @@ MultiStyleText.prototype._getTextDataPerLine = function(lines) {
 
         // if there is no match, we still need to add the line with the default style
         if(!matches.length) {
-            lineTextData.push({
-                text: lines[i],
-                style: currentStyle
-            });
+            lineTextData.push(createTextData(lines[i], currentStyle));
         }
         else {
             // We got a match! add the text with the needed style
@@ -134,10 +141,10 @@ MultiStyleText.prototype._getTextDataPerLine = function(lines) {
                 // if index > 0, it means we have characters before the match,
                 // so we need to add it with the default style
                 if(matches[j].index > currentSearchIdx) {
-                    lineTextData.push({
-                        text: lines[i].substring(currentSearchIdx, matches[j].index),
-                        style: currentStyle
-                    });
+                    lineTextData.push(createTextData(
+                        lines[i].substring(currentSearchIdx, matches[j].index),
+                        currentStyle
+                    ));
                 }
 
                 // reset the style if end of tag
@@ -198,13 +205,16 @@ MultiStyleText.prototype.updateText = function()
         for(j=0; j<outputTextData[i].length; j++) {
             this.context.font = outputTextData[i][j].style.font;
 
-            // add lineWidth inside the text data
+            // save the width
             outputTextData[i][j].width = this.context.measureText(outputTextData[i][j].text).width;
             lineWidth += outputTextData[i][j].width;
 
-            // add the fontProperties inside the text data
+            // save the font properties
             outputTextData[i][j].fontProperties = this.determineFontProperties(outputTextData[i][j].style.font);
-            lineHeight = Math.max(lineHeight, outputTextData[i][j].fontProperties.fontSize + outputTextData[i][j].style.strokeThickness);
+
+            // save the height
+            outputTextData[i][j].height = outputTextData[i][j].fontProperties.fontSize + outputTextData[i][j].style.strokeThickness;
+            lineHeight = Math.max(lineHeight, outputTextData[i][j].height);
         }
 
         lineWidths[i] = lineWidth;
@@ -260,13 +270,21 @@ MultiStyleText.prototype.updateText = function()
             linePositionX += maxStrokeThickness / 2;
             linePositionY = (maxStrokeThickness / 2 + i * lineHeights[i]) + fontProperties.ascent;
 
-            if(this.style.align === 'right')
-            {
+            if(this.style.align === 'right') {
                 linePositionX += maxLineWidth - lineWidths[i];
             }
             else if(this.style.align === 'center')
             {
                 linePositionX += (maxLineWidth - lineWidths[i]) / 2;
+            }
+
+            if(textStyle.valign === 'bottom') {
+                linePositionY += lineHeights[i] - line[j].height -
+                    (maxStrokeThickness - textStyle.strokeThickness) / 2;
+            }
+            else if(textStyle.valign === 'middle') {
+                linePositionY += (lineHeights[i] - line[j].height) / 2 -
+                    (maxStrokeThickness - textStyle.strokeThickness) / 2;
             }
 
             // draw shadow

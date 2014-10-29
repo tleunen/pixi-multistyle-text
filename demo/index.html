@@ -36,10 +36,12 @@
         textSample.position.y = 20;
 
         // create a text object with a nice stroke
-        var spinningText = new PIXI.MultiStyleText("I'm <fun>fun</fun>!",
+        var spinningText = new PIXI.MultiStyleText("<iam>I'm</iam> fun<and>,</and> fun <and>and</and> fun<ding>!</ding>",
             {
-                def: { font: "bold 60px Arial", fill: "#000" },
-                fun: { font: "bold 60px Arial", fill: "#cc00ff", stroke: "#FFFFFF", strokeThickness: 20 },
+                def: { font: "bold 60px Arial", fill: "#cc00ff", stroke: "#fff", strokeThickness: 20 },
+                iam: { font: "bold 30px Arial", fill: "#000" },
+                and: { font: "bold 30px Arial", fill: "#000", valign: 'middle', stroke: "#fff", strokeThickness: 0 },
+                ding: { font: "bold 30px Arial", fill: "#000", valign: 'bottom' }
             },
             {
                 align: "center"

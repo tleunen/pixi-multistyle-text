@@ -22,7 +22,7 @@ var textSample = new PIXI.MultiStyleText("<pixi>Pixi.js</pixi> can has <multilin
 
 ## Usage
 
-### `text = new PIXI.MultiStyleText(text, textStyles [,alignmentStyle])`
+### `text = new PIXI.MultiStyleText(text, textStyles [,lineStyle])`
 
 Creates a new Multi-Styles Text with the given options
 
@@ -41,8 +41,9 @@ The style object can have these properties:
 - `dropShadowColor` {object} A fill style to be used on the dropshadow. Can be a color, a gradient, or a pattern. Default black.
 - `dropShadowAngle` {number} Set a angle of the drop shadow. Default Math.PI/4.
 - `dropShadowDistance` {number} Set a distance of the drop shadow. Default 5.
+- `valign` {string} Vertical alignment for multi font-size text ('top', 'middle', 'bottom'). Default 'top'.
 
-#### `alignmentStyle`
+#### `lineStyle`
 Type: `[Object]`
 
 - `align` {string} Alignment for multiline text ('left', 'center' or 'right'), does not affect single line text. Default left.
@@ -53,7 +54,7 @@ Type: `[Object]`
 
 - Open `demo/index.html` in a browser and you should see something like this:
 
-![img](http://i.imgur.com/lQZeHZ1.jpg)
+![img](http://i.imgur.com/l3JLKQC.jpg)
 
 ## License
 
