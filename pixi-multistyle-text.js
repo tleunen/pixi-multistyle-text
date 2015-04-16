@@ -160,7 +160,7 @@ MultiStyleText.prototype._getTextDataPerLine = function(lines) {
             if(currentSearchIdx < lines[i].length) {
                 lineTextData.push({
                     text: lines[i].substring(currentSearchIdx),
-                    style: this.textStyles.def
+                    style: currentStyle
                 });
             }
         }
