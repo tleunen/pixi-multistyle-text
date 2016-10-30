@@ -80,16 +80,18 @@ function setDefaultTextStyle(style) {
 MultiStyleText.prototype.setTextStyles = function(styles)
 {
     for(var styleId in styles) {
-        if(styles.hasOwnProperty(styleId)) {
-            setDefaultTextStyle(styles[styleId]);
+        if(styles.hasOwnProperty(styleId) && "fill" in styles[styleId]) {
+            // only change the fill if appropriate
+            styles[styleId].fill = PIXI.utils.hex2string(styles[styleId].fill);
         }
     }
 
-    // we need a `def` style
+    // we need a `def` style, which must contain all properties
     if(!styles.def) {
         styles.def = {};
-        setDefaultTextStyle(styles.def);
     }
+
+    setDefaultTextStyle(styles.def);
 
     this.textStyles = styles;
     this.dirty = true;
@@ -118,7 +120,7 @@ MultiStyleText.prototype._getTextDataPerLine = function(lines) {
     var tags = Object.keys(this.textStyles).join('|');
     var re = new RegExp("<\/?("+tags+")>", "g");
 
-    var currentStyle = this.textStyles.def;
+    var styleStack = [Object.assign({}, this.textStyles.def)];
 
     // determine the group of word for each line
     for(var i=0; i<lines.length; i++) {
@@ -131,7 +133,7 @@ MultiStyleText.prototype._getTextDataPerLine = function(lines) {
 
         // if there is no match, we still need to add the line with the default style
         if(!matches.length) {
-            lineTextData.push(createTextData(lines[i], currentStyle));
+            lineTextData.push(createTextData(lines[i], styleStack[styleStack.length - 1]));
         }
         else {
             // We got a match! add the text with the needed style
@@ -143,14 +145,20 @@ MultiStyleText.prototype._getTextDataPerLine = function(lines) {
                 if(matches[j].index > currentSearchIdx) {
                     lineTextData.push(createTextData(
                         lines[i].substring(currentSearchIdx, matches[j].index),
-                        currentStyle
+                        styleStack[styleStack.length - 1]
                     ));
                 }
 
-                // reset the style if end of tag
-                if(matches[j][0][1] == '/') currentStyle = this.textStyles.def;
-                // set the current style
-                else currentStyle = this.textStyles[matches[j][1]] || this.textStyles.def;
+                if (matches[j][0][1] == "/") {
+                    // pop back to the last style, if appropriate
+                    // note that we don't actually check which tag is closed
+                    if (styleStack.length > 0) {
+                        styleStack.pop();
+                    }
+                } else {
+                    // push a new style, updating the top of the stack to reflect changes only
+                    styleStack.push(Object.assign({}, styleStack[styleStack.length - 1], this.textStyles[matches[j][1]]));
+                }
 
                 // update the current search index
                 currentSearchIdx = matches[j].index + matches[j][0].length;
@@ -160,7 +168,7 @@ MultiStyleText.prototype._getTextDataPerLine = function(lines) {
             if(currentSearchIdx < lines[i].length) {
                 lineTextData.push({
                     text: lines[i].substring(currentSearchIdx),
-                    style: currentStyle
+                    style: styleStack[styleStack.length - 1]
                 });
             }
         }
@@ -229,7 +237,7 @@ MultiStyleText.prototype.updateText = function()
 
 
     var maxStrokeThickness = stylesArray.reduce(function(prev, curr) {
-        return Math.max(prev, curr.strokeThickness);
+        return Math.max(prev, curr.strokeThickness || 0);
     }, 0);
     var maxDropShadowDistance = stylesArray.reduce(function(prev, curr) {
         var value = curr.dropShadow ? curr.dropShadowDistance : 0;

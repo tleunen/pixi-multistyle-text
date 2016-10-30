@@ -10,18 +10,20 @@
         }
     </style>
 
-    <script src="http://cdnjs.cloudflare.com/ajax/libs/pixi.js/2.0.0/pixi.dev.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/pixi.js/4.1.0/pixi.js"></script>
     <script src="../pixi-multistyle-text.js"></script>
 </head>
 <body>
     <script>
         // create a renderer instance
         var renderer = PIXI.autoDetectRenderer(620, 400);
+        renderer.backgroundColor = 0x66FF99;
+
         // add the renderer view element to the DOM
         document.body.appendChild(renderer.view);
 
-        // create an new instance of a pixi stage
-        var stage = new PIXI.Stage(0x66FF99);
+        // make the stage
+        var stage = new PIXI.Container();
 
         // create some white text using the Snippet webfont
         var textSample = new PIXI.MultiStyleText("<pixi>Pixi.js</pixi> can has <multiline>multiline</multiline>\nand <multistyle>multi-styles</multistyle> text!",
@@ -34,6 +36,20 @@
         );
         textSample.position.x = 20;
         textSample.position.y = 20;
+
+        var nested = new PIXI.MultiStyleText("(<a>Now with <b>support</b> for <c>nesting <d>tags</d></c>!  <e>Wow<f>!!!</f></e></a>)",
+            {
+                def: { font: "24px Snippet", fill: 0x222222 },
+                a: { fill: 0x0000ff },
+                b: { stroke: "white", strokeThickness: 10 },
+                c: { font: "italic 16px Snippet", valign: "top" },
+                d: { valign: "bottom" },
+                e: { font: "bold 24px Snippet" },
+                f: { fill: 0xff0000 }
+            }
+        );
+        nested.position.x = 20;
+        nested.position.y = 100;
 
         // create a text object with a nice stroke
         var spinningText = new PIXI.MultiStyleText("<iam>I'm</iam> fun<and>,</and> fun <and>and</and> fun<ding>!</ding>",
@@ -69,20 +85,22 @@
 
         stage.addChild(textSample);
         stage.addChild(spinningText);
+        stage.addChild(nested);
         stage.addChild(countingText);
 
         var count = 0;
         var score = 0;
         var remaining = 10;
+
         function animate() {
-            requestAnimFrame(animate);
+            requestAnimationFrame(animate);
             renderer.render(stage);
 
             count+=0.1;
-            countingText.setText("COUNT 4EVAR: <count>" + (count | 0) + "</count>");
+            countingText.text = "COUNT 4EVAR: <count>" + (count | 0) + "</count>";
         }
 
-        requestAnimFrame(animate);
+        requestAnimationFrame(animate);
     </script>
 
     </body>
