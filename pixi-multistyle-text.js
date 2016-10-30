@@ -80,7 +80,7 @@ function setDefaultTextStyle(style) {
 MultiStyleText.prototype.setTextStyles = function(styles)
 {
     for(var styleId in styles) {
-        if(styles.hasOwnProperty(styleId) && "fill" in styles[styleId]) {
+        if(styles.hasOwnProperty(styleId) && typeof styles[styleId].fill == "number") {
             // only change the fill if appropriate
             styles[styleId].fill = PIXI.utils.hex2string(styles[styleId].fill);
         }
