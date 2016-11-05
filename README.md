@@ -54,7 +54,7 @@ Type: `[Object]`
 
 - Open `demo/index.html` in a browser and you should see something like this:
 
-![img](http://i.imgur.com/l3JLKQC.jpg)
+![img](http://i.imgur.com/oDHeito.png)
 
 ## License
 
