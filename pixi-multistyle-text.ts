@@ -1,7 +1,5 @@
 "use strict";
 
-/// <reference types="PIXI" />
-
 interface ExtendedTextStyle extends PIXI.TextStyle {
 	valign?: "top" | "middle" | "bottom";
 }
