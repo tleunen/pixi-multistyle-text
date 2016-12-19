@@ -168,9 +168,15 @@ class MultiStyleText extends PIXI.Text {
 
 		this.texture.baseTexture.resolution = this.resolution;
 		let textStyles = this.textStyles;
+		let outputText = this.text;
+
+		// TODO(bluepichu): Reword word wrapping as breakWord is broken
+		if(this._style.wordWrap) {
+			outputText = this.wordWrap(this.text);
+		}
 
 		// split text into lines
-		let lines = this.text.split(/(?:\r\n|\r|\n)/);
+		let lines = outputText.split(/(?:\r\n|\r|\n)/);
 
 		// get the text data with specific styles
 		let outputTextData = this._getTextDataPerLine(lines);

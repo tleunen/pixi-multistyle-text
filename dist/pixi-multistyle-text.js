@@ -106,7 +106,11 @@ class MultiStyleText extends PIXI.Text {
         }
         this.texture.baseTexture.resolution = this.resolution;
         let textStyles = this.textStyles;
-        let lines = this.text.split(/(?:\r\n|\r|\n)/);
+        let outputText = this.text;
+        if (this._style.wordWrap) {
+            outputText = this.wordWrap(this.text);
+        }
+        let lines = outputText.split(/(?:\r\n|\r|\n)/);
         let outputTextData = this._getTextDataPerLine(lines);
         let lineWidths = [];
         let lineHeights = [];
