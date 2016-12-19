@@ -10,14 +10,15 @@
         }
     </style>
 
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/pixi.js/4.1.0/pixi.js"></script>
-    <script src="../pixi-multistyle-text.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/pixi.js/4.2.3/pixi.js"></script>
+    <script src="../dist/pixi-multistyle-text.js"></script>
 </head>
 <body>
     <script>
         // create a renderer instance
         var renderer = PIXI.autoDetectRenderer(620, 400);
         renderer.backgroundColor = 0x66FF99;
+        renderer.resolution = window.devicePixelRatio;
 
         // add the renderer view element to the DOM
         document.body.appendChild(renderer.view);
@@ -26,25 +27,25 @@
         var stage = new PIXI.Container();
 
         // create some white text using the Snippet webfont
-        var textSample = new PIXI.MultiStyleText("<pixi>Pixi.js</pixi> can has <multiline>multiline</multiline>\nand <multistyle>multi-styles</multistyle> text!",
+        var textSample = new MultiStyleText("<pixi>Pixi.js</pixi> can has <multiline>multiline</multiline>\nand <multistyle>multi-styles</multistyle> text!",
             {
-                def: { font: "35px Snippet", fill: "white" },
-                multiline: { font: "35px Snippet", fill: "blue" },
-                pixi: { font: "35px Snippet", fill: "#D90057" },
-                multistyle: { font: "35px Snippet", fill: "red" }
+                def: { fontFamily: "Snippet", fontSize: "35px", fill: "white" },
+                multiline: { fontFamily: "Snippet", fontSize: "35px", fill: "blue" },
+                pixi: { fontFamily: "Snippet", fontSize: "35px", fill: "#D90057" },
+                multistyle: { fontFamily: "Snippet", fontSize: "35px", fill: "red" }
             }
         );
         textSample.position.x = 20;
         textSample.position.y = 20;
 
-        var nested = new PIXI.MultiStyleText("(<a>Now with <b>support</b> for <c>nesting <d>tags</d></c>!  <e>Wow<f>!!!</f></e></a>)",
+        var nested = new MultiStyleText("(<a>Now with <b>support</b> for <c>nesting <d>tags</d></c>!  <e>Wow<f>!!!</f></e></a>)",
             {
-                def: { font: "24px Snippet", fill: 0x222222 },
+                def: { fontFamily: "Snippet", fontSize: "24px", fill: 0x222222 },
                 a: { fill: "blue" },
                 b: { stroke: "white", strokeThickness: 10 },
-                c: { font: "italic 16px Snippet", valign: "top" },
+                c: {  fontFamily: "Snippet", fontSize: "16px", fontStyle: "italic", valign: "top" },
                 d: { valign: "bottom" },
-                e: { font: "bold 24px Snippet" },
+                e: { fontFamily: "Snippet", fontSize: "24px", fontStyle: "bold" },
                 f: { fill: 0xff0000 }
             }
         );
@@ -52,12 +53,12 @@
         nested.position.y = 100;
 
         // create a text object with a nice stroke
-        var spinningText = new PIXI.MultiStyleText("<iam>I'm</iam> fun<and>,</and> fun <and>and</and> fun<ding>!</ding>",
+        var spinningText = new MultiStyleText("<iam>I'm</iam> fun<and>,</and> fun <and>and</and> fun<ding>!</ding>",
             {
-                def: { font: "bold 60px Arial", fill: "#cc00ff", stroke: "#fff", strokeThickness: 20 },
-                iam: { font: "bold 30px Arial", fill: "#000" },
-                and: { font: "bold 30px Arial", fill: "#000", valign: 'middle', stroke: "#fff", strokeThickness: 0 },
-                ding: { font: "bold 30px Arial", fill: "#000", valign: 'bottom' }
+                def: { fontFamily: "Arial", fontSize: "60px", fontStyle: "bold", fill: "#cc00ff", stroke: "#fff", strokeThickness: 20 },
+                iam: { fontFamily: "Arial", fontSize: "30px", fontStyle: "bold", fill: "#000" },
+                and: { fontFamily: "Arial", fontSize: "30px", fontStyle: "bold", fill: "#000", valign: 'middle', stroke: "#fff", strokeThickness: 0 },
+                ding: { fontFamily: "Arial", fontSize: "30px", fontStyle: "bold", fill: "#000", valign: 'bottom' }
             },
             {
                 align: "center"
@@ -70,10 +71,10 @@
         spinningText.position.y = 400 / 2;
 
         // create a text object that will be updated..
-        var countingText = new PIXI.MultiStyleText("COUNT 4EVAR: <count>0</count>",
+        var countingText = new MultiStyleText("COUNT 4EVAR: <count>0</count>",
             {
-                def: { font: "bold italic 60px Arvo", fill: "#3e1707" },
-                count: { font: "bold italic 60px Arvo", fill: "#3e1707", stroke: "#a4410e", strokeThickness: 7 }
+                def: { fontFamily: "Avro", fontSize: "60px", fontStyle: "bold italic", fill: "#3e1707" },
+                count: { fontFamily: "Avro", fontSize: "60px", fontStyle: "bold italic", fill: "#3e1707", stroke: "#a4410e", strokeThickness: 7 }
             },
             {
                 align: "center"

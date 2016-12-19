@@ -1,8 +1,8 @@
 {
   "name": "pixi-multistyle-text",
-  "version": "0.3.0",
+  "version": "0.4.0",
   "description": "Multi-Style Text for pixi.js",
-  "main": "pixi-multistyle-text.js",
+  "main": "dist/pixi-multistyle-text.js",
   "repository": {
     "type": "git",
     "url": "git://github.com/tleunen/pixi-multistyle-text.git"
@@ -28,9 +28,9 @@
   "license": "MIT",
   "dependencies": {},
   "devDependencies": {
-    "uglify-js": "^2.7.4"
+    "@types/pixi.js": "^4.1.0"
   },
   "scripts": {
-    "build": "uglifyjs pixi-multistyle-text.js --compress --mangle --output pixi-multistyle-text.min.js"
+    "build": "tsc"
   }
 }
