@@ -25,13 +25,11 @@ interface TextData {
 }
 
 export class MultiStyleText extends PIXI.Text {
-	private _alignment: "left" | "right" | "center";
 	private textStyles: TextStyleSet;
 
 	constructor(text: string, styles: TextStyleSet) {
 		super(text);
 
-		this.alignment = "left";
 		this.style = styles;
 	}
 
@@ -87,15 +85,6 @@ export class MultiStyleText extends PIXI.Text {
 
 		this.dirty = true;
 		this._style = this.textStyles["default"];
-	}
-
-	public set alignment(alignment: "left" | "right" | "center") {
-		this._alignment = alignment;
-		this.dirty = true;
-	}
-
-	public get blockStyle(): "left" | "right" | "center" {
-		return this._alignment;
 	}
 
 	private _getTextDataPerLine (lines: string[]) {
@@ -259,10 +248,10 @@ export class MultiStyleText extends PIXI.Text {
 				linePositionX += maxStrokeThickness / 2;
 				let linePositionY = (maxStrokeThickness / 2 + i * lineHeights[i]) + fontProperties.ascent;
 
-				if (this.alignment === "right") {
+				if (this._style.align === "right") {
 					linePositionX += maxLineWidth - lineWidths[i];
 				}
-				else if (this.alignment === "center" && linePositionX === 0) {
+				else if (this._style.align === "center" && linePositionX === 0) {
 					linePositionX += (maxLineWidth - lineWidths[i]) / 2;
 				}
 

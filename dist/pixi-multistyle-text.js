@@ -2,7 +2,6 @@
 class MultiStyleText extends PIXI.Text {
     constructor(text, styles) {
         super(text);
-        this.alignment = "left";
         this.style = styles;
     }
     set style(styles) {
@@ -52,13 +51,6 @@ class MultiStyleText extends PIXI.Text {
         }
         this.dirty = true;
         this._style = this.textStyles["default"];
-    }
-    set alignment(alignment) {
-        this._alignment = alignment;
-        this.dirty = true;
-    }
-    get blockStyle() {
-        return this._alignment;
     }
     _getTextDataPerLine(lines) {
         let outputTextData = [];
@@ -159,10 +151,10 @@ class MultiStyleText extends PIXI.Text {
                 this.context.lineWidth = textStyle.strokeThickness;
                 linePositionX += maxStrokeThickness / 2;
                 let linePositionY = (maxStrokeThickness / 2 + i * lineHeights[i]) + fontProperties.ascent;
-                if (this.alignment === "right") {
+                if (this._style.align === "right") {
                     linePositionX += maxLineWidth - lineWidths[i];
                 }
-                else if (this.alignment === "center" && linePositionX === 0) {
+                else if (this._style.align === "center" && linePositionX === 0) {
                     linePositionX += (maxLineWidth - lineWidths[i]) / 2;
                 }
                 if (textStyle.valign === "bottom") {
