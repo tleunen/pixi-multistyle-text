@@ -7,12 +7,12 @@ Add a `MultiStyleText` object inside [pixi.js](https://github.com/GoodBoyDigital
 ## Example
 
 In the example below, we are defining 4 text styles.
-`def` is the default style for the text, and the others matches the tags inside the text.
+`default` is the default style for the text, and the others matches the tags inside the text.
 
 ```js
 var textSample = new PIXI.MultiStyleText("<pixi>Pixi.js</pixi> can has <multiline>multiline</multiline>\nand <multistyle>multi-styles</multistyle> text!",
     {
-        def: { font: "35px Snippet", fill: "white" },
+        default: { font: "35px Snippet", fill: "white" },
         multiline: { font: "35px Snippet", fill: "blue" },
         pixi: { font: "35px Snippet", fill: "#D90057" },
         multistyle: { font: "35px Snippet", fill: "red" }
@@ -29,7 +29,7 @@ Creates a new Multi-Styles Text with the given options
 #### `textStyles`
 Type: `[String:Object]`
 
-Each key of this dictionary should match with a tag in the text. Use the key `def` for the default style.
+Each key of this dictionary should match with a tag in the text. Use the key `default` for the default style.
 
 The style object can have these properties:
 
