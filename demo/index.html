@@ -1,108 +1,108 @@
 <!DOCTYPE HTML>
 <html>
 <head>
-    <title>Pixi MultiStyle Text demo</title>
-    <style>
-        body {
-            margin: 0;
-            padding: 0;
-            background-color: #000000;
-        }
-    </style>
+	<title>Pixi MultiStyle Text demo</title>
+	<style>
+		body {
+			margin: 0;
+			padding: 0;
+			background-color: #000000;
+		}
+	</style>
 
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/pixi.js/4.2.3/pixi.js"></script>
-    <script src="../dist/pixi-multistyle-text.js"></script>
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/pixi.js/4.2.3/pixi.js"></script>
+	<script src="../dist/pixi-multistyle-text.js"></script>
 </head>
 <body>
-    <script>
-        // create a renderer instance
-        var renderer = PIXI.autoDetectRenderer(620, 400);
-        renderer.backgroundColor = 0x66FF99;
-        renderer.resolution = window.devicePixelRatio;
+	<script>
+		// create a renderer instance
+		var renderer = PIXI.autoDetectRenderer(620, 400);
+		renderer.backgroundColor = 0x66FF99;
+		renderer.resolution = window.devicePixelRatio;
 
-        // add the renderer view element to the DOM
-        document.body.appendChild(renderer.view);
+		// add the renderer view element to the DOM
+		document.body.appendChild(renderer.view);
 
-        // make the stage
-        var stage = new PIXI.Container();
+		// make the stage
+		var stage = new PIXI.Container();
 
-        // create some white text using the Snippet webfont
-        var textSample = new MultiStyleText("<pixi>Pixi.js</pixi> can has <multiline>multiline</multiline>\nand <multistyle>multi-styles</multistyle> text!",
-            {
-                default: { fontFamily: "Tahoma", fontSize: "35px", fill: "white" },
-                multiline: { fill: "blue" },
-                pixi: { fill: "#D90057" },
-                multistyle: { fill: "red" }
-            }
-        );
-        textSample.position.x = 20;
-        textSample.position.y = 20;
+		// create some white text using the Snippet webfont
+		var textSample = new MultiStyleText("<pixi>Pixi.js</pixi> can has <multiline>multiline</multiline>\nand <multistyle>multi-styles</multistyle> text!",
+			{
+				default: { fontFamily: "Tahoma", fontSize: "35px", fill: "white" },
+				multiline: { fill: "blue" },
+				pixi: { fill: "#D90057" },
+				multistyle: { fill: "red" }
+			}
+		);
+		textSample.position.x = 20;
+		textSample.position.y = 20;
 
-        var nested = new MultiStyleText("(<a>Now with <b>support</b> for <c>nesting <d>tags</d></c>!  <e>Wow<f>!!!</f></e></a>)",
-            {
-                default: { fontFamily: "Tahoma", fontSize: "24px", fill: 0x222222 },
-                a: { fill: "blue" },
-                b: { stroke: "white", strokeThickness: 10 },
-                c: { fontSize: "16px", fontStyle: "italic", valign: "top" },
-                d: { valign: "bottom" },
-                e: { fontStyle: "bold" },
-                f: { fill: 0xff0000 }
-            }
-        );
-        nested.position.x = 20;
-        nested.position.y = 100;
+		var nested = new MultiStyleText("(<a>Now with <b>support</b> for <c>nesting <d>tags</d></c>!  <e>Wow<f>!!!</f></e></a>)",
+			{
+				default: { fontFamily: "Tahoma", fontSize: "24px", fill: 0x222222 },
+				a: { fill: "blue" },
+				b: { stroke: "white", strokeThickness: 10 },
+				c: { fontSize: "16px", fontStyle: "italic", valign: "top" },
+				d: { valign: "bottom" },
+				e: { fontStyle: "bold" },
+				f: { fill: 0xff0000 }
+			}
+		);
+		nested.position.x = 20;
+		nested.position.y = 100;
 
-        // create a text object with a nice stroke
-        var spinningText = new MultiStyleText("<iam>I'm</iam> fun<and>,</and> fun <and>and</and> fun<ding>!</ding>",
-            {
-                default: { fontFamily: "Arial", fontSize: "60px", fontStyle: "bold", fill: "#cc00ff", stroke: "#fff", strokeThickness: 20 },
-                iam: { fontSize: "30px", fill: "#000" },
-                and: { fontSize: "30px", fill: "#000", valign: 'middle', stroke: "#fff", strokeThickness: 0 },
-                ding: { fontSize: "30px", fill: "#000", valign: 'bottom' }
-            },
-            {
-                align: "center"
-            }
-        );
+		// create a text object with a nice stroke
+		var spinningText = new MultiStyleText("<iam>I'm</iam> fun<and>,</and> fun <and>and</and> fun<ding>!</ding>",
+			{
+				default: { fontFamily: "Arial", fontSize: "60px", fontStyle: "bold", fill: "#cc00ff", stroke: "#fff", strokeThickness: 20 },
+				iam: { fontSize: "30px", fill: "#000" },
+				and: { fontSize: "30px", fill: "#000", valign: 'middle', stroke: "#fff", strokeThickness: 0 },
+				ding: { fontSize: "30px", fill: "#000", valign: 'bottom' }
+			},
+			{
+				align: "center"
+			}
+		);
 
-        // setting the anchor point to 0.5 will center align the text... great for spinning!
-        spinningText.anchor.x = spinningText.anchor.y = 0.5;
-        spinningText.position.x = 620 / 2;
-        spinningText.position.y = 400 / 2;
+		// setting the anchor point to 0.5 will center align the text... great for spinning!
+		spinningText.anchor.x = spinningText.anchor.y = 0.5;
+		spinningText.position.x = 620 / 2;
+		spinningText.position.y = 400 / 2;
 
-        // create a text object that will be updated..
-        var countingText = new MultiStyleText("COUNT 4EVAR: <count>0</count>",
-            {
-                default: { fontFamily: "Avro", fontSize: "60px", fontStyle: "bold italic", fill: "#3e1707" },
-                count: { fontFamily: "Avro", fontSize: "60px", fontStyle: "bold italic", fill: "#3e1707", stroke: "#a4410e", strokeThickness: 7 }
-            },
-            {
-                align: "center"
-            }
-        );
-        countingText.position.x = 620 / 2;
-        countingText.position.y = 320;
-        countingText.anchor.x = 0.5;
+		// create a text object that will be updated..
+		var countingText = new MultiStyleText("COUNT 4EVAR: <count>0</count>",
+			{
+				default: { fontFamily: "Avro", fontSize: "60px", fontStyle: "bold italic", fill: "#3e1707" },
+				count: { fontFamily: "Avro", fontSize: "60px", fontStyle: "bold italic", fill: "#3e1707", stroke: "#a4410e", strokeThickness: 7 }
+			},
+			{
+				align: "center"
+			}
+		);
+		countingText.position.x = 620 / 2;
+		countingText.position.y = 320;
+		countingText.anchor.x = 0.5;
 
-        stage.addChild(textSample);
-        stage.addChild(spinningText);
-        stage.addChild(nested);
-        stage.addChild(countingText);
+		stage.addChild(textSample);
+		stage.addChild(spinningText);
+		stage.addChild(nested);
+		stage.addChild(countingText);
 
-        var count = 0;
-        var score = 0;
-        var remaining = 10;
+		var count = 0;
+		var score = 0;
+		var remaining = 10;
 
-        function animate() {
-            requestAnimationFrame(animate);
-            renderer.render(stage);
+		function animate() {
+			requestAnimationFrame(animate);
+			renderer.render(stage);
 
-            count+=0.1;
-            countingText.text = "COUNT 4EVAR: <count>" + (count | 0) + "</count>";
-        }
+			count+=0.1;
+			countingText.text = "COUNT 4EVAR: <count>" + (count | 0) + "</count>";
+		}
 
-        requestAnimationFrame(animate);
-    </script>
+		requestAnimationFrame(animate);
+	</script>
 
-    </body>
+	</body>
 </html>

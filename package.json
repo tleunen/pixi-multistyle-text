@@ -1,37 +1,37 @@
 {
-  "name": "pixi-multistyle-text",
-  "version": "0.4.0",
-  "description": "Multi-Style Text for pixi.js",
-  "main": "dist/pixi-multistyle-text.js",
-  "types": "dist/pixi-multistyle-text.d.ts",
-  "repository": {
-    "type": "git",
-    "url": "git://github.com/tleunen/pixi-multistyle-text.git"
-  },
-  "bugs": {
-    "url": "https://github.com/tleunen/pixi-multistyle-text/issues"
-  },
-  "homepage": "https://github.com/tleunen/pixi-multistyle-text",
-  "keywords": [
-    "pixi",
-    "pixi.js",
-    "text",
-    "multistyle",
-    "multi style",
-    "style",
-    "canvas",
-    "webgl",
-    "graphics",
-    "render",
-    "2d"
-  ],
-  "author": "Tommy Leunen <tommy.leunen@gmail.com> (http://tommyleunen.com/)",
-  "license": "MIT",
-  "dependencies": {},
-  "devDependencies": {
-    "@types/pixi.js": "^4.1.0"
-  },
-  "scripts": {
-    "build": "tsc"
-  }
+	"name": "pixi-multistyle-text",
+	"version": "0.4.0",
+	"description": "Multi-Style Text for pixi.js",
+	"main": "dist/pixi-multistyle-text.js",
+	"types": "dist/pixi-multistyle-text.d.ts",
+	"repository": {
+		"type": "git",
+		"url": "git://github.com/tleunen/pixi-multistyle-text.git"
+	},
+	"bugs": {
+		"url": "https://github.com/tleunen/pixi-multistyle-text/issues"
+	},
+	"homepage": "https://github.com/tleunen/pixi-multistyle-text",
+	"keywords": [
+		"pixi",
+		"pixi.js",
+		"text",
+		"multistyle",
+		"multi style",
+		"style",
+		"canvas",
+		"webgl",
+		"graphics",
+		"render",
+		"2d"
+	],
+	"author": "Tommy Leunen <tommy.leunen@gmail.com> (http://tommyleunen.com/)",
+	"license": "MIT",
+	"dependencies": {},
+	"devDependencies": {
+		"@types/pixi.js": "^4.1.0"
+	},
+	"scripts": {
+		"build": "tsc"
+	}
 }
