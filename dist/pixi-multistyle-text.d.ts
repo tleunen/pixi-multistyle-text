@@ -1,11 +1,23 @@
 /// <reference types="pixi.js" />
-export interface ExtendedTextStyle extends PIXI.TextStyle {
+interface ExtendedTextStyle extends PIXI.TextStyle {
     valign?: "top" | "middle" | "bottom";
 }
-export interface TextStyleSet {
+interface TextStyleSet {
     [key: string]: ExtendedTextStyle;
 }
-export declare class MultiStyleText extends PIXI.Text {
+interface FontProperties {
+    ascent: number;
+    descent: number;
+    fontSize: number;
+}
+interface TextData {
+    text: string;
+    style: ExtendedTextStyle;
+    width: number;
+    height: number;
+    fontProperties: FontProperties;
+}
+declare class MultiStyleText extends PIXI.Text {
     private textStyles;
     constructor(text: string, styles: TextStyleSet);
     style: TextStyleSet;

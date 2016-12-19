@@ -2,11 +2,11 @@
 
 /// <reference types="PIXI" />
 
-export interface ExtendedTextStyle extends PIXI.TextStyle {
+interface ExtendedTextStyle extends PIXI.TextStyle {
 	valign?: "top" | "middle" | "bottom";
 }
 
-export interface TextStyleSet {
+interface TextStyleSet {
 	[key: string]: ExtendedTextStyle;
 }
 
@@ -24,7 +24,7 @@ interface TextData {
 	fontProperties: FontProperties;
 }
 
-export class MultiStyleText extends PIXI.Text {
+class MultiStyleText extends PIXI.Text {
 	private textStyles: TextStyleSet;
 
 	constructor(text: string, styles: TextStyleSet) {
@@ -83,8 +83,8 @@ export class MultiStyleText extends PIXI.Text {
 			}
 		}
 
-		this.dirty = true;
 		this._style = this.textStyles["default"];
+		this.dirty = true;
 	}
 
 	private _getTextDataPerLine (lines: string[]) {

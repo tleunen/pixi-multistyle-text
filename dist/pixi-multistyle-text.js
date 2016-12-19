@@ -49,8 +49,8 @@ class MultiStyleText extends PIXI.Text {
                 this.textStyles[style] = Object.assign({}, styles[style]);
             }
         }
-        this.dirty = true;
         this._style = this.textStyles["default"];
+        this.dirty = true;
     }
     _getTextDataPerLine(lines) {
         let outputTextData = [];
@@ -187,5 +187,4 @@ class MultiStyleText extends PIXI.Text {
         this.updateTexture();
     }
 }
-exports.MultiStyleText = MultiStyleText;
 //# sourceMappingURL=pixi-multistyle-text.js.map

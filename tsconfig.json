@@ -4,7 +4,6 @@
 		"experimentalDecorators": true,
 		"target": "es6",
 		"module": "none",
-		"moduleResolution": "node",
 		"removeComments": true,
 		"sourceMap": true,
 		"noImplicitAny": true,
