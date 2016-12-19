@@ -1,6 +1,5 @@
 "use strict";
-import * as PIXI from "pixi.js";
-export class MultiStyleText extends PIXI.Text {
+class MultiStyleText extends PIXI.Text {
     constructor(text, styles) {
         super(text);
         this.alignment = "left";
@@ -196,4 +195,5 @@ export class MultiStyleText extends PIXI.Text {
         this.updateTexture();
     }
 }
+exports.MultiStyleText = MultiStyleText;
 //# sourceMappingURL=pixi-multistyle-text.js.map

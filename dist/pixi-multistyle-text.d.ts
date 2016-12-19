@@ -1,5 +1,4 @@
 /// <reference types="pixi.js" />
-import * as PIXI from "pixi.js";
 export interface ExtendedTextStyle extends PIXI.TextStyle {
     valign?: "top" | "middle" | "bottom";
 }

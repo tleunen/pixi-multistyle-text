@@ -29,10 +29,10 @@
         // create some white text using the Snippet webfont
         var textSample = new MultiStyleText("<pixi>Pixi.js</pixi> can has <multiline>multiline</multiline>\nand <multistyle>multi-styles</multistyle> text!",
             {
-                def: { fontFamily: "Snippet", fontSize: "35px", fill: "white" },
-                multiline: { fontFamily: "Snippet", fontSize: "35px", fill: "blue" },
-                pixi: { fontFamily: "Snippet", fontSize: "35px", fill: "#D90057" },
-                multistyle: { fontFamily: "Snippet", fontSize: "35px", fill: "red" }
+                default: { fontFamily: "Tahoma", fontSize: "35px", fill: "white" },
+                multiline: { fill: "blue" },
+                pixi: { fill: "#D90057" },
+                multistyle: { fill: "red" }
             }
         );
         textSample.position.x = 20;
@@ -40,12 +40,12 @@
 
         var nested = new MultiStyleText("(<a>Now with <b>support</b> for <c>nesting <d>tags</d></c>!  <e>Wow<f>!!!</f></e></a>)",
             {
-                def: { fontFamily: "Snippet", fontSize: "24px", fill: 0x222222 },
+                default: { fontFamily: "Tahoma", fontSize: "24px", fill: 0x222222 },
                 a: { fill: "blue" },
                 b: { stroke: "white", strokeThickness: 10 },
-                c: {  fontFamily: "Snippet", fontSize: "16px", fontStyle: "italic", valign: "top" },
+                c: { fontSize: "16px", fontStyle: "italic", valign: "top" },
                 d: { valign: "bottom" },
-                e: { fontFamily: "Snippet", fontSize: "24px", fontStyle: "bold" },
+                e: { fontStyle: "bold" },
                 f: { fill: 0xff0000 }
             }
         );
@@ -55,10 +55,10 @@
         // create a text object with a nice stroke
         var spinningText = new MultiStyleText("<iam>I'm</iam> fun<and>,</and> fun <and>and</and> fun<ding>!</ding>",
             {
-                def: { fontFamily: "Arial", fontSize: "60px", fontStyle: "bold", fill: "#cc00ff", stroke: "#fff", strokeThickness: 20 },
-                iam: { fontFamily: "Arial", fontSize: "30px", fontStyle: "bold", fill: "#000" },
-                and: { fontFamily: "Arial", fontSize: "30px", fontStyle: "bold", fill: "#000", valign: 'middle', stroke: "#fff", strokeThickness: 0 },
-                ding: { fontFamily: "Arial", fontSize: "30px", fontStyle: "bold", fill: "#000", valign: 'bottom' }
+                default: { fontFamily: "Arial", fontSize: "60px", fontStyle: "bold", fill: "#cc00ff", stroke: "#fff", strokeThickness: 20 },
+                iam: { fontSize: "30px", fill: "#000" },
+                and: { fontSize: "30px", fill: "#000", valign: 'middle', stroke: "#fff", strokeThickness: 0 },
+                ding: { fontSize: "30px", fill: "#000", valign: 'bottom' }
             },
             {
                 align: "center"
@@ -73,7 +73,7 @@
         // create a text object that will be updated..
         var countingText = new MultiStyleText("COUNT 4EVAR: <count>0</count>",
             {
-                def: { fontFamily: "Avro", fontSize: "60px", fontStyle: "bold italic", fill: "#3e1707" },
+                default: { fontFamily: "Avro", fontSize: "60px", fontStyle: "bold italic", fill: "#3e1707" },
                 count: { fontFamily: "Avro", fontSize: "60px", fontStyle: "bold italic", fill: "#3e1707", stroke: "#a4410e", strokeThickness: 7 }
             },
             {
