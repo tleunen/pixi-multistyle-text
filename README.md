@@ -33,9 +33,7 @@ Each key of this dictionary should match with a tag in the text. Use the key `de
 
 Each style object can have [any of the properties of a standard PIXI text style](http://pixijs.download/release/docs/PIXI.TextStyle.html), in addition to a `valign` property that allows you to specify where text is rendered relative to larger text on the same line (`"top"`, `"middle"`, or `"bottom"`).
 
-The `align` property is ignored on all styles _except for the `default` style_, which controls the alignment for the entire text object.
-
-The `wordWrap`, `wordWrapWidth`, and `breakWord` properties are ignored on all styles.
+The `align`, `wordWrap`, `wordWrapWidth`, and `breakWord` properties are ignored on all styles _except for the `default` style_, which controls those properties for the entire text object.
 
 If text is rendered without any value assigned to a given parameter, Pixi's defaults are used.
 
