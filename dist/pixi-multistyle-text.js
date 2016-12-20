@@ -1,66 +1,89 @@
 "use strict";
-class MultiStyleText extends PIXI.Text {
-    constructor(text, styles) {
-        super(text);
+var __extends = (this && this.__extends) || function (d, b) {
+    for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
+    function __() { this.constructor = d; }
+    d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
+};
+function assign(destination) {
+    var sources = [];
+    for (var _i = 1; _i < arguments.length; _i++) {
+        sources[_i - 1] = arguments[_i];
+    }
+    for (var _a = 0, sources_1 = sources; _a < sources_1.length; _a++) {
+        var source = sources_1[_a];
+        for (var key in source) {
+            destination[key] = source[key];
+        }
+    }
+    return destination;
+}
+var MultiStyleText = (function (_super) {
+    __extends(MultiStyleText, _super);
+    function MultiStyleText(text, styles) {
+        _super.call(this, text);
         this.style = styles;
     }
-    set style(styles) {
-        this.textStyles = {};
-        this.textStyles["default"] = {
-            align: "left",
-            breakWords: false,
-            dropShadow: false,
-            dropShadowAngle: Math.PI / 6,
-            dropShadowBlur: 0,
-            dropShadowColor: "#000000",
-            dropShadowDistance: 5,
-            fill: "black",
-            fillGradientType: PIXI.TEXT_GRADIENT.LINEAR_VERTICAL,
-            fontFamily: "Arial",
-            fontSize: 26,
-            fontStyle: "normal",
-            fontVariant: "normal",
-            fontWeight: "normal",
-            letterSpacing: 0,
-            lineHeight: 0,
-            lineJoin: "miter",
-            miterLimit: 10,
-            padding: 0,
-            stroke: "black",
-            strokeThickness: 0,
-            textBaseline: "alphabetic",
-            wordWrap: false,
-            wordWrapWidth: 100,
-        };
-        for (let style in styles) {
-            if (typeof styles[style].dropShadowColor === "number") {
-                styles[style].dropShadowColor = PIXI.utils.hex2string(styles[style].dropShadowColor);
+    Object.defineProperty(MultiStyleText.prototype, "style", {
+        set: function (styles) {
+            this.textStyles = {};
+            this.textStyles["default"] = {
+                align: "left",
+                breakWords: false,
+                dropShadow: false,
+                dropShadowAngle: Math.PI / 6,
+                dropShadowBlur: 0,
+                dropShadowColor: "#000000",
+                dropShadowDistance: 5,
+                fill: "black",
+                fillGradientType: PIXI.TEXT_GRADIENT.LINEAR_VERTICAL,
+                fontFamily: "Arial",
+                fontSize: 26,
+                fontStyle: "normal",
+                fontVariant: "normal",
+                fontWeight: "normal",
+                letterSpacing: 0,
+                lineHeight: 0,
+                lineJoin: "miter",
+                miterLimit: 10,
+                padding: 0,
+                stroke: "black",
+                strokeThickness: 0,
+                textBaseline: "alphabetic",
+                wordWrap: false,
+                wordWrapWidth: 100,
+            };
+            for (var style in styles) {
+                if (typeof styles[style].dropShadowColor === "number") {
+                    styles[style].dropShadowColor = PIXI.utils.hex2string(styles[style].dropShadowColor);
+                }
+                if (typeof styles[style].fill === "number") {
+                    styles[style].fill = PIXI.utils.hex2string(styles[style].fill);
+                }
+                if (typeof styles[style].stroke === "number") {
+                    styles[style].stroke = PIXI.utils.hex2string(styles[style].stroke);
+                }
+                if (style === "default") {
+                    assign(this.textStyles["default"], styles[style]);
+                }
+                else {
+                    this.textStyles[style] = assign({}, styles[style]);
+                }
             }
-            if (typeof styles[style].fill === "number") {
-                styles[style].fill = PIXI.utils.hex2string(styles[style].fill);
-            }
-            if (typeof styles[style].stroke === "number") {
-                styles[style].stroke = PIXI.utils.hex2string(styles[style].stroke);
-            }
-            if (style === "default") {
-                Object.assign(this.textStyles["default"], styles[style]);
-            }
-            else {
-                this.textStyles[style] = Object.assign({}, styles[style]);
-            }
-        }
-        this._style = this.textStyles["default"];
-        this.dirty = true;
-    }
-    _getTextDataPerLine(lines) {
-        let outputTextData = [];
-        let tags = Object.keys(this.textStyles).join("|");
-        let re = new RegExp(`<\/?("${tags})>`, "g");
-        let styleStack = [Object.assign({}, this.textStyles["default"])];
-        for (let i = 0; i < lines.length; i++) {
-            let lineTextData = [];
-            let matches = [];
-            let matchArray;
+            this._style = this.textStyles["default"];
+            this.dirty = true;
+        },
+        enumerable: true,
+        configurable: true
+    });
+    MultiStyleText.prototype._getTextDataPerLine = function (lines) {
+        var outputTextData = [];
+        var tags = Object.keys(this.textStyles).join("|");
+        var re = new RegExp("</?(\"" + tags + ")>", "g");
+        var styleStack = [assign({}, this.textStyles["default"])];
+        for (var i = 0; i < lines.length; i++) {
+            var lineTextData = [];
+            var matches = [];
+            var matchArray = void 0;
             while (matchArray = re.exec(lines[i])) {
                 matches.push(matchArray);
             }
@@ -68,8 +91,8 @@ class MultiStyleText extends PIXI.Text {
                 lineTextData.push(this.createTextData(lines[i], styleStack[styleStack.length - 1]));
             }
             else {
-                let currentSearchIdx = 0;
-                for (let j = 0; j < matches.length; j++) {
+                var currentSearchIdx = 0;
+                for (var j = 0; j < matches.length; j++) {
                     if (matches[j].index > currentSearchIdx) {
                         lineTextData.push(this.createTextData(lines[i].substring(currentSearchIdx, matches[j].index), styleStack[styleStack.length - 1]));
                     }
@@ -79,7 +102,7 @@ class MultiStyleText extends PIXI.Text {
                         }
                     }
                     else {
-                        styleStack.push(Object.assign({}, styleStack[styleStack.length - 1], this.textStyles[matches[j][1]]));
+                        styleStack.push(assign({}, styleStack[styleStack.length - 1], this.textStyles[matches[j][1]]));
                     }
                     currentSearchIdx = matches[j].index + matches[j][0].length;
                 }
@@ -90,36 +113,36 @@ class MultiStyleText extends PIXI.Text {
             outputTextData.push(lineTextData);
         }
         return outputTextData;
-    }
-    createTextData(text, style) {
+    };
+    MultiStyleText.prototype.createTextData = function (text, style) {
         return {
-            text,
-            style,
+            text: text,
+            style: style,
             width: 0,
             height: 0,
             fontProperties: undefined
         };
-    }
-    updateText() {
+    };
+    MultiStyleText.prototype.updateText = function () {
         if (!this.dirty) {
             return;
         }
         this.texture.baseTexture.resolution = this.resolution;
-        let textStyles = this.textStyles;
-        let outputText = this.text;
+        var textStyles = this.textStyles;
+        var outputText = this.text;
         if (this._style.wordWrap) {
             outputText = this.wordWrap(this.text);
         }
-        let lines = outputText.split(/(?:\r\n|\r|\n)/);
-        let outputTextData = this._getTextDataPerLine(lines);
-        let lineWidths = [];
-        let lineHeights = [];
-        let maxLineWidth = 0;
-        for (let i = 0; i < lines.length; i++) {
-            let lineWidth = 0;
-            let lineHeight = 0;
-            for (let j = 0; j < outputTextData[i].length; j++) {
-                let sty = outputTextData[i][j].style;
+        var lines = outputText.split(/(?:\r\n|\r|\n)/);
+        var outputTextData = this._getTextDataPerLine(lines);
+        var lineWidths = [];
+        var lineHeights = [];
+        var maxLineWidth = 0;
+        for (var i = 0; i < lines.length; i++) {
+            var lineWidth = 0;
+            var lineHeight = 0;
+            for (var j = 0; j < outputTextData[i].length; j++) {
+                var sty = outputTextData[i][j].style;
                 this.context.font = PIXI.Text.getFontStyle(outputTextData[i][j].style);
                 outputTextData[i][j].width = this.context.measureText(outputTextData[i][j].text).width;
                 lineWidth += outputTextData[i][j].width;
@@ -132,29 +155,29 @@ class MultiStyleText extends PIXI.Text {
             lineHeights[i] = lineHeight;
             maxLineWidth = Math.max(maxLineWidth, lineWidth);
         }
-        let stylesArray = Object.keys(textStyles).map((key) => textStyles[key]);
-        let maxStrokeThickness = stylesArray.reduce((prev, curr) => Math.max(prev, curr.strokeThickness || 0), 0);
-        let maxDropShadowDistance = stylesArray.reduce((prev, curr) => Math.max(prev, curr.dropShadow ? (curr.dropShadowDistance || 0) : 0), 0);
-        let maxLineHeight = lineHeights.reduce((prev, curr) => Math.max(prev, curr), 0);
-        let width = maxLineWidth + maxStrokeThickness + maxDropShadowDistance;
-        let height = (maxLineHeight * lines.length) + maxDropShadowDistance;
+        var stylesArray = Object.keys(textStyles).map(function (key) { return textStyles[key]; });
+        var maxStrokeThickness = stylesArray.reduce(function (prev, curr) { return Math.max(prev, curr.strokeThickness || 0); }, 0);
+        var maxDropShadowDistance = stylesArray.reduce(function (prev, curr) { return Math.max(prev, curr.dropShadow ? (curr.dropShadowDistance || 0) : 0); }, 0);
+        var maxLineHeight = lineHeights.reduce(function (prev, curr) { return Math.max(prev, curr); }, 0);
+        var width = maxLineWidth + maxStrokeThickness + maxDropShadowDistance;
+        var height = (maxLineHeight * lines.length) + maxDropShadowDistance;
         this.canvas.width = (width + this.context.lineWidth) * this.resolution;
         this.canvas.height = height * this.resolution;
         this.context.scale(this.resolution, this.resolution);
         this.context.textBaseline = "alphabetic";
         this.context.lineJoin = "round";
-        for (let i = 0; i < outputTextData.length; i++) {
-            let line = outputTextData[i];
-            let linePositionX = 0;
-            for (let j = 0; j < line.length; j++) {
-                let textStyle = line[j].style;
-                let text = line[j].text;
-                let fontProperties = line[j].fontProperties;
+        for (var i = 0; i < outputTextData.length; i++) {
+            var line = outputTextData[i];
+            var linePositionX = 0;
+            for (var j = 0; j < line.length; j++) {
+                var textStyle = line[j].style;
+                var text = line[j].text;
+                var fontProperties = line[j].fontProperties;
                 this.context.font = PIXI.Text.getFontStyle(textStyle);
                 this.context.strokeStyle = textStyle.stroke;
                 this.context.lineWidth = textStyle.strokeThickness;
                 linePositionX += maxStrokeThickness / 2;
-                let linePositionY = (maxStrokeThickness / 2 + i * lineHeights[i]) + fontProperties.ascent;
+                var linePositionY = (maxStrokeThickness / 2 + i * lineHeights[i]) + fontProperties.ascent;
                 if (this._style.align === "right") {
                     linePositionX += maxLineWidth - lineWidths[i];
                 }
@@ -171,8 +194,8 @@ class MultiStyleText extends PIXI.Text {
                 }
                 if (textStyle.dropShadow) {
                     this.context.fillStyle = textStyle.dropShadowColor;
-                    let xShadowOffset = Math.sin(textStyle.dropShadowAngle) * textStyle.dropShadowDistance;
-                    let yShadowOffset = Math.cos(textStyle.dropShadowAngle) * textStyle.dropShadowDistance;
+                    var xShadowOffset = Math.sin(textStyle.dropShadowAngle) * textStyle.dropShadowDistance;
+                    var yShadowOffset = Math.cos(textStyle.dropShadowAngle) * textStyle.dropShadowDistance;
                     if (textStyle.fill) {
                         this.context.fillText(text, linePositionX + xShadowOffset, linePositionY + yShadowOffset);
                     }
@@ -189,6 +212,7 @@ class MultiStyleText extends PIXI.Text {
             }
         }
         this.updateTexture();
-    }
-}
+    };
+    return MultiStyleText;
+}(PIXI.Text));
 //# sourceMappingURL=pixi-multistyle-text.js.map

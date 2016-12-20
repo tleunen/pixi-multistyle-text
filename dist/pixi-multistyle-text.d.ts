@@ -17,6 +17,7 @@ interface TextData {
     height: number;
     fontProperties: FontProperties;
 }
+declare function assign(destination: any, ...sources: any[]): any;
 declare class MultiStyleText extends PIXI.Text {
     private textStyles;
     constructor(text: string, styles: TextStyleSet);

@@ -22,6 +22,17 @@ interface TextData {
 	fontProperties: FontProperties;
 }
 
+// Lazy fill for Object.assign
+function assign(destination: any, ...sources: any[]): any {
+	for (let source of sources) {
+		for (let key in source) {
+			destination[key] = source[key];
+		}
+	}
+
+	return destination;
+}
+
 class MultiStyleText extends PIXI.Text {
 	private textStyles: TextStyleSet;
 
@@ -75,9 +86,9 @@ class MultiStyleText extends PIXI.Text {
 			}
 
 			if (style === "default") {
-				Object.assign(this.textStyles["default"], styles[style]);
+				assign(this.textStyles["default"], styles[style]);
 			} else {
-				this.textStyles[style] = Object.assign({}, styles[style]);
+				this.textStyles[style] = assign({}, styles[style]);
 			}
 		}
 
@@ -91,7 +102,7 @@ class MultiStyleText extends PIXI.Text {
 		let tags = Object.keys(this.textStyles).join("|");
 		let re = new RegExp(`<\/?("${tags})>`, "g");
 
-		let styleStack = [Object.assign({}, this.textStyles["default"])];
+		let styleStack = [assign({}, this.textStyles["default"])];
 
 		// determine the group of word for each line
 		for (let i = 0; i < lines.length; i++) {
@@ -127,7 +138,7 @@ class MultiStyleText extends PIXI.Text {
 							styleStack.pop();
 						}
 					} else { // set the current style
-						styleStack.push(Object.assign({}, styleStack[styleStack.length - 1], this.textStyles[matches[j][1]]));
+						styleStack.push(assign({}, styleStack[styleStack.length - 1], this.textStyles[matches[j][1]]));
 					}
 
 					// update the current search index
