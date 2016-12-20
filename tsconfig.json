@@ -1,0 +1,20 @@
+{
+	"compilerOptions": {
+		"emitDecoratorMetadata": true,
+		"experimentalDecorators": true,
+		"target": "es5",
+		"module": "none",
+		"removeComments": true,
+		"sourceMap": true,
+		"noImplicitAny": true,
+		"outDir": "dist",
+		"declaration": true
+	},
+	"exclude": [
+		"node_modules",
+		"dist",
+		"bower_components"
+	],
+	"compileOnSave": false,
+	"baseUrl": "."
+}
