@@ -1,6 +1,9 @@
+/// <reference path="./node_modules/pixi-typescript/pixi.js.d.ts" />
+// Until a better solution is found, we need to reference Pixi's types directly
+
 "use strict";
 
-interface ExtendedTextStyle extends PIXI.TextStyle {
+interface ExtendedTextStyle extends PIXI.ITextStyleStyle {
 	valign?: "top" | "middle" | "bottom";
 }
 
@@ -39,10 +42,10 @@ class MultiStyleText extends PIXI.Text {
 	constructor(text: string, styles: TextStyleSet) {
 		super(text);
 
-		this.style = styles;
+		this.styles = styles;
 	}
 
-	public set style(styles: TextStyleSet) {
+	public set styles(styles: TextStyleSet) {
 		this.textStyles = {};
 
 		this.textStyles["default"] = {
@@ -69,22 +72,10 @@ class MultiStyleText extends PIXI.Text {
 			strokeThickness: 0,
 			textBaseline: "alphabetic",
 			wordWrap: false,
-			wordWrapWidth: 100,
+			wordWrapWidth: 100
 		};
 
 		for (let style in styles) {
-			if (typeof styles[style].dropShadowColor === "number") {
-				styles[style].dropShadowColor = PIXI.utils.hex2string(styles[style].dropShadowColor as number);
-			}
-
-			if (typeof styles[style].fill === "number") {
-				styles[style].fill = PIXI.utils.hex2string(styles[style].fill as number);
-			}
-
-			if (typeof styles[style].stroke === "number") {
-				styles[style].stroke = PIXI.utils.hex2string(styles[style].stroke as number);
-			}
-
 			if (style === "default") {
 				assign(this.textStyles["default"], styles[style]);
 			} else {
@@ -92,7 +83,7 @@ class MultiStyleText extends PIXI.Text {
 			}
 		}
 
-		this._style = this.textStyles["default"];
+		this._style = new PIXI.TextStyle(this.textStyles["default"]);
 		this.dirty = true;
 	}
 
@@ -257,7 +248,13 @@ class MultiStyleText extends PIXI.Text {
 				let fontProperties = line[j].fontProperties;
 
 				this.context.font = PIXI.Text.getFontStyle(textStyle);
-				this.context.strokeStyle = textStyle.stroke;
+
+				let strokeStyle = textStyle.stroke;
+				if (typeof strokeStyle === "number") {
+					strokeStyle = PIXI.utils.hex2string(strokeStyle);
+				}
+
+				this.context.strokeStyle = strokeStyle;
 				this.context.lineWidth = textStyle.strokeThickness;
 
 				linePositionX += maxStrokeThickness / 2;
@@ -280,7 +277,11 @@ class MultiStyleText extends PIXI.Text {
 
 				// draw shadow
 				if (textStyle.dropShadow) {
-					this.context.fillStyle = textStyle.dropShadowColor;
+					let dropFillStyle = textStyle.dropShadowColor;
+					if (typeof dropFillStyle === "number") {
+						dropFillStyle = PIXI.utils.hex2string(dropFillStyle);
+					}
+					this.context.fillStyle = dropFillStyle;
 
 					let xShadowOffset = Math.sin(textStyle.dropShadowAngle) * textStyle.dropShadowDistance;
 					let yShadowOffset = Math.cos(textStyle.dropShadowAngle) * textStyle.dropShadowDistance;
@@ -291,7 +292,19 @@ class MultiStyleText extends PIXI.Text {
 				}
 
 				// set canvas text styles
-				this.context.fillStyle = textStyle.fill;
+				let fillStyle = textStyle.fill;
+				if (typeof fillStyle === "number") {
+					fillStyle = PIXI.utils.hex2string(fillStyle);
+				} else if (Array.isArray(fillStyle)) {
+					for (let i = 0; i < fillStyle.length; i++) {
+						let fill = fillStyle[i];
+						if (typeof fill === "number") {
+							fillStyle[i] = PIXI.utils.hex2string(fill);
+						}
+					}
+				}
+				this.context.fillStyle = this._generateFillStyle(new PIXI.TextStyle(textStyle), [text]) as string | CanvasGradient;
+				// Typecast required for proper typechecking
 
 				// draw lines
 				if (textStyle.stroke && textStyle.strokeThickness) {
