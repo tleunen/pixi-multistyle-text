@@ -29,7 +29,6 @@
   "license": "MIT",
   "dependencies": {},
   "devDependencies": {
-    "pixi-typescript": "git+https://github.com/pixijs/pixi-typescript.git#v4.x",
     "typescript": "^2.1.4"
   },
   "scripts": {

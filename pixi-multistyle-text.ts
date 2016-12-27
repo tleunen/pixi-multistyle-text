@@ -1,6 +1,3 @@
-/// <reference path="./node_modules/pixi-typescript/pixi.js.d.ts" />
-// Until a better solution is found, we need to reference Pixi's types directly
-
 "use strict";
 
 interface ExtendedTextStyle extends PIXI.ITextStyleStyle {
@@ -23,17 +20,6 @@ interface TextData {
 	width: number;
 	height: number;
 	fontProperties: FontProperties;
-}
-
-// Lazy fill for Object.assign
-function assign(destination: any, ...sources: any[]): any {
-	for (let source of sources) {
-		for (let key in source) {
-			destination[key] = source[key];
-		}
-	}
-
-	return destination;
 }
 
 class MultiStyleText extends PIXI.Text {
@@ -77,9 +63,9 @@ class MultiStyleText extends PIXI.Text {
 
 		for (let style in styles) {
 			if (style === "default") {
-				assign(this.textStyles["default"], styles[style]);
+				this.assign(this.textStyles["default"], styles[style]);
 			} else {
-				this.textStyles[style] = assign({}, styles[style]);
+				this.textStyles[style] = this.assign({}, styles[style]);
 			}
 		}
 
@@ -93,7 +79,7 @@ class MultiStyleText extends PIXI.Text {
 		let tags = Object.keys(this.textStyles).join("|");
 		let re = new RegExp(`<\/?("${tags})>`, "g");
 
-		let styleStack = [assign({}, this.textStyles["default"])];
+		let styleStack = [this.assign({}, this.textStyles["default"])];
 
 		// determine the group of word for each line
 		for (let i = 0; i < lines.length; i++) {
@@ -129,7 +115,7 @@ class MultiStyleText extends PIXI.Text {
 							styleStack.pop();
 						}
 					} else { // set the current style
-						styleStack.push(assign({}, styleStack[styleStack.length - 1], this.textStyles[matches[j][1]]));
+						styleStack.push(this.assign({}, styleStack[styleStack.length - 1], this.textStyles[matches[j][1]]));
 					}
 
 					// update the current search index
@@ -323,5 +309,16 @@ class MultiStyleText extends PIXI.Text {
 		}
 
 		this.updateTexture();
+	}
+
+	// Lazy fill for Object.assign
+	private assign(destination: any, ...sources: any[]): any {
+		for (let source of sources) {
+			for (let key in source) {
+				destination[key] = source[key];
+			}
+		}
+
+		return destination;
 	}
 }

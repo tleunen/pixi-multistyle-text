@@ -1,4 +1,3 @@
-/// <reference path="../node_modules/pixi-typescript/pixi.js.d.ts" />
 interface ExtendedTextStyle extends PIXI.ITextStyleStyle {
     valign?: "top" | "middle" | "bottom";
 }
@@ -17,7 +16,6 @@ interface TextData {
     height: number;
     fontProperties: FontProperties;
 }
-declare function assign(destination: any, ...sources: any[]): any;
 declare class MultiStyleText extends PIXI.Text {
     private textStyles;
     constructor(text: string, styles: TextStyleSet);
@@ -25,4 +23,5 @@ declare class MultiStyleText extends PIXI.Text {
     private _getTextDataPerLine(lines);
     private createTextData(text, style);
     updateText(): void;
+    private assign(destination, ...sources);
 }

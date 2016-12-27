@@ -4,19 +4,6 @@ var __extends = (this && this.__extends) || function (d, b) {
     function __() { this.constructor = d; }
     d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
 };
-function assign(destination) {
-    var sources = [];
-    for (var _i = 1; _i < arguments.length; _i++) {
-        sources[_i - 1] = arguments[_i];
-    }
-    for (var _a = 0, sources_1 = sources; _a < sources_1.length; _a++) {
-        var source = sources_1[_a];
-        for (var key in source) {
-            destination[key] = source[key];
-        }
-    }
-    return destination;
-}
 var MultiStyleText = (function (_super) {
     __extends(MultiStyleText, _super);
     function MultiStyleText(text, styles) {
@@ -55,10 +42,10 @@ var MultiStyleText = (function (_super) {
             };
             for (var style in styles) {
                 if (style === "default") {
-                    assign(this.textStyles["default"], styles[style]);
+                    this.assign(this.textStyles["default"], styles[style]);
                 }
                 else {
-                    this.textStyles[style] = assign({}, styles[style]);
+                    this.textStyles[style] = this.assign({}, styles[style]);
                 }
             }
             this._style = new PIXI.TextStyle(this.textStyles["default"]);
@@ -71,7 +58,7 @@ var MultiStyleText = (function (_super) {
         var outputTextData = [];
         var tags = Object.keys(this.textStyles).join("|");
         var re = new RegExp("</?(\"" + tags + ")>", "g");
-        var styleStack = [assign({}, this.textStyles["default"])];
+        var styleStack = [this.assign({}, this.textStyles["default"])];
         for (var i = 0; i < lines.length; i++) {
             var lineTextData = [];
             var matches = [];
@@ -94,7 +81,7 @@ var MultiStyleText = (function (_super) {
                         }
                     }
                     else {
-                        styleStack.push(assign({}, styleStack[styleStack.length - 1], this.textStyles[matches[j][1]]));
+                        styleStack.push(this.assign({}, styleStack[styleStack.length - 1], this.textStyles[matches[j][1]]));
                     }
                     currentSearchIdx = matches[j].index + matches[j][0].length;
                 }
@@ -224,6 +211,19 @@ var MultiStyleText = (function (_super) {
             }
         }
         this.updateTexture();
+    };
+    MultiStyleText.prototype.assign = function (destination) {
+        var sources = [];
+        for (var _i = 1; _i < arguments.length; _i++) {
+            sources[_i - 1] = arguments[_i];
+        }
+        for (var _a = 0, sources_1 = sources; _a < sources_1.length; _a++) {
+            var source = sources_1[_a];
+            for (var key in source) {
+                destination[key] = source[key];
+            }
+        }
+        return destination;
     };
     return MultiStyleText;
 }(PIXI.Text));

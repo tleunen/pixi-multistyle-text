@@ -4,11 +4,13 @@
 		"experimentalDecorators": true,
 		"target": "es5",
 		"module": "none",
+		"moduleResolution": "node",
 		"removeComments": true,
 		"sourceMap": true,
 		"noImplicitAny": true,
 		"outDir": "dist",
-		"declaration": true
+		"declaration": true,
+		"pretty": true
 	},
 	"exclude": [
 		"node_modules",
