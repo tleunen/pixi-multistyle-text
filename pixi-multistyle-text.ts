@@ -225,6 +225,8 @@ class MultiStyleText extends PIXI.Text {
 		this.context.textBaseline = "alphabetic";
 		this.context.lineJoin = "round";
 
+		let basePositionY = 0;
+
 		// Draw the text
 		for (let i = 0; i < outputTextData.length; i++) {
 			let line = outputTextData[i];
@@ -246,7 +248,7 @@ class MultiStyleText extends PIXI.Text {
 				this.context.lineWidth = textStyle.strokeThickness;
 
 				linePositionX += maxStrokeThickness / 2;
-				let linePositionY = (maxStrokeThickness / 2 + i * lineHeights[i]) + fontProperties.ascent;
+				let linePositionY = (maxStrokeThickness / 2 + basePositionY) + fontProperties.ascent;
 
 				if (this._style.align === "right") {
 					linePositionX += maxLineWidth - lineWidths[i];
@@ -308,6 +310,8 @@ class MultiStyleText extends PIXI.Text {
 				linePositionX += line[j].width;
 				linePositionX -= maxStrokeThickness / 2;
 			}
+
+			basePositionY += lineHeights[i];
 		}
 
 		this.updateTexture();
