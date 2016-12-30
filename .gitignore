@@ -1,5 +1,4 @@
-# Mac crap
 .DS_Store
-
-# NodeJS
 node_modules/
+
+dist/
