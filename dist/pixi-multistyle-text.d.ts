@@ -1,4 +1,5 @@
-interface ExtendedTextStyle extends PIXI.ITextStyleStyle {
+/// <reference types="pixi.js" />
+interface ExtendedTextStyle extends PIXI.TextStyleOptions {
     valign?: "top" | "middle" | "bottom";
 }
 interface TextStyleSet {
