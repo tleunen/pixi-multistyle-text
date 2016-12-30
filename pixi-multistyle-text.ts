@@ -1,6 +1,8 @@
+/// <reference types="pixi.js" />
+
 "use strict";
 
-interface ExtendedTextStyle extends PIXI.TextStyle {
+interface ExtendedTextStyle extends PIXI.TextStyleOptions {
 	valign?: "top" | "middle" | "bottom";
 }
 
@@ -22,27 +24,16 @@ interface TextData {
 	fontProperties: FontProperties;
 }
 
-// Lazy fill for Object.assign
-function assign(destination: any, ...sources: any[]): any {
-	for (let source of sources) {
-		for (let key in source) {
-			destination[key] = source[key];
-		}
-	}
-
-	return destination;
-}
-
 class MultiStyleText extends PIXI.Text {
 	private textStyles: TextStyleSet;
 
 	constructor(text: string, styles: TextStyleSet) {
 		super(text);
 
-		this.style = styles;
+		this.styles = styles;
 	}
 
-	public set style(styles: TextStyleSet) {
+	public set styles(styles: TextStyleSet) {
 		this.textStyles = {};
 
 		this.textStyles["default"] = {
@@ -69,30 +60,18 @@ class MultiStyleText extends PIXI.Text {
 			strokeThickness: 0,
 			textBaseline: "alphabetic",
 			wordWrap: false,
-			wordWrapWidth: 100,
+			wordWrapWidth: 100
 		};
 
 		for (let style in styles) {
-			if (typeof styles[style].dropShadowColor === "number") {
-				styles[style].dropShadowColor = PIXI.utils.hex2string(styles[style].dropShadowColor as number);
-			}
-
-			if (typeof styles[style].fill === "number") {
-				styles[style].fill = PIXI.utils.hex2string(styles[style].fill as number);
-			}
-
-			if (typeof styles[style].stroke === "number") {
-				styles[style].stroke = PIXI.utils.hex2string(styles[style].stroke as number);
-			}
-
 			if (style === "default") {
-				assign(this.textStyles["default"], styles[style]);
+				this.assign(this.textStyles["default"], styles[style]);
 			} else {
-				this.textStyles[style] = assign({}, styles[style]);
+				this.textStyles[style] = this.assign({}, styles[style]);
 			}
 		}
 
-		this._style = this.textStyles["default"];
+		this._style = new PIXI.TextStyle(this.textStyles["default"]);
 		this.dirty = true;
 	}
 
@@ -102,7 +81,7 @@ class MultiStyleText extends PIXI.Text {
 		let tags = Object.keys(this.textStyles).join("|");
 		let re = new RegExp(`<\/?("${tags})>`, "g");
 
-		let styleStack = [assign({}, this.textStyles["default"])];
+		let styleStack = [this.assign({}, this.textStyles["default"])];
 
 		// determine the group of word for each line
 		for (let i = 0; i < lines.length; i++) {
@@ -138,7 +117,7 @@ class MultiStyleText extends PIXI.Text {
 							styleStack.pop();
 						}
 					} else { // set the current style
-						styleStack.push(assign({}, styleStack[styleStack.length - 1], this.textStyles[matches[j][1]]));
+						styleStack.push(this.assign({}, styleStack[styleStack.length - 1], this.textStyles[matches[j][1]]));
 					}
 
 					// update the current search index
@@ -257,7 +236,13 @@ class MultiStyleText extends PIXI.Text {
 				let fontProperties = line[j].fontProperties;
 
 				this.context.font = PIXI.Text.getFontStyle(textStyle);
-				this.context.strokeStyle = textStyle.stroke;
+
+				let strokeStyle = textStyle.stroke;
+				if (typeof strokeStyle === "number") {
+					strokeStyle = PIXI.utils.hex2string(strokeStyle);
+				}
+
+				this.context.strokeStyle = strokeStyle;
 				this.context.lineWidth = textStyle.strokeThickness;
 
 				linePositionX += maxStrokeThickness / 2;
@@ -280,7 +265,11 @@ class MultiStyleText extends PIXI.Text {
 
 				// draw shadow
 				if (textStyle.dropShadow) {
-					this.context.fillStyle = textStyle.dropShadowColor;
+					let dropFillStyle = textStyle.dropShadowColor;
+					if (typeof dropFillStyle === "number") {
+						dropFillStyle = PIXI.utils.hex2string(dropFillStyle);
+					}
+					this.context.fillStyle = dropFillStyle;
 
 					let xShadowOffset = Math.sin(textStyle.dropShadowAngle) * textStyle.dropShadowDistance;
 					let yShadowOffset = Math.cos(textStyle.dropShadowAngle) * textStyle.dropShadowDistance;
@@ -291,7 +280,19 @@ class MultiStyleText extends PIXI.Text {
 				}
 
 				// set canvas text styles
-				this.context.fillStyle = textStyle.fill;
+				let fillStyle = textStyle.fill;
+				if (typeof fillStyle === "number") {
+					fillStyle = PIXI.utils.hex2string(fillStyle);
+				} else if (Array.isArray(fillStyle)) {
+					for (let i = 0; i < fillStyle.length; i++) {
+						let fill = fillStyle[i];
+						if (typeof fill === "number") {
+							fillStyle[i] = PIXI.utils.hex2string(fill);
+						}
+					}
+				}
+				this.context.fillStyle = this._generateFillStyle(new PIXI.TextStyle(textStyle), [text]) as string | CanvasGradient;
+				// Typecast required for proper typechecking
 
 				// draw lines
 				if (textStyle.stroke && textStyle.strokeThickness) {
@@ -310,5 +311,16 @@ class MultiStyleText extends PIXI.Text {
 		}
 
 		this.updateTexture();
+	}
+
+	// Lazy fill for Object.assign
+	private assign(destination: any, ...sources: any[]): any {
+		for (let source of sources) {
+			for (let key in source) {
+				destination[key] = source[key];
+			}
+		}
+
+		return destination;
 	}
 }

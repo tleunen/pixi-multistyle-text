@@ -4,26 +4,14 @@ var __extends = (this && this.__extends) || function (d, b) {
     function __() { this.constructor = d; }
     d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
 };
-function assign(destination) {
-    var sources = [];
-    for (var _i = 1; _i < arguments.length; _i++) {
-        sources[_i - 1] = arguments[_i];
-    }
-    for (var _a = 0, sources_1 = sources; _a < sources_1.length; _a++) {
-        var source = sources_1[_a];
-        for (var key in source) {
-            destination[key] = source[key];
-        }
-    }
-    return destination;
-}
 var MultiStyleText = (function (_super) {
     __extends(MultiStyleText, _super);
     function MultiStyleText(text, styles) {
-        _super.call(this, text);
-        this.style = styles;
+        var _this = _super.call(this, text) || this;
+        _this.styles = styles;
+        return _this;
     }
-    Object.defineProperty(MultiStyleText.prototype, "style", {
+    Object.defineProperty(MultiStyleText.prototype, "styles", {
         set: function (styles) {
             this.textStyles = {};
             this.textStyles["default"] = {
@@ -50,26 +38,17 @@ var MultiStyleText = (function (_super) {
                 strokeThickness: 0,
                 textBaseline: "alphabetic",
                 wordWrap: false,
-                wordWrapWidth: 100,
+                wordWrapWidth: 100
             };
             for (var style in styles) {
-                if (typeof styles[style].dropShadowColor === "number") {
-                    styles[style].dropShadowColor = PIXI.utils.hex2string(styles[style].dropShadowColor);
-                }
-                if (typeof styles[style].fill === "number") {
-                    styles[style].fill = PIXI.utils.hex2string(styles[style].fill);
-                }
-                if (typeof styles[style].stroke === "number") {
-                    styles[style].stroke = PIXI.utils.hex2string(styles[style].stroke);
-                }
                 if (style === "default") {
-                    assign(this.textStyles["default"], styles[style]);
+                    this.assign(this.textStyles["default"], styles[style]);
                 }
                 else {
-                    this.textStyles[style] = assign({}, styles[style]);
+                    this.textStyles[style] = this.assign({}, styles[style]);
                 }
             }
-            this._style = this.textStyles["default"];
+            this._style = new PIXI.TextStyle(this.textStyles["default"]);
             this.dirty = true;
         },
         enumerable: true,
@@ -79,7 +58,7 @@ var MultiStyleText = (function (_super) {
         var outputTextData = [];
         var tags = Object.keys(this.textStyles).join("|");
         var re = new RegExp("</?(\"" + tags + ")>", "g");
-        var styleStack = [assign({}, this.textStyles["default"])];
+        var styleStack = [this.assign({}, this.textStyles["default"])];
         for (var i = 0; i < lines.length; i++) {
             var lineTextData = [];
             var matches = [];
@@ -102,7 +81,7 @@ var MultiStyleText = (function (_super) {
                         }
                     }
                     else {
-                        styleStack.push(assign({}, styleStack[styleStack.length - 1], this.textStyles[matches[j][1]]));
+                        styleStack.push(this.assign({}, styleStack[styleStack.length - 1], this.textStyles[matches[j][1]]));
                     }
                     currentSearchIdx = matches[j].index + matches[j][0].length;
                 }
@@ -174,7 +153,11 @@ var MultiStyleText = (function (_super) {
                 var text = line[j].text;
                 var fontProperties = line[j].fontProperties;
                 this.context.font = PIXI.Text.getFontStyle(textStyle);
-                this.context.strokeStyle = textStyle.stroke;
+                var strokeStyle = textStyle.stroke;
+                if (typeof strokeStyle === "number") {
+                    strokeStyle = PIXI.utils.hex2string(strokeStyle);
+                }
+                this.context.strokeStyle = strokeStyle;
                 this.context.lineWidth = textStyle.strokeThickness;
                 linePositionX += maxStrokeThickness / 2;
                 var linePositionY = (maxStrokeThickness / 2 + i * lineHeights[i]) + fontProperties.ascent;
@@ -193,14 +176,30 @@ var MultiStyleText = (function (_super) {
                         (maxStrokeThickness - textStyle.strokeThickness) / 2;
                 }
                 if (textStyle.dropShadow) {
-                    this.context.fillStyle = textStyle.dropShadowColor;
+                    var dropFillStyle = textStyle.dropShadowColor;
+                    if (typeof dropFillStyle === "number") {
+                        dropFillStyle = PIXI.utils.hex2string(dropFillStyle);
+                    }
+                    this.context.fillStyle = dropFillStyle;
                     var xShadowOffset = Math.sin(textStyle.dropShadowAngle) * textStyle.dropShadowDistance;
                     var yShadowOffset = Math.cos(textStyle.dropShadowAngle) * textStyle.dropShadowDistance;
                     if (textStyle.fill) {
                         this.context.fillText(text, linePositionX + xShadowOffset, linePositionY + yShadowOffset);
                     }
                 }
-                this.context.fillStyle = textStyle.fill;
+                var fillStyle = textStyle.fill;
+                if (typeof fillStyle === "number") {
+                    fillStyle = PIXI.utils.hex2string(fillStyle);
+                }
+                else if (Array.isArray(fillStyle)) {
+                    for (var i_1 = 0; i_1 < fillStyle.length; i_1++) {
+                        var fill = fillStyle[i_1];
+                        if (typeof fill === "number") {
+                            fillStyle[i_1] = PIXI.utils.hex2string(fill);
+                        }
+                    }
+                }
+                this.context.fillStyle = this._generateFillStyle(new PIXI.TextStyle(textStyle), [text]);
                 if (textStyle.stroke && textStyle.strokeThickness) {
                     this.context.strokeText(text, linePositionX, linePositionY);
                 }
@@ -212,6 +211,19 @@ var MultiStyleText = (function (_super) {
             }
         }
         this.updateTexture();
+    };
+    MultiStyleText.prototype.assign = function (destination) {
+        var sources = [];
+        for (var _i = 1; _i < arguments.length; _i++) {
+            sources[_i - 1] = arguments[_i];
+        }
+        for (var _a = 0, sources_1 = sources; _a < sources_1.length; _a++) {
+            var source = sources_1[_a];
+            for (var key in source) {
+                destination[key] = source[key];
+            }
+        }
+        return destination;
     };
     return MultiStyleText;
 }(PIXI.Text));

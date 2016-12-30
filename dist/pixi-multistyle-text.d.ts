@@ -1,5 +1,5 @@
 /// <reference types="pixi.js" />
-interface ExtendedTextStyle extends PIXI.TextStyle {
+interface ExtendedTextStyle extends PIXI.TextStyleOptions {
     valign?: "top" | "middle" | "bottom";
 }
 interface TextStyleSet {
@@ -17,12 +17,12 @@ interface TextData {
     height: number;
     fontProperties: FontProperties;
 }
-declare function assign(destination: any, ...sources: any[]): any;
 declare class MultiStyleText extends PIXI.Text {
     private textStyles;
     constructor(text: string, styles: TextStyleSet);
-    style: TextStyleSet;
+    styles: TextStyleSet;
     private _getTextDataPerLine(lines);
     private createTextData(text, style);
     updateText(): void;
+    private assign(destination, ...sources);
 }
