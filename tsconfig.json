@@ -3,7 +3,7 @@
 		"emitDecoratorMetadata": true,
 		"experimentalDecorators": true,
 		"target": "es5",
-		"module": "none",
+		"module": "umd",
 		"moduleResolution": "node",
 		"removeComments": true,
 		"sourceMap": true,

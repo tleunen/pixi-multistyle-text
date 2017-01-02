@@ -2,11 +2,11 @@
 
 "use strict";
 
-interface ExtendedTextStyle extends PIXI.TextStyleOptions {
+export interface ExtendedTextStyle extends PIXI.TextStyleOptions {
 	valign?: "top" | "middle" | "bottom";
 }
 
-interface TextStyleSet {
+export interface TextStyleSet {
 	[key: string]: ExtendedTextStyle;
 }
 
@@ -24,7 +24,7 @@ interface TextData {
 	fontProperties: FontProperties;
 }
 
-class MultiStyleText extends PIXI.Text {
+export default class MultiStyleText extends PIXI.Text {
 	private textStyles: TextStyleSet;
 
 	constructor(text: string, styles: TextStyleSet) {
