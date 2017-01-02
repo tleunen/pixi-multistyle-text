@@ -1,27 +1,50 @@
 <!DOCTYPE HTML>
 <html>
 <head>
-	<title>Pixi MultiStyle Text demo</title>
-	<style>
-		body {
-			margin: 0;
-			padding: 0;
-			background-color: #000000;
-		}
-	</style>
+	<title>Pixi MultiStyle Text Demo</title>
+	<link rel="stylesheet" href="style.css" />
 
-	<script src="https://cdnjs.cloudflare.com/ajax/libs/pixi.js/4.2.3/pixi.js"></script>
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/pixi.js/4.3.0/pixi.js"></script>
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.9.0/highlight.min.js"></script>
 	<script src="../dist/pixi-multistyle-text.js"></script>
+	<script>hljs.initHighlightingOnLoad();</script>
 </head>
 <body>
-	<script>
+	<div id="code-container">
+<h2>Basics</h2>
+<pre><code>let text = new MultiStyleText(
+	"Let's make some <ml>multiline</ml> and <ms>multistyle</ms> text for\n<pixi>Pixi.js!</pixi>",
+	{
+		default: {
+			fontFamily: "sans-serif",
+			fontSize: "16px",
+			fill: "#cccccc",
+			align: "center"
+		},
+		ml: {
+			fontStyle: "italic",
+			fill: "#ff8888"
+		},
+		ms: {
+			fontStyle: "italic",
+			fill: "#4488ff"
+		},
+		pixi: {
+			fontSize: "32px",
+			fill: "#efefef"
+		}
+	});
+</code></pre>
+	</div>
+	<div id="pixi-container">
+		<script>
 		// create a renderer instance
 		var renderer = PIXI.autoDetectRenderer(620, 400);
 		renderer.backgroundColor = 0x66FF99;
 		renderer.resolution = window.devicePixelRatio;
 
 		// add the renderer view element to the DOM
-		document.body.appendChild(renderer.view);
+		document.getElementById("pixi-container").appendChild(renderer.view);
 
 		// make the stage
 		var stage = new PIXI.Container();
@@ -103,6 +126,6 @@
 
 		requestAnimationFrame(animate);
 	</script>
-
+	</div>
 	</body>
 </html>
