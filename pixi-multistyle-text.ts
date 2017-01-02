@@ -24,7 +24,7 @@ interface TextData {
 	fontProperties: FontProperties;
 }
 
-export class MultiStyleText extends PIXI.Text {
+export default class MultiStyleText extends PIXI.Text {
 	private textStyles: TextStyleSet;
 
 	constructor(text: string, styles: TextStyleSet) {

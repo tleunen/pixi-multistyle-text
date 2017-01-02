@@ -27,7 +27,7 @@
 		var stage = new PIXI.Container();
 
 		// create some white text using the Snippet webfont
-		var textSample = new MultiStyleText.MultiStyleText("<pixi>Pixi.js</pixi> can has <multiline>multiline</multiline>\nand <multistyle>multi-styles</multistyle> text!",
+		var textSample = new MultiStyleText("<pixi>Pixi.js</pixi> can has <multiline>multiline</multiline>\nand <multistyle>multi-styles</multistyle> text!",
 			{
 				default: { fontFamily: "Tahoma", fontSize: "35px", fill: "white" },
 				multiline: { fill: "blue" },
@@ -38,7 +38,7 @@
 		textSample.position.x = 20;
 		textSample.position.y = 20;
 
-		var nested = new MultiStyleText.MultiStyleText("(<a>Now with <b>support</b> for <c>nesting <d>tags</d></c>!  <e>Wow<f>!!!</f></e></a>)",
+		var nested = new MultiStyleText("(<a>Now with <b>support</b> for <c>nesting <d>tags</d></c>!  <e>Wow<f>!!!</f></e></a>)",
 			{
 				default: { fontFamily: "Tahoma", fontSize: "24px", fill: 0x222222 },
 				a: { fill: "blue" },
@@ -53,7 +53,7 @@
 		nested.position.y = 100;
 
 		// create a text object with a nice stroke
-		var spinningText = new MultiStyleText.MultiStyleText("<iam>I'm</iam> fun<and>,</and> fun <and>and</and> fun<ding>!</ding>",
+		var spinningText = new MultiStyleText("<iam>I'm</iam> fun<and>,</and> fun <and>and</and> fun<ding>!</ding>",
 			{
 				default: { fontFamily: "Arial", fontSize: "60px", fontStyle: "bold", fill: "#cc00ff", stroke: "#fff", strokeThickness: 20 },
 				iam: { fontSize: "30px", fill: "#000" },
@@ -71,7 +71,7 @@
 		spinningText.position.y = 400 / 2;
 
 		// create a text object that will be updated..
-		var countingText = new MultiStyleText.MultiStyleText("COUNT 4EVAR: <count>0</count>",
+		var countingText = new MultiStyleText("COUNT 4EVAR: <count>0</count>",
 			{
 				default: { fontFamily: "Avro", fontSize: "60px", fontStyle: "bold italic", fill: "#3e1707" },
 				count: { fontFamily: "Avro", fontSize: "60px", fontStyle: "bold italic", fill: "#3e1707", stroke: "#a4410e", strokeThickness: 7 }
