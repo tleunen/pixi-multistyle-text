@@ -77,9 +77,8 @@ export default class MultiStyleText extends PIXI.Text {
 
 	private _getTextDataPerLine (lines: string[]) {
 		let outputTextData: TextData[][] = [];
-
 		let tags = Object.keys(this.textStyles).join("|");
-		let re = new RegExp(`<\/?("${tags})>`, "g");
+		let re = new RegExp(`<\/?(${tags})>`, "g");
 
 		let styleStack = [this.assign({}, this.textStyles["default"])];
 
@@ -315,6 +314,97 @@ export default class MultiStyleText extends PIXI.Text {
 		}
 
 		this.updateTexture();
+	}
+
+	protected wordWrap(text: string): string {
+		// Greedy wrapping algorithm that will wrap words as the line grows longer than its horizontal bounds.
+		let result = '';
+		let tags = Object.keys(this.textStyles).join("|");
+		let re = new RegExp(`(<\/?(${tags})>)`, "g");
+
+		const lines = text.split("\n");
+		const wordWrapWidth = this._style.wordWrapWidth;
+		let styleStack = [this.assign({}, this.textStyles["default"])];
+		this.context.font = PIXI.Text.getFontStyle(this.textStyles["default"]);
+
+		for (let i = 0; i < lines.length; i++) {
+			let spaceLeft = wordWrapWidth;
+			const words = lines[i].split(" ");
+
+			for (let j = 0; j < words.length; j++) {
+				const parts = words[j].split(re);
+
+				for (let k = 0; k < parts.length; k++) {
+					if (re.test(parts[k])) {
+						result += parts[k];
+						if (parts[k][1] === "/") {
+							k++;
+							styleStack.pop();
+						} else {
+							k++;
+							styleStack.push(this.assign({}, styleStack[styleStack.length - 1], this.textStyles[parts[k]]));
+						}
+						this.context.font = PIXI.Text.getFontStyle(styleStack[styleStack.length - 1]);
+						continue;
+					}
+
+					const partWidth = this.context.measureText(parts[k]).width;
+
+					if (this._style.breakWords && partWidth > wordWrapWidth) {
+						// Part should be split in the middle
+						const characters = parts[k].split('');
+
+						if (k === 0) {
+							result += " ";
+							spaceLeft -= this.context.measureText(" ").width;
+						}
+
+						for (let c = 0; c < characters.length; c++) {
+							const characterWidth = this.context.measureText(characters[c]).width;
+
+							if (characterWidth > spaceLeft) {
+								result += `\n${characters[c]}`;
+								spaceLeft = wordWrapWidth - characterWidth;
+							} else {
+								if (j === 0 && c === 0) {
+									result += ' ';
+								}
+
+								result += characters[c];
+								spaceLeft -= characterWidth;
+							}
+						}
+					} else {
+						const paddedPartWidth =
+							partWidth + (k === 0 ? this.context.measureText(" ").width : 0);
+
+						if (j === 0 || paddedPartWidth > spaceLeft) {
+							// Skip printing the newline if it's the first word of the line that is
+							// greater than the word wrap width.
+							if (j > 0) {
+								result += "\n";
+							}
+							result += parts[k];
+							spaceLeft = wordWrapWidth - partWidth;
+						} else {
+							spaceLeft -= paddedPartWidth;
+
+							if (k === 0) {
+								result += " ";
+							}
+
+							result += parts[k];
+						}
+					}
+				}
+			}
+
+			if (i < lines.length - 1) {
+				result += '\n';
+			}
+		}
+
+		return result;
 	}
 
 	// Lazy fill for Object.assign
