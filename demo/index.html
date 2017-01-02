@@ -10,8 +10,10 @@
 	<script src="../dist/pixi-multistyle-text.js"></script>
 	<script>hljs.initHighlightingOnLoad();</script>
 </head>
-<body>
-	<div id="code-container">
+	<body>
+		<h1>Pixi Multistyle Text Demo</h1>
+		<main>
+			<div id="code-container">
 <h2>Basics</h2>
 <pre><code class="js">let text = new MultiStyleText(&quot;Let's make some &lt;ml&gt;multiline&lt;/ml&gt;\nand &lt;ms&gt;multistyle&lt;/ms&gt; text for\n&lt;pixi&gt;Pixi.js!&lt;/pixi&gt;&quot;,
 {
@@ -109,9 +111,9 @@ function animate() {
 }
 
 requestAnimationFrame(animate);</code></pre>
-	</div>
-	<div id="pixi-container">
-		<script>
+			</div>
+			<div id="pixi-container">
+				<script>
 PIXI.settings.RESOLUTION = 2;
 let renderer = PIXI.autoDetectRenderer(600, 2000);
 renderer.backgroundColor = 0x333333;
@@ -236,7 +238,8 @@ function animate() {
 }
 
 requestAnimationFrame(animate);
-	</script>
-	</div>
+				</script>
+			</div>
+		</main>
 	</body>
 </html>

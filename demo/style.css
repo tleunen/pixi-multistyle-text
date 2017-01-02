@@ -2,6 +2,9 @@ body {
 	margin: 0;
 	padding: 0;
 	background-color: #444444;
+}
+
+main {
 	display: flex;
 	flex-direction: row;
 }
@@ -14,6 +17,14 @@ body {
 	#pixi-container {
 		margin: 0px auto;
 	}
+}
+
+h1 {
+	text-align: center;
+	color: #F5F5F5;
+	font-family: sans-serif;
+	font-weight: 200;
+	font-size: 3em;
 }
 
 h2 {
