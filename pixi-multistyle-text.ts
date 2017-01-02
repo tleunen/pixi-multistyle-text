@@ -246,7 +246,6 @@ export default class MultiStyleText extends PIXI.Text {
 				this.context.strokeStyle = strokeStyle;
 				this.context.lineWidth = textStyle.strokeThickness;
 
-				linePositionX += maxStrokeThickness / 2;
 				let linePositionY = (maxStrokeThickness / 2 + basePositionY) + fontProperties.ascent;
 
 				if (this._style.align === "right") {
@@ -255,6 +254,8 @@ export default class MultiStyleText extends PIXI.Text {
 				else if (this._style.align === "center" && linePositionX === 0) {
 					linePositionX += (maxLineWidth - lineWidths[i]) / 2;
 				}
+
+				linePositionX += maxStrokeThickness / 2;
 
 				if (textStyle.valign === "bottom") {
 					linePositionY += lineHeights[i] - line[j].height -
