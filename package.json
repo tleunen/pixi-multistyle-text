@@ -47,5 +47,8 @@
     "build": "tsc; browserify index.js -p tsify -s MultiStyleText -o dist/pixi-multistyle-text.js -d",
     "prepublish": "npm run build",
     "test": "npm run build && jest"
+  },
+  "jest": {
+    "testPathIgnorePatterns": ["/node_modules", "<rootDir>/__tests__/support/.*"]
   }
 }
