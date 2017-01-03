@@ -34,6 +34,7 @@
   "devDependencies": {
     "@types/pixi.js": "^4.5.0",
     "browserify": "^14.4.0",
+    "happo": "^3.0.2",
     "standard-version": "^4.2.0",
     "tsify": "^3.0.1",
     "typescript": "^2.3.4"
