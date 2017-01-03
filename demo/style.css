@@ -1,0 +1,152 @@
+body {
+	margin: 0;
+	padding: 0;
+	background-color: #444444;
+}
+
+main {
+	display: flex;
+	flex-direction: row;
+}
+
+@media (max-width: 1000px) {
+	body {
+		display: block;
+	}
+
+	#pixi-container {
+		margin: 0px auto;
+	}
+}
+
+h1 {
+	text-align: center;
+	color: #F5F5F5;
+	font-family: sans-serif;
+	font-weight: 200;
+	font-size: 3em;
+}
+
+h2 {
+	color: #F5F5F5;
+	font-family: sans-serif;
+	margin: .6em .8em 0em;
+	font-weight: 200;
+}
+
+#code-container {
+	display: flex;
+	flex-direction: column;
+	flex-grow: 1;
+	flex-basis: 0;
+}
+
+#code-container>pre {
+	margin: 1em;
+	height: 300px;
+	overflow: scroll;
+	background: #2d2d2d;
+	padding: 0.5em;
+	white-space: pre-wrap;
+	text-indent: 1em hanging each-line;
+	border-radius: .4em;
+	tab-size: 4;
+}
+
+code {
+	font-family: "Inconsolata", sans-serif;
+	font-size: .8em;
+}
+
+#pixi-container {
+	width: 600px;
+	flex-grow: 0;
+	flex-shrink: 0;
+}
+
+#pixi-container canvas {
+	width: 100%;
+}
+
+.hljs-comment,
+.hljs-title {
+	color: #616161;
+}
+
+.hljs-prompt,
+.hljs-variable,
+.hljs-attribute,
+.hljs-tag,
+.hljs-regexp,
+.hljs-params,
+.ruby .hljs-constant,
+.xml .hljs-tag .hljs-title,
+.xml .hljs-pi,
+.xml .hljs-doctype,
+.html .hljs-doctype,
+.css .hljs-id,
+.css .hljs-class,
+.css .hljs-pseudo {
+	color: #F1453D;
+}
+
+.hljs-number,
+.hljs-preprocessor,
+.hljs-built_in,
+.hljs-literal,
+.hljs-constant {
+	color: #FF9800;
+}
+
+.ruby .hljs-class .hljs-title,
+.css .hljs-rules .hljs-attribute {
+	color: #FDD835;
+}
+
+.hljs-string,
+.hljs-value,
+.hljs-inheritance,
+.hljs-header,
+.ruby .hljs-symbol,
+.xml .hljs-cdata {
+	color: #50AE55;
+}
+
+.css .hljs-hexcolor {
+	color: #00BCD4;
+}
+
+.python .hljs-decorator,
+.python .hljs-title,
+.ruby .hljs-function .hljs-title,
+.ruby .hljs-title .hljs-keyword,
+.perl .hljs-sub,
+.javascript .hljs-title,
+.typescript .hljs-title,
+.coffeescript .hljs-title {
+	color: #03A9F4;
+}
+
+.hljs-keyword {`
+	color: #B96BC6;
+}
+
+.hljs {
+	display: block;
+	background: #2d2d2d;
+	color: #F5F5F5;
+}
+
+.hljs code {
+	color: #F5F5F5;
+}
+
+.coffeescript .javascript,
+.javascript .xml,
+.tex .hljs-formula,
+.xml .javascript,
+.xml .vbscript,
+.xml .css,
+.xml .hljs-cdata {
+	opacity: 0.5;
+}

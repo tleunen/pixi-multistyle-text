@@ -1,108 +1,245 @@
 <!DOCTYPE HTML>
 <html>
 <head>
-	<title>Pixi MultiStyle Text demo</title>
-	<style>
-		body {
-			margin: 0;
-			padding: 0;
-			background-color: #000000;
-		}
-	</style>
+	<title>Pixi MultiStyle Text Demo</title>
+	<link rel="stylesheet" href="style.css" />
+	<link href="https://fonts.googleapis.com/css?family=Inconsolata" rel="stylesheet">
 
-	<script src="https://cdnjs.cloudflare.com/ajax/libs/pixi.js/4.2.3/pixi.js"></script>
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/pixi.js/4.3.0/pixi.js"></script>
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.9.0/highlight.min.js"></script>
 	<script src="../dist/pixi-multistyle-text.js"></script>
+	<script>hljs.initHighlightingOnLoad();</script>
 </head>
-<body>
-	<script>
-		// create a renderer instance
-		var renderer = PIXI.autoDetectRenderer(620, 400);
-		renderer.backgroundColor = 0x66FF99;
-		renderer.resolution = window.devicePixelRatio;
+	<body>
+		<h1>Pixi Multistyle Text Demo</h1>
+		<main>
+			<div id="code-container">
+<h2>Basics</h2>
+<pre><code class="js">let text = new MultiStyleText(&quot;Let's make some &lt;ml&gt;multiline&lt;/ml&gt;\nand &lt;ms&gt;multistyle&lt;/ms&gt; text for\n&lt;pixi&gt;Pixi.js!&lt;/pixi&gt;&quot;,
+{
+	&quot;default&quot;: {
+		fontFamily: &quot;Arial&quot;,
+		fontSize: &quot;24px&quot;,
+		fill: &quot;#cccccc&quot;,
+		align: &quot;center&quot;
+	},
+	&quot;ml&quot;: {
+		fontStyle: &quot;italic&quot;,
+		fill: &quot;#ff8888&quot;
+	},
+	&quot;ms&quot;: {
+		fontStyle: &quot;italic&quot;,
+		fill: &quot;#4488ff&quot;
+	},
+	&quot;pixi&quot;: {
+		fontSize: &quot;64px&quot;,
+		fill: &quot;#efefef&quot;
+	}
+});</code></pre>
 
-		// add the renderer view element to the DOM
-		document.body.appendChild(renderer.view);
+<h2>Nesting Tags</h2>
+<pre><code class="js">let nested = new MultiStyleText(&quot;You can &lt;outline&gt;nest &lt;b&gt;tags &lt;red&gt;as &lt;i&gt;deeply &lt;thicker&gt;as &lt;shadow&gt;you'd &lt;large&gt;like&lt;/large&gt;&lt;/shadow&gt;&lt;/thicker&gt;&lt;/i&gt;&lt;/red&gt;&lt;/b&gt;&lt;/outline&gt;&quot;,
+{
+	&quot;default&quot;: {
+		fontFamily: &quot;Arial&quot;,
+		fontSize: &quot;24px&quot;,
+		fill: &quot;#cccccc&quot;,
+		valign: &quot;bottom&quot;
+	},
+	&quot;outline&quot;: { stroke: &quot;black&quot;, strokeThickness: 2 },
+	&quot;b&quot;: { fontWeight: 700 },
+	&quot;red&quot;: { fill: &quot;#ff8888&quot; },
+	&quot;i&quot;: { fontStyle: &quot;italic&quot; },
+	&quot;thicker&quot;: { strokeThickness: 6 },
+	&quot;shadow&quot;: { dropShadow: true, dropShadowColor: &quot;#888888&quot; },
+	&quot;large&quot;: { fontSize: &quot;36px&quot; }
+});</code></pre>
 
-		// make the stage
-		var stage = new PIXI.Container();
+<h2>Vertical Alignment</h2>
+<pre><code class="js">let valign = new MultiStyleText(&quot;You can use &lt;code&gt;valign&lt;/code&gt; to control the &lt;top&gt;vertical&lt;/top&gt; &lt;middle&gt;alignment&lt;/middle&gt; of &lt;bottom&gt;text&lt;/bottom&gt;.&quot;,
+{
+	&quot;default&quot;: {
+		fontFamily: &quot;Arial&quot;,
+		fontSize: &quot;24px&quot;,
+		fill: &quot;#cccccc&quot;
+	},
+	&quot;code&quot;: { fontFamily: &quot;Inconsolata&quot;, fill: &quot;#ff8888&quot;, valign: &quot;bottom&quot; },
+	&quot;top&quot;: { fontSize: &quot;14px&quot;, valign: &quot;top&quot; },
+	&quot;middle&quot;: { fontSize: &quot;14px&quot;, valign: &quot;middle&quot; },
+	&quot;bottom&quot;: { fontSize: &quot;14px&quot;, valign: &quot;bottom&quot; }
+});</code></pre>
 
-		// create some white text using the Snippet webfont
-		var textSample = new MultiStyleText("<pixi>Pixi.js</pixi> can has <multiline>multiline</multiline>\nand <multistyle>multi-styles</multistyle> text!",
-			{
-				default: { fontFamily: "Tahoma", fontSize: "35px", fill: "white" },
-				multiline: { fill: "blue" },
-				pixi: { fill: "#D90057" },
-				multistyle: { fill: "red" }
-			}
-		);
-		textSample.position.x = 20;
-		textSample.position.y = 20;
+<h2>Wrapping and Alignment</h2>
+<pre><code class="js">let wrapping = new MultiStyleText(&quot;Global word wrap and alignment properties are controlled by the \&quot;default\&quot; style, and can't be overridden by other styles.&quot;,
+{
+	&quot;default&quot;: {
+		fontFamily: &quot;Arial&quot;,
+		fontSize: &quot;24px&quot;,
+		fill: &quot;#cccccc&quot;,
+		wordWrap: true,
+		wordWrapWidth: 150,
+		align: &quot;right&quot;
+	}
+});</code></pre>
 
-		var nested = new MultiStyleText("(<a>Now with <b>support</b> for <c>nesting <d>tags</d></c>!  <e>Wow<f>!!!</f></e></a>)",
-			{
-				default: { fontFamily: "Tahoma", fontSize: "24px", fill: 0x222222 },
-				a: { fill: "blue" },
-				b: { stroke: "white", strokeThickness: 10 },
-				c: { fontSize: "16px", fontStyle: "italic", valign: "top" },
-				d: { valign: "bottom" },
-				e: { fontStyle: "bold" },
-				f: { fill: 0xff0000 }
-			}
-		);
-		nested.position.x = 20;
-		nested.position.y = 100;
+<h2>Have Fun</h2>
+<pre><code class="js">let funStyles = {
+	&quot;default&quot;: {
+		fontFamily: &quot;Arial&quot;,
+		fontSize: &quot;24px&quot;,
+		fill: &quot;#cccccc&quot;,
+		strokeThickness: 1,
+		stroke: &quot;#aaaaaa&quot;,
+		dropShadow: true,
+		dropShadowBlur: 10,
+		dropShadowDistance: 8,
+		dropShadowAngle: 0
+	},
+	&quot;blue&quot;: { fill: 0x4488ff, stroke: 0x2244cc },
+	&quot;red&quot;: { fill: 0xff8888, stroke: 0xcc4444 }
+};
 
-		// create a text object with a nice stroke
-		var spinningText = new MultiStyleText("<iam>I'm</iam> fun<and>,</and> fun <and>and</and> fun<ding>!</ding>",
-			{
-				default: { fontFamily: "Arial", fontSize: "60px", fontStyle: "bold", fill: "#cc00ff", stroke: "#fff", strokeThickness: 20 },
-				iam: { fontSize: "30px", fill: "#000" },
-				and: { fontSize: "30px", fill: "#000", valign: 'middle', stroke: "#fff", strokeThickness: 0 },
-				ding: { fontSize: "30px", fill: "#000", valign: 'bottom' }
-			},
-			{
-				align: "center"
-			}
-		);
+let fun = new MultiStyleText(&quot;Now have fun making some &lt;blue&gt;beautiful&lt;/blue&gt; &lt;red&gt;multistyle&lt;/red&gt; text!&quot;, funStyles);
 
-		// setting the anchor point to 0.5 will center align the text... great for spinning!
-		spinningText.anchor.x = spinningText.anchor.y = 0.5;
-		spinningText.position.x = 620 / 2;
-		spinningText.position.y = 400 / 2;
+function animate() {
+	requestAnimationFrame(animate);
+	// ...
 
-		// create a text object that will be updated..
-		var countingText = new MultiStyleText("COUNT 4EVAR: <count>0</count>",
-			{
-				default: { fontFamily: "Avro", fontSize: "60px", fontStyle: "bold italic", fill: "#3e1707" },
-				count: { fontFamily: "Avro", fontSize: "60px", fontStyle: "bold italic", fill: "#3e1707", stroke: "#a4410e", strokeThickness: 7 }
-			},
-			{
-				align: "center"
-			}
-		);
-		countingText.position.x = 620 / 2;
-		countingText.position.y = 320;
-		countingText.anchor.x = 0.5;
+	funStyles.default.dropShadowAngle += 0.02;
+	funStyles.default.dropShadowBlur = Math.sin(funStyles.default.dropShadowAngle + Math.PI / 4) * 5 + 5;
+	fun.styles = funStyles;
+}
 
-		stage.addChild(textSample);
-		stage.addChild(spinningText);
-		stage.addChild(nested);
-		stage.addChild(countingText);
+requestAnimationFrame(animate);</code></pre>
+			</div>
+			<div id="pixi-container">
+				<script>
+PIXI.settings.RESOLUTION = 2;
+let renderer = PIXI.autoDetectRenderer(600, 1900);
+renderer.backgroundColor = 0x333333;
+document.getElementById("pixi-container").appendChild(renderer.view);
+let stage = new PIXI.Container();
 
-		var count = 0;
-		var score = 0;
-		var remaining = 10;
+// Basics
+let text = new MultiStyleText("Let's make some <ml>multiline</ml>\nand <ms>multistyle</ms> text for\n<pixi>Pixi.js!</pixi>",
+{
+	"default": {
+		fontFamily: "Arial",
+		fontSize: "24px",
+		fill: "#cccccc",
+		align: "center"
+	},
+	"ml": {
+		fontStyle: "italic",
+		fill: "#ff8888"
+	},
+	"ms": {
+		fontStyle: "italic",
+		fill: "#4488ff"
+	},
+	"pixi": {
+		fontSize: "64px",
+		fill: "#efefef"
+	}
+});
 
-		function animate() {
-			requestAnimationFrame(animate);
-			renderer.render(stage);
+text.x = 300 - text.width / 2;
+text.y = 150;
+stage.addChild(text);
 
-			count+=0.1;
-			countingText.text = "COUNT 4EVAR: <count>" + (count | 0) + "</count>";
-		}
+// Nesting Tags
+let nested = new MultiStyleText("You can <outline>nest <b>tags <red>as <i>deeply <thicker>as <shadow>you'd <large>like</large></shadow></thicker></i></red></b></outline>",
+{
+	"default": {
+		fontFamily: "Arial",
+		fontSize: "24px",
+		fill: "#cccccc",
+		valign: "bottom"
+	},
+	"outline": { stroke: "black", strokeThickness: 2 },
+	"b": { fontWeight: 700 },
+	"red": { fill: "#ff8888" },
+	"i": { fontStyle: "italic" },
+	"thicker": { strokeThickness: 6 },
+	"shadow": { dropShadow: true, dropShadowColor: "#888888" },
+	"large": { fontSize: "36px" }
+});
 
-		requestAnimationFrame(animate);
-	</script>
+nested.x = 300 - nested.width / 2;
+nested.y = 550;
+stage.addChild(nested);
 
+// Vertical Alignment
+let valign = new MultiStyleText("You can use <code>valign</code> to control the <top>vertical</top> <middle>alignment</middle> of <bottom>text</bottom>.",
+{
+	"default": {
+		fontFamily: "Arial",
+		fontSize: "24px",
+		fill: "#cccccc"
+	},
+	"code": { fontFamily: "Inconsolata", fill: "#ff8888", valign: "bottom" },
+	"top": { fontSize: "14px", valign: "top" },
+	"middle": { fontSize: "14px", valign: "middle" },
+	"bottom": { fontSize: "14px", valign: "bottom" }
+});
+
+valign.x = 300 - valign.width / 2;
+valign.y = 960;
+stage.addChild(valign);
+
+// Wrapping and Alignment
+let wrapping = new MultiStyleText("Global word wrap and alignment properties are controlled by the \"default\" style, and can't be overridden by other styles.",
+{
+	"default": {
+		fontFamily: "Arial",
+		fontSize: "24px",
+		fill: "#cccccc",
+		wordWrap: true,
+		wordWrapWidth: 150,
+		align: "right"
+	}
+});
+
+wrapping.x = 550 - wrapping.width;
+wrapping.y = 1220;
+stage.addChild(wrapping);
+
+// Have Fun
+let funStyles = {
+	"default": {
+		fontFamily: "Arial",
+		fontSize: "24px",
+		fill: "#cccccc",
+		strokeThickness: 1,
+		stroke: "#aaaaaa",
+		dropShadow: true,
+		dropShadowBlur: 10,
+		dropShadowDistance: 8,
+		dropShadowAngle: 0
+	},
+	"blue": { fill: 0x4488ff, stroke: 0x2244cc },
+	"red": { fill: 0xff8888, stroke: 0xcc4444 }
+};
+
+let fun = new MultiStyleText("Now have fun making some <blue>beautiful</blue> <red>multistyle</red> text!", funStyles);
+
+fun.x = 300 - fun.width / 2;
+fun.y = 1700;
+stage.addChild(fun);
+
+// Animate
+function animate() {
+	requestAnimationFrame(animate);
+	renderer.render(stage);
+
+	funStyles.default.dropShadowAngle += 0.02;
+	funStyles.default.dropShadowBlur = Math.sin(funStyles.default.dropShadowAngle + Math.PI / 4) * 5 + 5;
+	fun.styles = funStyles;
+}
+
+requestAnimationFrame(animate);
+				</script>
+			</div>
+		</main>
 	</body>
 </html>
