@@ -41,6 +41,8 @@
   "scripts": {
     "demo": "npm run build && open demo/index.html",
     "build": "tsc && browserify index.js -p tsify -s MultiStyleText -o dist/pixi-multistyle-text.js -d",
-    "prepublish": "npm run build"
+    "prepublish": "npm run build",
+    "test": "happo run && open http://localhost:4567/review; happo review",
+    "snapshot": "rm -rf happo-snapshots && happo run"
   }
 }
