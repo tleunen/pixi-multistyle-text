@@ -10,28 +10,41 @@ In the example below, we are defining 4 text styles.
 `default` is the default style for the text, and the others matches the tags inside the text.
 
 ```js
-var textSample = new MultiStyleText("<pixi>Pixi.js</pixi> can has <multiline>multiline</multiline>\nand <multistyle>multi-styles</multistyle> text!",
-	{
-		default: { fontFamily: "Tahoma", fontSize: "35px", fill: "white" },
-		multiline: { fill: "blue" },
-		pixi: { fill: "#D90057" },
-		multistyle: { fill: "red" }
+let text = new MultiStyleText("Let's make some <ml>multiline</ml>\nand <ms>multistyle</ms> text for\n<pixi>Pixi.js!</pixi>",
+{
+	"default": {
+		fontFamily: "Arial",
+		fontSize: "24px",
+		fill: "#cccccc",
+		align: "center"
+	},
+	"ml": {
+		fontStyle: "italic",
+		fill: "#ff8888"
+	},
+	"ms": {
+		fontStyle: "italic",
+		fill: "#4488ff"
+	},
+	"pixi": {
+		fontSize: "64px",
+		fill: "#efefef"
 	}
-);
+});
 ```
 
 ## Usage
 
-### `text = new PIXI.MultiStyleText(text, textStyles)`
+### `text = new MultiStyleText(text, textStyles)`
 
-Creates a new Multi-Styles Text with the given options
+Creates a new `MultiStyleText` with the given text and styles.
 
 #### `textStyles`
-Type: `{ [key: string]: PIXI.TextStyle }`
+Type: `{ [key: string]: ExtendedTextStyle }`
 
 Each key of this dictionary should match with a tag in the text. Use the key `default` for the default style.
 
-Each style object can have [any of the properties of a standard PIXI text style](http://pixijs.download/release/docs/PIXI.TextStyle.html), in addition to a `valign` property that allows you to specify where text is rendered relative to larger text on the same line (`"top"`, `"middle"`, or `"bottom"`).
+Each `ExtendedTextStyle` object can have [any of the properties of a standard PIXI text style](http://pixijs.download/release/docs/PIXI.TextStyle.html), in addition to a `valign` property that allows you to specify where text is rendered relative to larger text on the same line (`"top"`, `"middle"`, or `"bottom"`).
 
 The `align`, `wordWrap`, `wordWrapWidth`, and `breakWord` properties are ignored on all styles _except for the `default` style_, which controls those properties for the entire text object.
 
@@ -39,9 +52,7 @@ If text is rendered without any value assigned to a given parameter, Pixi's defa
 
 ## Demo
 
-- Open `demo/index.html` in a browser and you should see something like this:
-
-![img](https://raw.githubusercontent.com/tleunen/pixi-multistyle-text/master/multistyle.png)
+Open `demo/index.html` in a browser for several helpful examples.
 
 ## License
 
