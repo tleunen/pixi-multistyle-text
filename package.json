@@ -39,7 +39,7 @@
   },
   "scripts": {
     "demo": "npm run build && open demo/index.html",
-    "build": "tsc; browserify index.js -p tsify -s MultiStyleText -o dist/pixi-multistyle-text.js -d",
+    "build": "tsc && browserify index.js -p tsify -s MultiStyleText -o dist/pixi-multistyle-text.js -d",
     "prepublish": "npm run build"
   }
 }
