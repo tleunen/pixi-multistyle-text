@@ -32,14 +32,19 @@
   "license": "MIT",
   "dependencies": {},
   "devDependencies": {
-    "browserify": "^13.1.1",
-    "tsify": "^2.0.7",
     "@types/pixi.js": "^4.3.1",
+    "browserify": "^13.1.1",
+    "canvas": "^1.6.2",
+    "jest": "^18.1.0",
+    "mocha": "^3.2.0",
+    "pixi.js": "^4.3.0",
+    "tsify": "^2.0.7",
     "typescript": "^2.1.4"
   },
   "scripts": {
     "demo": "npm run build && open demo/index.html",
     "build": "tsc; browserify index.js -p tsify -s MultiStyleText -o dist/pixi-multistyle-text.js -d",
-    "prepublish": "npm run build"
+    "prepublish": "npm run build",
+    "test": "npm run build && jest"
   }
 }
