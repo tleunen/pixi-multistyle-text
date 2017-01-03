@@ -38,7 +38,7 @@ it("should render a simple example correctly", () => {
 	const MultiStyleText = require("../dist/pixi-multistyle-text");
 
 	PIXI.settings.RESOLUTION = 2;
-	let renderer = PIXI.autoDetectRenderer(600, 400);
+	let renderer = PIXI.autoDetectRenderer(200, 80);
 	renderer.backgroundColor = 0x333333;
 	document.getElementById("root").appendChild(renderer.view);
 	let stage = new PIXI.Container();
@@ -66,8 +66,8 @@ it("should render a simple example correctly", () => {
 		}
 	});
 
-	text.x = 300 - text.width / 2;
-	text.y = 150;
+	text.x = 100 - text.width / 2;
+	text.y = 10;
 	stage.addChild(text);
 
 	renderer.render(stage);
