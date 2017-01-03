@@ -39,6 +39,9 @@
     "tsify": "^3.0.1",
     "typescript": "^2.3.4"
   },
+  "peerDependencies": {
+    "pixi.js": "^4.3.0"
+  },
   "scripts": {
     "demo": "npm run build && open demo/index.html",
     "build": "tsc && browserify index.js -p tsify -s MultiStyleText -o dist/pixi-multistyle-text.js -d",
