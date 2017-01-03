@@ -35,8 +35,12 @@
     "@types/pixi.js": "^4.3.1",
     "browserify": "^13.1.1",
     "happo": "^3.0.2",
+    "pixi.js": "^4.3.0",
     "tsify": "^2.0.7",
     "typescript": "^2.1.4"
+  },
+  "peerDependencies": {
+    "pixi.js": "^4.3.0"
   },
   "scripts": {
     "demo": "npm run build && open demo/index.html",
