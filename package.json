@@ -47,7 +47,8 @@
     "build": "tsc && browserify index.js -p tsify -s MultiStyleText -o dist/pixi-multistyle-text.js -d",
     "prepublish": "npm run build",
     "release": "standard-version",
-    "test": "happo run && open http://localhost:4567/review; happo review",
-    "snapshot": "rm -rf happo-snapshots && happo run"
+    "snapshot": "rm -rf happo-snapshots && happo run",
+    "happo": "./scripts/happo-ci.sh",
+    "test": "npm run happo"
   }
 }
