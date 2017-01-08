@@ -78,21 +78,10 @@ export default class MultiStyleText extends PIXI.Text {
 	}
 
 	public setTagStyle(tag: string, style: ExtendedTextStyle): void {
-		if (tag === "default") {
-			this.textStyles[tag] = this.assign(MultiStyleText.DEFAULT_TAG_STYLE, style);
-		} else {
-			this.textStyles[tag] = this.assign({}, style);
-		}
-
-		this._style = new PIXI.TextStyle(this.textStyles["default"]);
-		this.dirty = true;
-	}
-
-	public updateTagStyle(tag: string, style: ExtendedTextStyle): void {
 		if (tag in this.textStyles) {
 			this.assign(this.textStyles[tag], style);
 		} else {
-			this.setTagStyle(tag, style);
+			this.textStyles[tag] = this.assign({}, style);
 		}
 
 		this._style = new PIXI.TextStyle(this.textStyles["default"]);
