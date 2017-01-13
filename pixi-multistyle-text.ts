@@ -485,8 +485,8 @@ export default class MultiStyleText extends PIXI.Text {
 		texture.trim.x = -this._style.padding - dropShadowPadding;
 		texture.trim.y = -this._style.padding - dropShadowPadding;
 
-		texture.orig.width = texture.frame.width - (this._style.padding * 2);
-		texture.orig.height = texture.frame.height - (this._style.padding * 2);
+		texture.orig.width = texture.frame.width - (this._style.padding + dropShadowPadding) * 2;
+		texture.orig.height = texture.frame.height - (this._style.padding + dropShadowPadding) * 2;
 
 		// call sprite onTextureUpdate to update scale if _width or _height were set
 		this._onTextureUpdate();
