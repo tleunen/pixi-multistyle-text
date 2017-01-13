@@ -179,6 +179,19 @@ export default class MultiStyleText extends PIXI.Text {
 		};
 	}
 
+	private getDropShadowPadding(): number {
+		let maxDistance = 0;
+		let maxBlur = 0;
+
+		for (let styleKey of Object.keys(this.textStyles)) {
+			let { dropShadowDistance, dropShadowBlur } = this.textStyles[styleKey];
+			maxDistance = Math.max(maxDistance, dropShadowDistance || 0);
+			maxBlur = Math.max(maxBlur, dropShadowBlur || 0);
+		}
+
+		return maxDistance + maxBlur;
+	}
+
 	public updateText(): void {
 		if (!this.dirty) {
 			return;
@@ -188,7 +201,6 @@ export default class MultiStyleText extends PIXI.Text {
 		let textStyles = this.textStyles;
 		let outputText = this.text;
 
-		// TODO(bluepichu): Reword word wrapping as breakWord is broken
 		if(this._style.wordWrap) {
 			outputText = this.wordWrap(this.text);
 		}
@@ -233,19 +245,15 @@ export default class MultiStyleText extends PIXI.Text {
 		// transform styles in array
 		let stylesArray = Object.keys(textStyles).map((key) => textStyles[key]);
 
-		let maxStrokeThickness = stylesArray.reduce(
-				(prev, curr) => Math.max(prev, curr.strokeThickness || 0),
-				0);
+		let maxStrokeThickness = stylesArray.reduce((prev, curr) => Math.max(prev, curr.strokeThickness || 0), 0);
 
-		let maxDropShadowDistance = stylesArray.reduce(
-				(prev, curr) => Math.max(prev, curr.dropShadow ? (curr.dropShadowDistance || 0) : 0),
-				0);
+		let dropShadowPadding = this.getDropShadowPadding();
 
 		let maxLineHeight = lineHeights.reduce((prev, curr) => Math.max(prev, curr), 0);
 
 		// define the right width and height
-		let width = maxLineWidth + maxStrokeThickness + maxDropShadowDistance;
-		let height = (maxLineHeight * lines.length) + maxDropShadowDistance;
+		let width = maxLineWidth + maxStrokeThickness + 2 * dropShadowPadding;
+		let height = (maxLineHeight * lines.length) + 2 * dropShadowPadding;
 
 		this.canvas.width = (width + this.context.lineWidth) * this.resolution;
 		this.canvas.height = height * this.resolution;
@@ -255,7 +263,7 @@ export default class MultiStyleText extends PIXI.Text {
 		this.context.textBaseline = "alphabetic";
 		this.context.lineJoin = "round";
 
-		let basePositionY = 0;
+		let basePositionY = dropShadowPadding;
 
 		let drawingData: TextDrawingData[] = [];
 
@@ -266,15 +274,15 @@ export default class MultiStyleText extends PIXI.Text {
 
 			switch (this._style.align) {
 				case "left":
-					linePositionX = 0;
+					linePositionX = dropShadowPadding;
 					break;
 
 				case "center":
-					linePositionX = (maxLineWidth - lineWidths[i]) / 2;
+					linePositionX = dropShadowPadding + (maxLineWidth - lineWidths[i]) / 2;
 					break;
 
 				case "right":
-					linePositionX = maxLineWidth - lineWidths[i];
+					linePositionX = dropShadowPadding + maxLineWidth - lineWidths[i];
 					break;
 			}
 
@@ -283,7 +291,7 @@ export default class MultiStyleText extends PIXI.Text {
 
 				linePositionX += maxStrokeThickness / 2;
 
-				let linePositionY = (maxStrokeThickness / 2 + basePositionY) + fontProperties.ascent;
+				let linePositionY = maxStrokeThickness / 2 + basePositionY + fontProperties.ascent;
 
 				if (style.valign === "bottom") {
 					linePositionY += lineHeights[i] - line[j].height - (maxStrokeThickness - style.strokeThickness) / 2;
@@ -457,6 +465,35 @@ export default class MultiStyleText extends PIXI.Text {
 		}
 
 		return result;
+	}
+
+	protected updateTexture() {
+		const texture = this._texture;
+
+		let dropShadowPadding = this.getDropShadowPadding();
+
+		texture.baseTexture.hasLoaded = true;
+		texture.baseTexture.resolution = this.resolution;
+
+		texture.baseTexture.realWidth = this.canvas.width;
+		texture.baseTexture.realHeight = this.canvas.height;
+		texture.baseTexture.width = this.canvas.width / this.resolution;
+		texture.baseTexture.height = this.canvas.height / this.resolution;
+		texture.trim.width = texture.frame.width = this.canvas.width / this.resolution;
+		texture.trim.height = texture.frame.height = this.canvas.height / this.resolution;
+
+		texture.trim.x = -this._style.padding - dropShadowPadding;
+		texture.trim.y = -this._style.padding - dropShadowPadding;
+
+		texture.orig.width = texture.frame.width - (this._style.padding * 2);
+		texture.orig.height = texture.frame.height - (this._style.padding * 2);
+
+		// call sprite onTextureUpdate to update scale if _width or _height were set
+		this._onTextureUpdate();
+
+		texture.baseTexture.emit('update', texture.baseTexture);
+
+		this.dirty = false;
 	}
 
 	// Lazy fill for Object.assign
