@@ -295,14 +295,12 @@ export default class MultiStyleText extends PIXI.Text {
 					if (typeof dropFillStyle === "number") {
 						dropFillStyle = PIXI.utils.hex2string(dropFillStyle);
 					}
-					this.context.fillStyle = dropFillStyle;
-
-					let xShadowOffset = Math.sin(textStyle.dropShadowAngle) * textStyle.dropShadowDistance;
-					let yShadowOffset = Math.cos(textStyle.dropShadowAngle) * textStyle.dropShadowDistance;
-
-					if (textStyle.fill) {
-						this.context.fillText(text, linePositionX + xShadowOffset, linePositionY + yShadowOffset);
-					}
+					this.context.shadowColor = dropFillStyle;
+					this.context.shadowBlur = textStyle.dropShadowBlur;
+					this.context.shadowOffsetX = Math.cos(textStyle.dropShadowAngle) * textStyle.dropShadowDistance * this.resolution;
+					this.context.shadowOffsetY = Math.sin(textStyle.dropShadowAngle) * textStyle.dropShadowDistance * this.resolution;
+				} else {
+					this.context.shadowColor = "transparent";
 				}
 
 				// set canvas text styles
