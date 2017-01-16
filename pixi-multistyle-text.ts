@@ -25,6 +25,33 @@ interface TextData {
 }
 
 export default class MultiStyleText extends PIXI.Text {
+	private static DEFAULT_TAG_STYLE: ExtendedTextStyle = {
+		align: "left",
+		breakWords: false,
+		dropShadow: false,
+		dropShadowAngle: Math.PI / 6,
+		dropShadowBlur: 0,
+		dropShadowColor: "#000000",
+		dropShadowDistance: 5,
+		fill: "black",
+		fillGradientType: PIXI.TEXT_GRADIENT.LINEAR_VERTICAL,
+		fontFamily: "Arial",
+		fontSize: 26,
+		fontStyle: "normal",
+		fontVariant: "normal",
+		fontWeight: "normal",
+		letterSpacing: 0,
+		lineHeight: 0,
+		lineJoin: "miter",
+		miterLimit: 10,
+		padding: 0,
+		stroke: "black",
+		strokeThickness: 0,
+		textBaseline: "alphabetic",
+		wordWrap: false,
+		wordWrapWidth: 100
+	};
+
 	private textStyles: TextStyleSet;
 
 	constructor(text: string, styles: TextStyleSet) {
@@ -36,32 +63,7 @@ export default class MultiStyleText extends PIXI.Text {
 	public set styles(styles: TextStyleSet) {
 		this.textStyles = {};
 
-		this.textStyles["default"] = {
-			align: "left",
-			breakWords: false,
-			dropShadow: false,
-			dropShadowAngle: Math.PI / 6,
-			dropShadowBlur: 0,
-			dropShadowColor: "#000000",
-			dropShadowDistance: 5,
-			fill: "black",
-			fillGradientType: PIXI.TEXT_GRADIENT.LINEAR_VERTICAL,
-			fontFamily: "Arial",
-			fontSize: 26,
-			fontStyle: "normal",
-			fontVariant: "normal",
-			fontWeight: "normal",
-			letterSpacing: 0,
-			lineHeight: 0,
-			lineJoin: "miter",
-			miterLimit: 10,
-			padding: 0,
-			stroke: "black",
-			strokeThickness: 0,
-			textBaseline: "alphabetic",
-			wordWrap: false,
-			wordWrapWidth: 100
-		};
+		this.textStyles["default"] = this.assign({}, MultiStyleText.DEFAULT_TAG_STYLE);
 
 		for (let style in styles) {
 			if (style === "default") {
@@ -69,6 +71,28 @@ export default class MultiStyleText extends PIXI.Text {
 			} else {
 				this.textStyles[style] = this.assign({}, styles[style]);
 			}
+		}
+
+		this._style = new PIXI.TextStyle(this.textStyles["default"]);
+		this.dirty = true;
+	}
+
+	public setTagStyle(tag: string, style: ExtendedTextStyle): void {
+		if (tag in this.textStyles) {
+			this.assign(this.textStyles[tag], style);
+		} else {
+			this.textStyles[tag] = this.assign({}, style);
+		}
+
+		this._style = new PIXI.TextStyle(this.textStyles["default"]);
+		this.dirty = true;
+	}
+
+	public deleteTagStyle(tag: string): void {
+		if (tag === "default") {
+			this.textStyles["default"] = this.assign({}, MultiStyleText.DEFAULT_TAG_STYLE);
+		} else {
+			delete this.textStyles[tag];
 		}
 
 		this._style = new PIXI.TextStyle(this.textStyles["default"]);
