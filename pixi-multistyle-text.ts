@@ -24,6 +24,13 @@ interface TextData {
 	fontProperties: FontProperties;
 }
 
+interface TextDrawingData {
+	text: string;
+	style: ExtendedTextStyle;
+	x: number;
+	y: number;
+}
+
 export default class MultiStyleText extends PIXI.Text {
 	private static DEFAULT_TAG_STYLE: ExtendedTextStyle = {
 		align: "left",
@@ -172,6 +179,19 @@ export default class MultiStyleText extends PIXI.Text {
 		};
 	}
 
+	private getDropShadowPadding(): number {
+		let maxDistance = 0;
+		let maxBlur = 0;
+
+		 Object.keys(this.textStyles).forEach((styleKey) => {
+			let { dropShadowDistance, dropShadowBlur } = this.textStyles[styleKey];
+			maxDistance = Math.max(maxDistance, dropShadowDistance || 0);
+			maxBlur = Math.max(maxBlur, dropShadowBlur || 0);
+		});
+
+		return maxDistance + maxBlur;
+	}
+
 	public updateText(): void {
 		if (!this.dirty) {
 			return;
@@ -181,7 +201,6 @@ export default class MultiStyleText extends PIXI.Text {
 		let textStyles = this.textStyles;
 		let outputText = this.text;
 
-		// TODO(bluepichu): Reword word wrapping as breakWord is broken
 		if(this._style.wordWrap) {
 			outputText = this.wordWrap(this.text);
 		}
@@ -226,19 +245,15 @@ export default class MultiStyleText extends PIXI.Text {
 		// transform styles in array
 		let stylesArray = Object.keys(textStyles).map((key) => textStyles[key]);
 
-		let maxStrokeThickness = stylesArray.reduce(
-				(prev, curr) => Math.max(prev, curr.strokeThickness || 0),
-				0);
+		let maxStrokeThickness = stylesArray.reduce((prev, curr) => Math.max(prev, curr.strokeThickness || 0), 0);
 
-		let maxDropShadowDistance = stylesArray.reduce(
-				(prev, curr) => Math.max(prev, curr.dropShadow ? (curr.dropShadowDistance || 0) : 0),
-				0);
+		let dropShadowPadding = this.getDropShadowPadding();
 
 		let maxLineHeight = lineHeights.reduce((prev, curr) => Math.max(prev, curr), 0);
 
 		// define the right width and height
-		let width = maxLineWidth + maxStrokeThickness + maxDropShadowDistance;
-		let height = (maxLineHeight * lines.length) + maxDropShadowDistance;
+		let width = maxLineWidth + maxStrokeThickness + 2 * dropShadowPadding;
+		let height = (maxLineHeight * lines.length) + 2 * dropShadowPadding;
 
 		this.canvas.width = (width + this.context.lineWidth) * this.resolution;
 		this.canvas.height = height * this.resolution;
@@ -248,95 +263,115 @@ export default class MultiStyleText extends PIXI.Text {
 		this.context.textBaseline = "alphabetic";
 		this.context.lineJoin = "round";
 
-		let basePositionY = 0;
+		let basePositionY = dropShadowPadding;
 
-		// Draw the text
+		let drawingData: TextDrawingData[] = [];
+
+		// Compute the drawing data
 		for (let i = 0; i < outputTextData.length; i++) {
 			let line = outputTextData[i];
-			let linePositionX = 0;
+			let linePositionX: number;
+
+			switch (this._style.align) {
+				case "left":
+					linePositionX = dropShadowPadding;
+					break;
+
+				case "center":
+					linePositionX = dropShadowPadding + (maxLineWidth - lineWidths[i]) / 2;
+					break;
+
+				case "right":
+					linePositionX = dropShadowPadding + maxLineWidth - lineWidths[i];
+					break;
+			}
 
 			for (let j = 0; j < line.length; j++) {
-				let textStyle = line[j].style;
-				let text = line[j].text;
-				let fontProperties = line[j].fontProperties;
-
-				this.context.font = PIXI.Text.getFontStyle(textStyle);
-
-				let strokeStyle = textStyle.stroke;
-				if (typeof strokeStyle === "number") {
-					strokeStyle = PIXI.utils.hex2string(strokeStyle);
-				}
-
-				this.context.strokeStyle = strokeStyle;
-				this.context.lineWidth = textStyle.strokeThickness;
-
-				let linePositionY = (maxStrokeThickness / 2 + basePositionY) + fontProperties.ascent;
-
-				if (this._style.align === "right" && linePositionX === 0) {
-					linePositionX += maxLineWidth - lineWidths[i];
-				}
-				else if (this._style.align === "center" && linePositionX === 0) {
-					linePositionX += (maxLineWidth - lineWidths[i]) / 2;
-				}
+				let { style, text, fontProperties } = line[j];
 
 				linePositionX += maxStrokeThickness / 2;
 
-				if (textStyle.valign === "bottom") {
-					linePositionY += lineHeights[i] - line[j].height -
-						(maxStrokeThickness - textStyle.strokeThickness) / 2;
-				} else if (textStyle.valign === "middle") {
-					linePositionY += (lineHeights[i] - line[j].height) / 2 -
-						(maxStrokeThickness - textStyle.strokeThickness) / 2;
+				let linePositionY = maxStrokeThickness / 2 + basePositionY + fontProperties.ascent;
+
+				if (style.valign === "bottom") {
+					linePositionY += lineHeights[i] - line[j].height - (maxStrokeThickness - style.strokeThickness) / 2;
+				} else if (style.valign === "middle") {
+					linePositionY += (lineHeights[i] - line[j].height) / 2 - (maxStrokeThickness - style.strokeThickness) / 2;
 				}
 
-				// draw shadow
-				if (textStyle.dropShadow) {
-					let dropFillStyle = textStyle.dropShadowColor;
-					if (typeof dropFillStyle === "number") {
-						dropFillStyle = PIXI.utils.hex2string(dropFillStyle);
-					}
-					this.context.fillStyle = dropFillStyle;
+				drawingData.push({
+					text,
+					style,
+					x: linePositionX,
+					y: linePositionY
+				});
 
-					let xShadowOffset = Math.sin(textStyle.dropShadowAngle) * textStyle.dropShadowDistance;
-					let yShadowOffset = Math.cos(textStyle.dropShadowAngle) * textStyle.dropShadowDistance;
-
-					if (textStyle.fill) {
-						this.context.fillText(text, linePositionX + xShadowOffset, linePositionY + yShadowOffset);
-					}
-				}
-
-				// set canvas text styles
-				let fillStyle = textStyle.fill;
-				if (typeof fillStyle === "number") {
-					fillStyle = PIXI.utils.hex2string(fillStyle);
-				} else if (Array.isArray(fillStyle)) {
-					for (let i = 0; i < fillStyle.length; i++) {
-						let fill = fillStyle[i];
-						if (typeof fill === "number") {
-							fillStyle[i] = PIXI.utils.hex2string(fill);
-						}
-					}
-				}
-				this.context.fillStyle = this._generateFillStyle(new PIXI.TextStyle(textStyle), [text]) as string | CanvasGradient;
-				// Typecast required for proper typechecking
-
-				// draw lines
-				if (textStyle.stroke && textStyle.strokeThickness) {
-					this.context.strokeText(text, linePositionX, linePositionY);
-				}
-
-				if (textStyle.fill) {
-					this.context.fillText(text, linePositionX, linePositionY);
-				}
-
-				// set Position X to the line width
-				// remove the strokeThickness otherwise the text will be to far from the previous group
 				linePositionX += line[j].width;
 				linePositionX -= maxStrokeThickness / 2;
 			}
 
 			basePositionY += lineHeights[i];
 		}
+
+		this.context.save();
+
+		// First pass: draw the shadows only
+		drawingData.forEach(({ style, text, x, y }) => {
+			if (!style.dropShadow) {
+				return; // This text doesn't have a shadow
+			}
+
+			this.context.font = PIXI.Text.getFontStyle(style);
+
+			let dropFillStyle = style.dropShadowColor;
+			if (typeof dropFillStyle === "number") {
+				dropFillStyle = PIXI.utils.hex2string(dropFillStyle);
+			}
+			this.context.shadowColor = dropFillStyle;
+			this.context.shadowBlur = style.dropShadowBlur;
+			this.context.shadowOffsetX = Math.cos(style.dropShadowAngle) * style.dropShadowDistance * this.resolution;
+			this.context.shadowOffsetY = Math.sin(style.dropShadowAngle) * style.dropShadowDistance * this.resolution;
+
+			this.context.fillText(text, x, y);
+		});
+
+		this.context.restore();
+
+		// Second pass: draw strokes and fills
+		drawingData.forEach(({ style, text, x, y }) => {
+			this.context.font = PIXI.Text.getFontStyle(style);
+
+			let strokeStyle = style.stroke;
+			if (typeof strokeStyle === "number") {
+				strokeStyle = PIXI.utils.hex2string(strokeStyle);
+			}
+
+			this.context.strokeStyle = strokeStyle;
+			this.context.lineWidth = style.strokeThickness;
+
+			// set canvas text styles
+			let fillStyle = style.fill;
+			if (typeof fillStyle === "number") {
+				fillStyle = PIXI.utils.hex2string(fillStyle);
+			} else if (Array.isArray(fillStyle)) {
+				for (let i = 0; i < fillStyle.length; i++) {
+					let fill = fillStyle[i];
+					if (typeof fill === "number") {
+						fillStyle[i] = PIXI.utils.hex2string(fill);
+					}
+				}
+			}
+			this.context.fillStyle = this._generateFillStyle(new PIXI.TextStyle(style), [text]) as string | CanvasGradient;
+			// Typecast required for proper typechecking
+
+			if (style.stroke && style.strokeThickness) {
+				this.context.strokeText(text, x, y);
+			}
+
+			if (style.fill) {
+				this.context.fillText(text, x, y);
+			}
+		});
 
 		this.updateTexture();
 	}
@@ -430,6 +465,35 @@ export default class MultiStyleText extends PIXI.Text {
 		}
 
 		return result;
+	}
+
+	protected updateTexture() {
+		const texture = this._texture;
+
+		let dropShadowPadding = this.getDropShadowPadding();
+
+		texture.baseTexture.hasLoaded = true;
+		texture.baseTexture.resolution = this.resolution;
+
+		texture.baseTexture.realWidth = this.canvas.width;
+		texture.baseTexture.realHeight = this.canvas.height;
+		texture.baseTexture.width = this.canvas.width / this.resolution;
+		texture.baseTexture.height = this.canvas.height / this.resolution;
+		texture.trim.width = texture.frame.width = this.canvas.width / this.resolution;
+		texture.trim.height = texture.frame.height = this.canvas.height / this.resolution;
+
+		texture.trim.x = -this._style.padding - dropShadowPadding;
+		texture.trim.y = -this._style.padding - dropShadowPadding;
+
+		texture.orig.width = texture.frame.width - (this._style.padding + dropShadowPadding) * 2;
+		texture.orig.height = texture.frame.height - (this._style.padding + dropShadowPadding) * 2;
+
+		// call sprite onTextureUpdate to update scale if _width or _height were set
+		this._onTextureUpdate();
+
+		texture.baseTexture.emit('update', texture.baseTexture);
+
+		this.dirty = false;
 	}
 
 	// Lazy fill for Object.assign
