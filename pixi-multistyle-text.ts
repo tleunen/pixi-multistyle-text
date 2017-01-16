@@ -183,11 +183,11 @@ export default class MultiStyleText extends PIXI.Text {
 		let maxDistance = 0;
 		let maxBlur = 0;
 
-		for (let styleKey of Object.keys(this.textStyles)) {
+		 Object.keys(this.textStyles).forEach((styleKey) => {
 			let { dropShadowDistance, dropShadowBlur } = this.textStyles[styleKey];
 			maxDistance = Math.max(maxDistance, dropShadowDistance || 0);
 			maxBlur = Math.max(maxBlur, dropShadowBlur || 0);
-		}
+		});
 
 		return maxDistance + maxBlur;
 	}
@@ -316,12 +316,12 @@ export default class MultiStyleText extends PIXI.Text {
 		this.context.save();
 
 		// First pass: draw the shadows only
-		for (let { style, text, x, y } of drawingData) {
-			this.context.font = PIXI.Text.getFontStyle(style);
-
+		drawingData.forEach(({ style, text, x, y }) => {
 			if (!style.dropShadow) {
-				continue;
+				return; // This text doesn't have a shadow
 			}
+
+			this.context.font = PIXI.Text.getFontStyle(style);
 
 			let dropFillStyle = style.dropShadowColor;
 			if (typeof dropFillStyle === "number") {
@@ -333,12 +333,12 @@ export default class MultiStyleText extends PIXI.Text {
 			this.context.shadowOffsetY = Math.sin(style.dropShadowAngle) * style.dropShadowDistance * this.resolution;
 
 			this.context.fillText(text, x, y);
-		}
+		});
 
 		this.context.restore();
 
 		// Second pass: draw strokes and fills
-		for (let { style, text, x, y } of drawingData) {
+		drawingData.forEach(({ style, text, x, y }) => {
 			this.context.font = PIXI.Text.getFontStyle(style);
 
 			let strokeStyle = style.stroke;
@@ -371,7 +371,7 @@ export default class MultiStyleText extends PIXI.Text {
 			if (style.fill) {
 				this.context.fillText(text, x, y);
 			}
-		}
+		});
 
 		this.updateTexture();
 	}
