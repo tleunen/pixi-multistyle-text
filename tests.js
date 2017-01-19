@@ -15,8 +15,6 @@ function test(fn) {
 		text.x = (WIDTH - text.width) / 2;
 		text.y = 20;
 
-		debugger;
-
 		stage.addChild(text);
 
 		renderer.render(stage);
@@ -111,5 +109,19 @@ happo.define("Have fun", test(() =>
 		},
 		"blue": { fill: 0x4488ff, stroke: 0x2244cc },
 		"red": { fill: 0xff8888, stroke: 0xcc4444 }
+	})
+));
+
+happo.define("Break Words", test(() =>
+	new MultiStyleText("Thisblockoftextshouldbebrokenacrosslinesbecausebreakwordsisset.",
+	{
+		"default": {
+			fontFamily: "Arial",
+			fontSize: "24px",
+			fill: "#cccccc",
+			wordWrap: true,
+			wordWrapWidth: 150,
+			breakWords: true
+		}
 	})
 ));
