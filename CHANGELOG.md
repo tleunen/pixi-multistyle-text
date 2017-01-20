@@ -2,6 +2,17 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+<a name="0.5.1"></a>
+## [0.5.1](https://github.com/tleunen/pixi-multistyle-text/compare/v0.5.0...v0.5.1) (2017-01-20)
+
+
+### Bug Fixes
+
+* Fix letterSpacing property ([#40](https://github.com/tleunen/pixi-multistyle-text/issues/40)) ([55d8866](https://github.com/tleunen/pixi-multistyle-text/commit/55d8866)), closes [#39](https://github.com/tleunen/pixi-multistyle-text/issues/39)
+* wordWrap() - Don't add spaces before the first word on a line ([#38](https://github.com/tleunen/pixi-multistyle-text/issues/38)) ([2060ce0](https://github.com/tleunen/pixi-multistyle-text/commit/2060ce0)), closes [#37](https://github.com/tleunen/pixi-multistyle-text/issues/37)
+
+
+
 <a name="0.5.0"></a>
 # [0.5.0](https://github.com/tleunen/pixi-multistyle-text/compare/v0.4.0...v0.5.0) (2017-01-16)
 
