@@ -220,13 +220,25 @@ export default class MultiStyleText extends PIXI.Text {
 			let lineWidth = 0;
 			let lineHeight = 0;
 			for (let j = 0; j < outputTextData[i].length; j++) {
+				if (outputTextData[i][j].text.length == 0) {
+					continue;
+				}
+
 				let sty = outputTextData[i][j].style;
 
-				this.context.font = PIXI.Text.getFontStyle(outputTextData[i][j].style);
+				this.context.font = PIXI.Text.getFontStyle(sty);
 
 				// save the width
-				outputTextData[i][j].width = this.context.measureText(outputTextData[i][j].text).width;
+				outputTextData[i][j].width = this.context.measureText(outputTextData[i][j].text).width + (outputTextData[i][j].text.length - 1) * sty.letterSpacing;
 				lineWidth += outputTextData[i][j].width;
+
+				if (j > 0) {
+					lineWidth += sty.letterSpacing / 2; // spacing before first character
+				}
+
+				if (j < outputTextData[i].length - 1) {
+					lineWidth += sty.letterSpacing / 2; // spacing after last character
+				}
 
 				// save the font properties
 				outputTextData[i][j].fontProperties = PIXI.Text.calculateFontProperties(this.context.font);
@@ -299,14 +311,38 @@ export default class MultiStyleText extends PIXI.Text {
 					linePositionY += (lineHeights[i] - line[j].height) / 2 - (maxStrokeThickness - style.strokeThickness) / 2;
 				}
 
-				drawingData.push({
-					text,
-					style,
-					x: linePositionX,
-					y: linePositionY
-				});
+				if (style.letterSpacing === 0) {
+					drawingData.push({
+						text,
+						style,
+						x: linePositionX,
+						y: linePositionY
+					});
 
-				linePositionX += line[j].width;
+					linePositionX += line[j].width;
+				} else {
+					this.context.font = PIXI.Text.getFontStyle(line[j].style);
+
+					for (let k = 0; k < text.length; k++) {
+						if (k > 0 || j > 0) {
+							linePositionX += style.letterSpacing / 2;
+						}
+
+						drawingData.push({
+							text: text.charAt(k),
+							style,
+							x: linePositionX,
+							y: linePositionY
+						});
+
+						linePositionX += this.context.measureText(text.charAt(k)).width;
+
+						if (k < text.length - 1 || j < line.length - 1) {
+							linePositionX += style.letterSpacing / 2;
+						}
+					}
+				}
+
 				linePositionX -= maxStrokeThickness / 2;
 			}
 
