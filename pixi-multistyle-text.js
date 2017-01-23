@@ -273,7 +273,7 @@ MultiStyleText.prototype.updateText = function()
             if(this.style.align === 'right') {
                 linePositionX += maxLineWidth - lineWidths[i];
             }
-            else if(this.style.align === 'center' && linePositionX === 0)
+            else if(this.style.align === 'center' && (linePositionX === 0 || linePositionX === textStyle.strokeThickness / 2))
             {
                 linePositionX += (maxLineWidth - lineWidths[i]) / 2;
             }
