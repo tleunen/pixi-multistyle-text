@@ -3,7 +3,7 @@
 "use strict";
 
 export interface ExtendedTextStyle extends PIXI.TextStyleOptions {
-	valign?: "top" | "middle" | "bottom";
+	valign?: "top" | "middle" | "bottom" | "baseline";
 }
 
 export interface TextStyleSet {
@@ -218,11 +218,13 @@ export default class MultiStyleText extends PIXI.Text {
 		// calculate text width and height
 		let lineWidths: number[] = [];
 		let lineHeights: number[] = [];
+		let baselines: number[] = [];
 		let maxLineWidth = 0;
 
 		for (let i = 0; i < lines.length; i++) {
 			let lineWidth = 0;
 			let lineHeight = 0;
+			let baseline = 0;
 			for (let j = 0; j < outputTextData[i].length; j++) {
 				let sty = outputTextData[i][j].style;
 
@@ -252,10 +254,12 @@ export default class MultiStyleText extends PIXI.Text {
 				outputTextData[i][j].height =
 						outputTextData[i][j].fontProperties.fontSize + outputTextData[i][j].style.strokeThickness;
 				lineHeight = Math.max(lineHeight, outputTextData[i][j].height);
+				baseline = Math.max(baseline, outputTextData[i][j].fontProperties.ascent);
 			}
 
 			lineWidths[i] = lineWidth;
 			lineHeights[i] = lineHeight;
+			baselines[i] = baseline;
 			maxLineWidth = Math.max(maxLineWidth, lineWidth);
 		}
 
@@ -310,10 +314,18 @@ export default class MultiStyleText extends PIXI.Text {
 
 				let linePositionY = maxStrokeThickness / 2 + basePositionY + fontProperties.ascent;
 
-				if (style.valign === "bottom") {
-					linePositionY += lineHeights[i] - line[j].height - (maxStrokeThickness - style.strokeThickness) / 2;
-				} else if (style.valign === "middle") {
-					linePositionY += (lineHeights[i] - line[j].height) / 2 - (maxStrokeThickness - style.strokeThickness) / 2;
+				switch (style.valign) {
+					case "baseline":
+						linePositionY += baselines[i] - fontProperties.ascent;
+						break;
+
+					case "middle":
+						linePositionY += (lineHeights[i] - line[j].height) / 2 - (maxStrokeThickness - style.strokeThickness) / 2;
+						break;
+
+					case "bottom":
+						linePositionY += lineHeights[i] - line[j].height - (maxStrokeThickness - style.strokeThickness) / 2;
+						break;
 				}
 
 				if (style.letterSpacing === 0) {
