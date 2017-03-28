@@ -220,25 +220,26 @@ export default class MultiStyleText extends PIXI.Text {
 			let lineWidth = 0;
 			let lineHeight = 0;
 			for (let j = 0; j < outputTextData[i].length; j++) {
-				if (outputTextData[i][j].text.length == 0) {
-					continue;
-				}
-
 				let sty = outputTextData[i][j].style;
 
 				this.context.font = PIXI.Text.getFontStyle(sty);
 
 				// save the width
-				outputTextData[i][j].width = this.context.measureText(outputTextData[i][j].text).width + (outputTextData[i][j].text.length - 1) * sty.letterSpacing;
+				outputTextData[i][j].width = this.context.measureText(outputTextData[i][j].text).width;
+
+				if (outputTextData[i][j].text.length === 0) {
+					outputTextData[i][j].width += (outputTextData[i][j].text.length - 1) * sty.letterSpacing;
+
+					if (j > 0) {
+						lineWidth += sty.letterSpacing / 2; // spacing before first character
+					}
+
+					if (j < outputTextData[i].length - 1) {
+						lineWidth += sty.letterSpacing / 2; // spacing after last character
+					}
+				}
+
 				lineWidth += outputTextData[i][j].width;
-
-				if (j > 0) {
-					lineWidth += sty.letterSpacing / 2; // spacing before first character
-				}
-
-				if (j < outputTextData[i].length - 1) {
-					lineWidth += sty.letterSpacing / 2; // spacing after last character
-				}
 
 				// save the font properties
 				outputTextData[i][j].fontProperties = PIXI.Text.calculateFontProperties(this.context.font);
