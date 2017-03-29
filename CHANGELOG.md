@@ -2,6 +2,16 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+<a name="0.5.2"></a>
+## [0.5.2](https://github.com/tleunen/pixi-multistyle-text/compare/v0.5.1...v0.5.2) (2017-03-29)
+
+
+### Bug Fixes
+
+* Compute font properties for empty line parts ([#43](https://github.com/tleunen/pixi-multistyle-text/issues/43)) ([228c371](https://github.com/tleunen/pixi-multistyle-text/commit/228c371)), closes [#42](https://github.com/tleunen/pixi-multistyle-text/issues/42)
+
+
+
 <a name="0.5.1"></a>
 ## [0.5.1](https://github.com/tleunen/pixi-multistyle-text/compare/v0.5.0...v0.5.1) (2017-01-20)
 
