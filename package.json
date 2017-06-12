@@ -32,11 +32,11 @@
   "license": "MIT",
   "dependencies": {},
   "devDependencies": {
-    "@types/pixi.js": "^4.3.1",
-    "browserify": "^13.1.1",
-    "standard-version": "^4.0.0",
-    "tsify": "^2.0.7",
-    "typescript": "^2.1.4"
+    "@types/pixi.js": "^4.5.0",
+    "browserify": "^14.4.0",
+    "standard-version": "^4.2.0",
+    "tsify": "^3.0.1",
+    "typescript": "^2.3.4"
   },
   "scripts": {
     "demo": "npm run build && open demo/index.html",
