@@ -3,7 +3,7 @@
 "use strict";
 
 export interface ExtendedTextStyle extends PIXI.TextStyleOptions {
-	valign?: "top" | "middle" | "bottom" | "baseline";
+	valign?: "top" | "middle" | "bottom" | "baseline" | number;
 }
 
 export interface TextStyleSet {
@@ -55,6 +55,7 @@ export default class MultiStyleText extends PIXI.Text {
 		stroke: "black",
 		strokeThickness: 0,
 		textBaseline: "alphabetic",
+		valign: "baseline",
 		wordWrap: false,
 		wordWrapWidth: 100
 	};
@@ -217,13 +218,15 @@ export default class MultiStyleText extends PIXI.Text {
 
 		// calculate text width and height
 		let lineWidths: number[] = [];
-		let lineHeights: number[] = [];
+		let lineYMins: number[] = [];
+		let lineYMaxs: number[] = [];
 		let baselines: number[] = [];
 		let maxLineWidth = 0;
 
 		for (let i = 0; i < lines.length; i++) {
 			let lineWidth = 0;
-			let lineHeight = 0;
+			let lineYMin = 0;
+			let lineYMax = 0;
 			let baseline = 0;
 			for (let j = 0; j < outputTextData[i].length; j++) {
 				let sty = outputTextData[i][j].style;
@@ -253,12 +256,20 @@ export default class MultiStyleText extends PIXI.Text {
 				// save the height
 				outputTextData[i][j].height =
 						outputTextData[i][j].fontProperties.fontSize + outputTextData[i][j].style.strokeThickness;
-				lineHeight = Math.max(lineHeight, outputTextData[i][j].height);
+
+				if (typeof sty.valign === "number") {
+					lineYMin = Math.min(lineYMin, -sty.valign);
+					lineYMax = Math.max(lineYMax, outputTextData[i][j].fontProperties.ascent - sty.valign);
+				} else {
+					lineYMax = Math.max(lineYMax, outputTextData[i][j].height);
+				}
+
 				baseline = Math.max(baseline, outputTextData[i][j].fontProperties.ascent);
 			}
 
 			lineWidths[i] = lineWidth;
-			lineHeights[i] = lineHeight;
+			lineYMins[i] = lineYMin;
+			lineYMaxs[i] = lineYMax;
 			baselines[i] = baseline;
 			maxLineWidth = Math.max(maxLineWidth, lineWidth);
 		}
@@ -270,11 +281,13 @@ export default class MultiStyleText extends PIXI.Text {
 
 		let dropShadowPadding = this.getDropShadowPadding();
 
-		let maxLineHeight = lineHeights.reduce((prev, curr) => Math.max(prev, curr), 0);
+		let maxLineHeight = lineYMins.reduce((prev, curr, i) => Math.max(prev, lineYMaxs[i] - curr), 0);
 
 		// define the right width and height
 		let width = maxLineWidth + maxStrokeThickness + 2 * dropShadowPadding;
 		let height = (maxLineHeight * lines.length) + 2 * dropShadowPadding;
+
+		console.log(lineYMins, lineYMaxs);
 
 		this.canvas.width = (width + this.context.lineWidth) * this.resolution;
 		this.canvas.height = height * this.resolution;
@@ -312,19 +325,28 @@ export default class MultiStyleText extends PIXI.Text {
 
 				linePositionX += maxStrokeThickness / 2;
 
-				let linePositionY = maxStrokeThickness / 2 + basePositionY + fontProperties.ascent;
+				let linePositionY = maxStrokeThickness / 2 + basePositionY - lineYMins[i] + fontProperties.ascent;
 
 				switch (style.valign) {
+					case "top":
+						// no need to do anything
+						break;
+
 					case "baseline":
 						linePositionY += baselines[i] - fontProperties.ascent;
 						break;
 
 					case "middle":
-						linePositionY += (lineHeights[i] - line[j].height) / 2 - (maxStrokeThickness - style.strokeThickness) / 2;
+						linePositionY += (lineYMaxs[i] - line[j].height) / 2 - (maxStrokeThickness - style.strokeThickness) / 2;
 						break;
 
 					case "bottom":
-						linePositionY += lineHeights[i] - line[j].height - (maxStrokeThickness - style.strokeThickness) / 2;
+						linePositionY += lineYMaxs[i] - line[j].height - (maxStrokeThickness - style.strokeThickness) / 2;
+						break;
+
+					default:
+						// A number - offset from baseline, positive is higher
+						linePositionY += baselines[i] - fontProperties.ascent - style.valign;
 						break;
 				}
 
@@ -363,7 +385,7 @@ export default class MultiStyleText extends PIXI.Text {
 				linePositionX -= maxStrokeThickness / 2;
 			}
 
-			basePositionY += lineHeights[i];
+			basePositionY += lineYMaxs[i] - lineYMins[i];
 		}
 
 		this.context.save();

@@ -57,17 +57,27 @@
 });</code></pre>
 
 <h2>Vertical Alignment</h2>
-<pre><code class="js">let valign = new MultiStyleText(&quot;You can use &lt;code&gt;valign&lt;/code&gt; to control the &lt;top&gt;vertical&lt;/top&gt; &lt;middle&gt;alignment&lt;/middle&gt; of &lt;bottom&gt;text&lt;/bottom&gt;.&quot;,
+<pre><code class="js">let valign = new MultiStyleText(&quot;You can use &lt;code&gt;valign&lt;/code&gt; &lt;top&gt;to&lt;/top&gt; &lt;super&gt;control&lt;/super&gt; &lt;middle&gt;the&lt;/middle&gt; &lt;baseline&gt;vertical&lt;/baseline&gt; &lt;sub&gt;alignment&lt;/sub&gt; &lt;bottom&gt;of&lt;/bottom&gt; &lt;custom&gt;text&lt;/custom&gt;.&quot;,
 {
 	&quot;default&quot;: {
 		fontFamily: &quot;Arial&quot;,
 		fontSize: &quot;24px&quot;,
-		fill: &quot;#cccccc&quot;
+		fill: &quot;#cccccc&quot;,
+		valign: &quot;middle&quot;
 	},
-	&quot;code&quot;: { fontFamily: &quot;Inconsolata&quot;, fill: &quot;#ff8888&quot;, valign: &quot;bottom&quot; },
+	&quot;code&quot;: {
+		fontFamily: &quot;Inconsolata&quot;,
+		fontSize: &quot;36px&quot;,
+		fill: &quot;#ff8888&quot;,
+		valign: &quot;middle&quot;
+	},
 	&quot;top&quot;: { fontSize: &quot;14px&quot;, valign: &quot;top&quot; },
 	&quot;middle&quot;: { fontSize: &quot;14px&quot;, valign: &quot;middle&quot; },
-	&quot;bottom&quot;: { fontSize: &quot;14px&quot;, valign: &quot;bottom&quot; }
+	&quot;bottom&quot;: { fontSize: &quot;14px&quot;, valign: &quot;bottom&quot; },
+	&quot;super&quot;: { fontSize: &quot;14px&quot;, valign: &quot;super&quot; },
+	&quot;sub&quot;: { fontSize: &quot;14px&quot;, valign: &quot;sub&quot; },
+	&quot;baseline&quot;: { fontSize: &quot;14px&quot;, valign: &quot;baseline&quot; },
+	&quot;custom&quot;: { fontSize: &quot;14px&quot;, valign: -2 }
 });</code></pre>
 
 <h2>Wrapping and Alignment</h2>
@@ -187,17 +197,27 @@ nested.y = 550;
 stage.addChild(nested);
 
 // Vertical Alignment
-let valign = new MultiStyleText("You can use <code>valign</code> to control the <top>vertical</top> <middle>alignment</middle> of <bottom>text</bottom>.",
+let valign = new MultiStyleText("You can use <code>valign</code> <top>to</top> <middle>control</middle> <baseline>the</baseline> <bottom>vertical</bottom> <custom1>alignment</custom1> <custom2>of</custom2> <custom3>text</custom3>.",
 {
 	"default": {
 		fontFamily: "Arial",
 		fontSize: "24px",
-		fill: "#cccccc"
+		fill: "#cccccc",
+		valign: "middle"
 	},
-	"code": { fontFamily: "Inconsolata", fill: "#ff8888", valign: "bottom" },
+	"code": {
+		fontFamily: "Inconsolata",
+		fontSize: "36px",
+		fill: "#ff8888",
+		valign: "middle"
+	},
 	"top": { fontSize: "14px", valign: "top" },
 	"middle": { fontSize: "14px", valign: "middle" },
-	"bottom": { fontSize: "14px", valign: "bottom" }
+	"bottom": { fontSize: "14px", valign: "bottom" },
+	"baseline": { fontSize: "14px", valign: "baseline" },
+	"custom1": { fontSize: "14px", valign: -70 },
+	"custom2": { fontSize: "14px", valign: 5 },
+	"custom3": { fontSize: "14px", valign: 25 }
 });
 
 valign.x = 300 - valign.width / 2;
@@ -271,9 +291,9 @@ function animate() {
 	requestAnimationFrame(animate);
 	renderer.render(stage);
 
-	funStyles.default.dropShadowAngle += 0.02;
-	funStyles.default.dropShadowBlur = Math.sin(funStyles.default.dropShadowAngle + Math.PI / 4) * 5 + 5;
-	fun.styles = funStyles;
+	// funStyles.default.dropShadowAngle += 0.02;
+	// funStyles.default.dropShadowBlur = Math.sin(funStyles.default.dropShadowAngle + Math.PI / 4) * 5 + 5;
+	// fun.styles = funStyles;
 }
 
 requestAnimationFrame(animate);
