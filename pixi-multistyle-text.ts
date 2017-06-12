@@ -169,6 +169,10 @@ export default class MultiStyleText extends PIXI.Text {
 		return outputTextData;
 	}
 
+	private getFontString(style: ExtendedTextStyle): string {
+		return new PIXI.TextStyle(style).toFontString();
+	}
+
 	private createTextData(text: string, style: ExtendedTextStyle): TextData {
 		return {
 			text,
@@ -222,7 +226,7 @@ export default class MultiStyleText extends PIXI.Text {
 			for (let j = 0; j < outputTextData[i].length; j++) {
 				let sty = outputTextData[i][j].style;
 
-				this.context.font = PIXI.Text.getFontStyle(sty);
+				this.context.font = this.getFontString(sty);
 
 				// save the width
 				outputTextData[i][j].width = this.context.measureText(outputTextData[i][j].text).width;
@@ -242,7 +246,7 @@ export default class MultiStyleText extends PIXI.Text {
 				lineWidth += outputTextData[i][j].width;
 
 				// save the font properties
-				outputTextData[i][j].fontProperties = PIXI.Text.calculateFontProperties(this.context.font);
+				outputTextData[i][j].fontProperties = PIXI.TextMetrics.measureFont(this.context.font);
 
 				// save the height
 				outputTextData[i][j].height =
@@ -322,7 +326,7 @@ export default class MultiStyleText extends PIXI.Text {
 
 					linePositionX += line[j].width;
 				} else {
-					this.context.font = PIXI.Text.getFontStyle(line[j].style);
+					this.context.font = this.getFontString(line[j].style);
 
 					for (let k = 0; k < text.length; k++) {
 						if (k > 0 || j > 0) {
@@ -358,7 +362,7 @@ export default class MultiStyleText extends PIXI.Text {
 				return; // This text doesn't have a shadow
 			}
 
-			this.context.font = PIXI.Text.getFontStyle(style);
+			this.context.font = this.getFontString(style);
 
 			let dropFillStyle = style.dropShadowColor;
 			if (typeof dropFillStyle === "number") {
@@ -376,7 +380,7 @@ export default class MultiStyleText extends PIXI.Text {
 
 		// Second pass: draw strokes and fills
 		drawingData.forEach(({ style, text, x, y }) => {
-			this.context.font = PIXI.Text.getFontStyle(style);
+			this.context.font = this.getFontString(style);
 
 			let strokeStyle = style.stroke;
 			if (typeof strokeStyle === "number") {
@@ -422,7 +426,7 @@ export default class MultiStyleText extends PIXI.Text {
 		const lines = text.split("\n");
 		const wordWrapWidth = this._style.wordWrapWidth;
 		let styleStack = [this.assign({}, this.textStyles["default"])];
-		this.context.font = PIXI.Text.getFontStyle(this.textStyles["default"]);
+		this.context.font = this.getFontString(this.textStyles["default"]);
 
 		for (let i = 0; i < lines.length; i++) {
 			let spaceLeft = wordWrapWidth;
@@ -441,7 +445,7 @@ export default class MultiStyleText extends PIXI.Text {
 							k++;
 							styleStack.push(this.assign({}, styleStack[styleStack.length - 1], this.textStyles[parts[k]]));
 						}
-						this.context.font = PIXI.Text.getFontStyle(styleStack[styleStack.length - 1]);
+						this.context.font = this.getFontString(styleStack[styleStack.length - 1]);
 						continue;
 					}
 
