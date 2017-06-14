@@ -2,6 +2,7 @@
 <html>
 <head>
 	<title>Pixi MultiStyle Text Demo</title>
+    <meta charset="UTF-8">
 	<link rel="stylesheet" href="style.css" />
 	<link href="https://fonts.googleapis.com/css?family=Inconsolata" rel="stylesheet">
 
@@ -82,6 +83,22 @@
 	}
 });</code></pre>
 
+<h2>Wrapping and Alignment II</h2>
+<pre><code class="js">let wrapping2 = new MultiStyleText(&quot;全局设置的&lt;blue&gt;对齐&lt;/blue&gt;属性由「默认」来&lt;big&gt;控制&lt;/big&gt;。而且不能被&lt;blue&gt;别的样式&lt;/blue&gt;所&lt;red&gt;覆盖&lt;/red&gt;。&quot;,
+{
+	&quot;default&quot;: {
+		fontFamily: &quot;Arial&quot;,
+		fontSize: &quot;16px&quot;,
+		fill: &quot;#cccccc&quot;,
+		wordWrap: true,
+		wordWrapWidth: 250,
+		breakWords: true,
+	},
+	&quot;blue&quot;: { fill: 0x4488ff, stroke: 0x2244cc, fontSize: &quot;24px&quot; },
+	&quot;red&quot;: { fill: 0xff8888, stroke: 0xcc4444 },
+	&quot;big&quot;: { fill: 0x88ff88, stroke: 0x44cc44, fontSize: &quot;36px&quot; }
+});</code></pre>
+
 <h2>Have Fun</h2>
 <pre><code class="js">let funStyles = {
 	&quot;default&quot;: {
@@ -115,7 +132,7 @@ requestAnimationFrame(animate);</code></pre>
 			<div id="pixi-container">
 				<script>
 PIXI.settings.RESOLUTION = 2;
-let renderer = PIXI.autoDetectRenderer(600, 1900);
+let renderer = PIXI.autoDetectRenderer(600, 2400);
 renderer.backgroundColor = 0x333333;
 document.getElementById("pixi-container").appendChild(renderer.view);
 let stage = new PIXI.Container();
@@ -204,6 +221,26 @@ wrapping.x = 550 - wrapping.width;
 wrapping.y = 1220;
 stage.addChild(wrapping);
 
+// Wrapping and Alignment II
+let wrapping2 = new MultiStyleText("全局设置的<blue>对齐</blue>属性由「默认」来<big>控制</big>。而且不能被<blue>别的样式</blue>所<red>覆盖</red>。",
+{
+	"default": {
+		fontFamily: "Arial",
+		fontSize: "16px",
+		fill: "#cccccc",
+		wordWrap: true,
+		wordWrapWidth: 250,
+		breakWords: true,
+	},
+	"blue": { fill: 0x4488ff, stroke: 0x2244cc, fontSize: "24px" },
+	"red": { fill: 0xff8888, stroke: 0xcc4444 },
+	"big": { fill: 0x88ff88, stroke: 0x44cc44, fontSize: "36px" }
+});
+
+wrapping2.x = 440 - wrapping2.width;
+wrapping2.y = 1700;
+stage.addChild(wrapping2);
+
 // Have Fun
 let funStyles = {
 	"default": {
@@ -224,7 +261,7 @@ let funStyles = {
 let fun = new MultiStyleText("Now have fun making some <blue>beautiful</blue> <red>multistyle</red> text!", funStyles);
 
 fun.x = 300 - fun.width / 2;
-fun.y = 1700;
+fun.y = 2180;
 stage.addChild(fun);
 
 // Animate

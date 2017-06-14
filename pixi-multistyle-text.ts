@@ -451,7 +451,7 @@ export default class MultiStyleText extends PIXI.Text {
 
 					const partWidth = this.context.measureText(parts[k]).width;
 
-					if (this._style.breakWords && partWidth > wordWrapWidth) {
+					if (this._style.breakWords && partWidth > spaceLeft) {
 						// Part should be split in the middle
 						const characters = parts[k].split('');
 
@@ -475,6 +475,9 @@ export default class MultiStyleText extends PIXI.Text {
 								spaceLeft -= characterWidth;
 							}
 						}
+					} else if(this._style.breakWords) {
+						result += parts[k];
+						spaceLeft -= partWidth;
 					} else {
 						const paddedPartWidth =
 							partWidth + (k === 0 ? this.context.measureText(" ").width : 0);
