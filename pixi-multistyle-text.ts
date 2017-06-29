@@ -258,19 +258,17 @@ export default class MultiStyleText extends PIXI.Text {
 						outputTextData[i][j].fontProperties.fontSize + outputTextData[i][j].style.strokeThickness;
 
 				if (typeof sty.valign === "number") {
-					lineYMin = Math.min(lineYMin, -sty.valign);
+					lineYMin = Math.min(lineYMin, sty.valign - outputTextData[i][j].fontProperties.descent);
 					lineYMax = Math.max(lineYMax, outputTextData[i][j].fontProperties.ascent - sty.valign);
 				} else {
-					lineYMax = Math.max(lineYMax, outputTextData[i][j].height);
+					lineYMin = Math.min(lineYMin, -outputTextData[i][j].fontProperties.descent);
+					lineYMax = Math.max(lineYMax, outputTextData[i][j].fontProperties.ascent);
 				}
-
-				baseline = Math.max(baseline, outputTextData[i][j].fontProperties.ascent);
 			}
 
 			lineWidths[i] = lineWidth;
 			lineYMins[i] = lineYMin;
 			lineYMaxs[i] = lineYMax;
-			baselines[i] = baseline;
 			maxLineWidth = Math.max(maxLineWidth, lineWidth);
 		}
 
@@ -325,7 +323,7 @@ export default class MultiStyleText extends PIXI.Text {
 
 				linePositionX += maxStrokeThickness / 2;
 
-				let linePositionY = maxStrokeThickness / 2 + basePositionY - lineYMins[i] + fontProperties.ascent;
+				let linePositionY = maxStrokeThickness / 2 + basePositionY + fontProperties.ascent;
 
 				switch (style.valign) {
 					case "top":
@@ -333,7 +331,7 @@ export default class MultiStyleText extends PIXI.Text {
 						break;
 
 					case "baseline":
-						linePositionY += baselines[i] - fontProperties.ascent;
+						linePositionY += lineYMaxs[i] - fontProperties.ascent;
 						break;
 
 					case "middle":
@@ -341,12 +339,12 @@ export default class MultiStyleText extends PIXI.Text {
 						break;
 
 					case "bottom":
-						linePositionY += lineYMaxs[i] - line[j].height - (maxStrokeThickness - style.strokeThickness) / 2;
+						linePositionY += lineYMaxs[i] - lineYMins[i] - fontProperties.ascent + fontProperties.descent; // - (maxStrokeThickness - style.strokeThickness) / 2;
 						break;
 
 					default:
 						// A number - offset from baseline, positive is higher
-						linePositionY += baselines[i] - fontProperties.ascent - style.valign;
+						linePositionY += lineYMaxs[i] - fontProperties.ascent - style.valign;
 						break;
 				}
 
