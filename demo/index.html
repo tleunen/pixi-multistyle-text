@@ -62,14 +62,12 @@
 	&quot;default&quot;: {
 		fontFamily: &quot;Arial&quot;,
 		fontSize: &quot;24px&quot;,
-		fill: &quot;#cccccc&quot;,
-		valign: &quot;middle&quot;
+		fill: &quot;#cccccc&quot;
 	},
 	&quot;code&quot;: {
 		fontFamily: &quot;Inconsolata&quot;,
 		fontSize: &quot;36px&quot;,
-		fill: &quot;#ff8888&quot;,
-		valign: &quot;middle&quot;
+		fill: &quot;#ff8888&quot;
 	},
 	&quot;top&quot;: { fontSize: &quot;14px&quot;, valign: &quot;top&quot; },
 	&quot;middle&quot;: { fontSize: &quot;14px&quot;, valign: &quot;middle&quot; },
@@ -147,6 +145,10 @@ renderer.backgroundColor = 0x333333;
 document.getElementById("pixi-container").appendChild(renderer.view);
 let stage = new PIXI.Container();
 
+MultiStyleText.debugOptions.spans.enabled = true;
+MultiStyleText.debugOptions.objects.enabled = true;
+// MultiStyleText.debugOptions.spans.bounding = undefined;
+
 // Basics
 let text = new MultiStyleText("Let's make some <ml>multiline</ml>\nand <ms>multistyle</ms> text for\n<pixi>Pixi.js!</pixi>",
 {
@@ -202,21 +204,19 @@ let valign = new MultiStyleText("You can use <code>valign</code> <top>to</top> <
 	"default": {
 		fontFamily: "Arial",
 		fontSize: "24px",
-		fill: "#cccccc",
-		valign: "middle"
+		fill: "#cccccc"
 	},
 	"code": {
 		fontFamily: "Inconsolata",
 		fontSize: "36px",
-		fill: "#ff8888",
-		valign: "middle"
+		fill: "#ff8888"
 	},
 	"top": { fontSize: "14px", valign: "top" },
 	"middle": { fontSize: "14px", valign: "middle" },
 	"bottom": { fontSize: "14px", valign: "bottom" },
 	"baseline": { fontSize: "14px", valign: "baseline" },
-	"custom1": { fontSize: "14px", valign: -70 },
-	"custom2": { fontSize: "14px", valign: 5 },
+	"custom1": { fontSize: "14px", valign: 5 },
+	"custom2": { fontSize: "14px", valign: -70 },
 	"custom3": { fontSize: "14px", valign: 25 }
 });
 

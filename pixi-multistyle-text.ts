@@ -22,6 +22,7 @@ interface TextData {
 	width: number;
 	height: number;
 	fontProperties: FontProperties;
+	tagName: string;
 }
 
 interface TextDrawingData {
@@ -29,6 +30,26 @@ interface TextDrawingData {
 	style: ExtendedTextStyle;
 	x: number;
 	y: number;
+	width: number;
+	ascent: number;
+	descent: number;
+	tagName: string;
+}
+
+export interface MstDebugOptions {
+	spans: {
+		enabled?: boolean;
+		baseline?: string;
+		top?: string;
+		bottom?: string;
+		bounding?: string;
+		text?: string;
+	};
+	objects: {
+		enabled?: boolean;
+		bounding?: string;
+		text?: string;
+	}
 }
 
 export default class MultiStyleText extends PIXI.Text {
@@ -58,6 +79,22 @@ export default class MultiStyleText extends PIXI.Text {
 		valign: "baseline",
 		wordWrap: false,
 		wordWrapWidth: 100
+	};
+
+	public static debugOptions: MstDebugOptions = {
+		spans: {
+			enabled: false,
+			baseline: "#44BB44",
+			top: "#BB4444",
+			bottom: "#4444BB",
+			bounding: "rgba(255, 255, 255, 0.1)",
+			text: "#BBBB44"
+		},
+		objects: {
+			enabled: false,
+			bounding: "rgba(255, 255, 255, 0.05)",
+			text: "#FFFFFF"
+		}
 	};
 
 	private textStyles: TextStyleSet;
@@ -113,6 +150,7 @@ export default class MultiStyleText extends PIXI.Text {
 		let re = new RegExp(`<\/?(${tags})>`, "g");
 
 		let styleStack = [this.assign({}, this.textStyles["default"])];
+		let tagNameStack = ["default"];
 
 		// determine the group of word for each line
 		for (let i = 0; i < lines.length; i++) {
@@ -128,7 +166,7 @@ export default class MultiStyleText extends PIXI.Text {
 
 			// if there is no match, we still need to add the line with the default style
 			if (matches.length === 0) {
-				lineTextData.push(this.createTextData(lines[i], styleStack[styleStack.length - 1]));
+				lineTextData.push(this.createTextData(lines[i], styleStack[styleStack.length - 1], tagNameStack[tagNameStack.length - 1]));
 			}
 			else {
 				// We got a match! add the text with the needed style
@@ -139,16 +177,19 @@ export default class MultiStyleText extends PIXI.Text {
 					if (matches[j].index > currentSearchIdx) {
 						lineTextData.push(this.createTextData(
 							lines[i].substring(currentSearchIdx, matches[j].index),
-							styleStack[styleStack.length - 1]
+							styleStack[styleStack.length - 1],
+							tagNameStack[tagNameStack.length - 1]
 						));
 					}
 
 					if (matches[j][0][1] === "/") { // reset the style if end of tag
 						if (styleStack.length > 1) {
 							styleStack.pop();
+							tagNameStack.pop();
 						}
 					} else { // set the current style
 						styleStack.push(this.assign({}, styleStack[styleStack.length - 1], this.textStyles[matches[j][1]]));
+						tagNameStack.push(matches[j][1]);
 					}
 
 					// update the current search index
@@ -159,7 +200,8 @@ export default class MultiStyleText extends PIXI.Text {
 				if (currentSearchIdx < lines[i].length) {
 					lineTextData.push(this.createTextData(
 						lines[i].substring(currentSearchIdx),
-						styleStack[styleStack.length - 1]
+						styleStack[styleStack.length - 1],
+						tagNameStack[tagNameStack.length - 1]
 					));
 				}
 			}
@@ -174,13 +216,14 @@ export default class MultiStyleText extends PIXI.Text {
 		return new PIXI.TextStyle(style).toFontString();
 	}
 
-	private createTextData(text: string, style: ExtendedTextStyle): TextData {
+	private createTextData(text: string, style: ExtendedTextStyle, tagName: string): TextData {
 		return {
 			text,
 			style,
 			width: 0,
 			height: 0,
-			fontProperties: undefined
+			fontProperties: undefined,
+			tagName
 		};
 	}
 
@@ -319,7 +362,7 @@ export default class MultiStyleText extends PIXI.Text {
 			}
 
 			for (let j = 0; j < line.length; j++) {
-				let { style, text, fontProperties } = line[j];
+				let { style, text, fontProperties, width, height, tagName } = line[j];
 
 				linePositionX += maxStrokeThickness / 2;
 
@@ -335,11 +378,11 @@ export default class MultiStyleText extends PIXI.Text {
 						break;
 
 					case "middle":
-						linePositionY += (lineYMaxs[i] - line[j].height) / 2 - (maxStrokeThickness - style.strokeThickness) / 2;
+						linePositionY += (lineYMaxs[i] - height) / 2 - (maxStrokeThickness - style.strokeThickness) / 2;
 						break;
 
 					case "bottom":
-						linePositionY += lineYMaxs[i] - lineYMins[i] - fontProperties.ascent + fontProperties.descent; // - (maxStrokeThickness - style.strokeThickness) / 2;
+						linePositionY += lineYMaxs[i] - lineYMins[i] - fontProperties.ascent - fontProperties.descent;
 						break;
 
 					default:
@@ -353,7 +396,11 @@ export default class MultiStyleText extends PIXI.Text {
 						text,
 						style,
 						x: linePositionX,
-						y: linePositionY
+						y: linePositionY,
+						width,
+						ascent: fontProperties.ascent,
+						descent: fontProperties.descent,
+						tagName
 					});
 
 					linePositionX += line[j].width;
@@ -369,7 +416,11 @@ export default class MultiStyleText extends PIXI.Text {
 							text: text.charAt(k),
 							style,
 							x: linePositionX,
-							y: linePositionY
+							y: linePositionY,
+							width,
+							ascent: fontProperties.ascent,
+							descent: fontProperties.descent,
+							tagName
 						});
 
 						linePositionX += this.context.measureText(text.charAt(k)).width;
@@ -411,7 +462,7 @@ export default class MultiStyleText extends PIXI.Text {
 		this.context.restore();
 
 		// Second pass: draw strokes and fills
-		drawingData.forEach(({ style, text, x, y }) => {
+		drawingData.forEach(({ style, text, x, y, width, ascent, descent, tagName }) => {
 			this.context.font = this.getFontString(style);
 
 			let strokeStyle = style.stroke;
@@ -444,7 +495,70 @@ export default class MultiStyleText extends PIXI.Text {
 			if (style.fill) {
 				this.context.fillText(text, x, y);
 			}
+
+			if (MultiStyleText.debugOptions.spans.enabled) {
+				this.context.lineWidth = 1;
+
+				if (MultiStyleText.debugOptions.spans.bounding) {
+					this.context.fillStyle = MultiStyleText.debugOptions.spans.bounding;
+					this.context.strokeStyle = MultiStyleText.debugOptions.spans.bounding;
+					this.context.beginPath();
+					this.context.rect(x, y - ascent, width, ascent + descent);
+					this.context.fill();
+					this.context.stroke();
+					this.context.stroke(); // yes, twice
+				}
+
+				if (MultiStyleText.debugOptions.spans.baseline) {
+					this.context.strokeStyle = MultiStyleText.debugOptions.spans.baseline;
+					this.context.beginPath();
+					this.context.moveTo(x, y);
+					this.context.lineTo(x + width, y);
+					this.context.closePath();
+					this.context.stroke();
+				}
+
+				if (MultiStyleText.debugOptions.spans.top) {
+					this.context.strokeStyle = MultiStyleText.debugOptions.spans.top;
+					this.context.beginPath();
+					this.context.moveTo(x, y - ascent);
+					this.context.lineTo(x + width, y - ascent);
+					this.context.closePath();
+					this.context.stroke();
+				}
+
+				if (MultiStyleText.debugOptions.spans.bottom) {
+					this.context.strokeStyle = MultiStyleText.debugOptions.spans.bottom;
+					this.context.beginPath();
+					this.context.moveTo(x, y + descent);
+					this.context.lineTo(x + width, y + descent);
+					this.context.closePath();
+					this.context.stroke();
+				}
+
+				if (MultiStyleText.debugOptions.spans.text) {
+					this.context.fillStyle = MultiStyleText.debugOptions.spans.text;
+					this.context.font = "8px monospace";
+					this.context.fillText(tagName, x, y - ascent + 8, width);
+					this.context.fillText(`${width.toFixed(2)}x${(ascent + descent).toFixed(2)}`, x, y - ascent + 16, width);
+				}
+			}
 		});
+
+		if (MultiStyleText.debugOptions.objects.enabled) {
+			if (MultiStyleText.debugOptions.objects.bounding) {
+				this.context.fillStyle = MultiStyleText.debugOptions.objects.bounding;
+				this.context.beginPath();
+				this.context.rect(0, 0, width, height);
+				this.context.fill();
+			}
+
+			if (MultiStyleText.debugOptions.objects.text) {
+				this.context.fillStyle = MultiStyleText.debugOptions.objects.text;
+				this.context.font = "8px monospace";
+				this.context.fillText(`${width.toFixed(2)}x${height.toFixed(2)}`, 0, 8, width);
+			}
+		}
 
 		this.updateTexture();
 	}
