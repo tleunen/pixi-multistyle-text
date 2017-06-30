@@ -221,7 +221,9 @@ wrapping.x = 550 - wrapping.width;
 wrapping.y = 1220;
 stage.addChild(wrapping);
 
-// Wrapping and Alignment II
+// Wrapping and Alignment with "breakWords" set
+// Once breakWords is set, line breaks may happen at any position(not just whitespaces) of the text when the width is full.
+// This is useful for some languages like Chinese.
 let wrapping2 = new MultiStyleText("全局设置的<blue>对齐</blue>属性由「默认」来<big>控制</big>。而且不能被<blue>别的样式</blue>所<red>覆盖</red>。",
 {
 	"default": {
