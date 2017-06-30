@@ -2,6 +2,16 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+<a name="0.5.4"></a>
+## [0.5.4](https://github.com/tleunen/pixi-multistyle-text/compare/v0.5.3...v0.5.4) (2017-06-30)
+
+
+### Bug Fixes
+
+* styled text not wrapped correctly when breakWords is true ([#47](https://github.com/tleunen/pixi-multistyle-text/issues/47)) ([f3bb028](https://github.com/tleunen/pixi-multistyle-text/commit/f3bb028))
+
+
+
 <a name="0.5.3"></a>
 ## [0.5.3](https://github.com/tleunen/pixi-multistyle-text/compare/v0.5.2...v0.5.3) (2017-06-12)
 
