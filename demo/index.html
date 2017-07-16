@@ -56,7 +56,7 @@
 });</code></pre>
 
 <h2>Vertical Alignment</h2>
-<pre><code class="js">let valign = new MultiStyleText(&quot;You can use &lt;code&gt;valign&lt;/code&gt; &lt;top&gt;to&lt;/top&gt; &lt;super&gt;control&lt;/super&gt; &lt;middle&gt;the&lt;/middle&gt; &lt;baseline&gt;vertical&lt;/baseline&gt; &lt;sub&gt;alignment&lt;/sub&gt; &lt;bottom&gt;of&lt;/bottom&gt; &lt;custom&gt;text&lt;/custom&gt;.&quot;,
+<pre><code class="js">let valign = new MultiStyleText(&quot;You can use &lt;code&gt;valign&lt;/code&gt; &lt;top&gt;to&lt;/top&gt; &lt;middle&gt;control&lt;/middle&gt; &lt;baseline&gt;the&lt;/baseline&gt; &lt;bottom&gt;vertical&lt;/bottom&gt; &lt;custom1&gt;alignment&lt;/custom1&gt; &lt;custom2&gt;of&lt;/custom2&gt; &lt;custom3&gt;text&lt;/custom3&gt;.&quot;,
 {
 	&quot;default&quot;: {
 		fontFamily: &quot;Arial&quot;,
@@ -71,10 +71,10 @@
 	&quot;top&quot;: { fontSize: &quot;14px&quot;, valign: &quot;top&quot; },
 	&quot;middle&quot;: { fontSize: &quot;14px&quot;, valign: &quot;middle&quot; },
 	&quot;bottom&quot;: { fontSize: &quot;14px&quot;, valign: &quot;bottom&quot; },
-	&quot;super&quot;: { fontSize: &quot;14px&quot;, valign: &quot;super&quot; },
-	&quot;sub&quot;: { fontSize: &quot;14px&quot;, valign: &quot;sub&quot; },
 	&quot;baseline&quot;: { fontSize: &quot;14px&quot;, valign: &quot;baseline&quot; },
-	&quot;custom&quot;: { fontSize: &quot;14px&quot;, valign: -2 }
+	&quot;custom1&quot;: { fontSize: &quot;14px&quot;, valign: 5 },
+	&quot;custom2&quot;: { fontSize: &quot;14px&quot;, valign: -70 },
+	&quot;custom3&quot;: { fontSize: &quot;14px&quot;, valign: 25 }
 });</code></pre>
 
 <h2>Wrapping and Alignment</h2>
@@ -91,7 +91,10 @@
 });</code></pre>
 
 <h2>Wrapping and Alignment II</h2>
-<pre><code class="js">let wrapping2 = new MultiStyleText(&quot;全局设置的&lt;blue&gt;对齐&lt;/blue&gt;属性由「默认」来&lt;big&gt;控制&lt;/big&gt;。而且不能被&lt;blue&gt;别的样式&lt;/blue&gt;所&lt;red&gt;覆盖&lt;/red&gt;。&quot;,
+<pre><code class="js">// breakWords allows newlines to be inserted anywhere - not just at whitespaces.
+// This is useful for some languages like Chinese.
+
+let wrapping2 = new MultiStyleText(&quot;全局设置的&lt;blue&gt;对齐&lt;/blue&gt;属性由「默认」来&lt;big&gt;控制&lt;/big&gt;。而且不能被&lt;blue&gt;别的样式&lt;/blue&gt;所&lt;red&gt;覆盖&lt;/red&gt;。&quot;,
 {
 	&quot;default&quot;: {
 		fontFamily: &quot;Arial&quot;,
@@ -104,6 +107,29 @@
 	&quot;blue&quot;: { fill: 0x4488ff, stroke: 0x2244cc, fontSize: &quot;24px&quot; },
 	&quot;red&quot;: { fill: 0xff8888, stroke: 0xcc4444 },
 	&quot;big&quot;: { fill: 0x88ff88, stroke: 0x44cc44, fontSize: &quot;36px&quot; }
+});</code></pre>
+
+<h2>Debug Mode</h2>
+<pre><code class="js">MultiStyleText.debugOptions.spans.enabled = true;
+MultiStyleText.debugOptions.objects.enabled = true;
+
+let debug = new MultiStyleText(&quot;You can use &lt;code&gt;debug mode&lt;/code&gt; to help you figure out what your text is doing.  You can use &lt;blue&gt;global, &lt;/blue&gt;&lt;red&gt;static&lt;/red&gt; settings or &lt;no-debug&gt;override those with the &lt;code&gt;debug&lt;/code&gt; style option.&lt;/no-debug&gt;&quot;,
+{
+	&quot;default&quot;: {
+		fontFamily: &quot;Arial&quot;,
+		fontSize: &quot;24px&quot;,
+		fill: &quot;#cccccc&quot;,
+		wordWrap: true,
+		wordWrapWidth: 500,
+	},
+	&quot;code&quot;: {
+		fontFamily: &quot;Inconsolata&quot;,
+		fontSize: &quot;36px&quot;,
+		fill: &quot;#ff8888&quot;
+	},
+	&quot;blue&quot;: { fill: 0x4488ff, stroke: 0x2244cc },
+	&quot;red&quot;: { fill: 0xff8888, stroke: 0xcc4444 },
+	&quot;no-debug&quot;: { debug: false }
 });</code></pre>
 
 <h2>Have Fun</h2>
@@ -139,14 +165,10 @@ requestAnimationFrame(animate);</code></pre>
 			<div id="pixi-container">
 				<script>
 PIXI.settings.RESOLUTION = 2;
-let renderer = PIXI.autoDetectRenderer(600, 2400);
+let renderer = PIXI.autoDetectRenderer(600, 2680);
 renderer.backgroundColor = 0x333333;
 document.getElementById("pixi-container").appendChild(renderer.view);
 let stage = new PIXI.Container();
-
-MultiStyleText.debugOptions.spans.enabled = true;
-MultiStyleText.debugOptions.objects.enabled = true;
-// MultiStyleText.debugOptions.spans.bounding = undefined;
 
 // Basics
 let text = new MultiStyleText("Let's make some <ml>multiline</ml>\nand <ms>multistyle</ms> text for\n<pixi>Pixi.js!</pixi>",
@@ -202,22 +224,20 @@ let valign = new MultiStyleText("You can use <code>valign</code> <top>to</top> <
 	"default": {
 		fontFamily: "Arial",
 		fontSize: "24px",
-		fill: "#cccccc",
-		debug: false
+		fill: "#cccccc"
 	},
 	"code": {
 		fontFamily: "Inconsolata",
 		fontSize: "36px",
-		fill: "#ff8888",
-		debug: true
+		fill: "#ff8888"
 	},
-	"top": { fontSize: "14px", valign: "top", debug: true },
-	"middle": { fontSize: "14px", valign: "middle", debug: true },
-	"bottom": { fontSize: "14px", valign: "bottom", debug: true },
-	"baseline": { fontSize: "14px", valign: "baseline", debug: true },
-	"custom1": { fontSize: "14px", valign: 5, debug: true },
-	"custom2": { fontSize: "14px", valign: -70, debug: true },
-	"custom3": { fontSize: "14px", valign: 25, debug: true }
+	"top": { fontSize: "14px", valign: "top" },
+	"middle": { fontSize: "14px", valign: "middle" },
+	"bottom": { fontSize: "14px", valign: "bottom" },
+	"baseline": { fontSize: "14px", valign: "baseline" },
+	"custom1": { fontSize: "14px", valign: 5 },
+	"custom2": { fontSize: "14px", valign: -70 },
+	"custom3": { fontSize: "14px", valign: 25 }
 });
 
 valign.x = 300 - valign.width / 2;
@@ -241,9 +261,7 @@ wrapping.x = 550 - wrapping.width;
 wrapping.y = 1220;
 stage.addChild(wrapping);
 
-// Wrapping and Alignment with "breakWords" set
-// Once breakWords is set, line breaks may happen at any position(not just whitespaces) of the text when the width is full.
-// This is useful for some languages like Chinese.
+// Wrapping and Alignment II
 let wrapping2 = new MultiStyleText("全局设置的<blue>对齐</blue>属性由「默认」来<big>控制</big>。而且不能被<blue>别的样式</blue>所<red>覆盖</red>。",
 {
 	"default": {
@@ -262,6 +280,36 @@ let wrapping2 = new MultiStyleText("全局设置的<blue>对齐</blue>属性由�
 wrapping2.x = 440 - wrapping2.width;
 wrapping2.y = 1700;
 stage.addChild(wrapping2);
+
+// Debug Mode
+let debug = new MultiStyleText("You can use <code>debug mode</code> to help you figure out what your text is doing.  You can use <blue>global, </blue><red>static</red> settings or <no-debug>override those with the <code>debug</code> style option.</no-debug>",
+{
+	"default": {
+		fontFamily: "Arial",
+		fontSize: "24px",
+		fill: "#cccccc",
+		wordWrap: true,
+		wordWrapWidth: 500,
+	},
+	"code": {
+		fontFamily: "Inconsolata",
+		fontSize: "36px",
+		fill: "#ff8888"
+	},
+	"blue": { fill: 0x4488ff, stroke: 0x2244cc },
+	"red": { fill: 0xff8888, stroke: 0xcc4444 },
+	"no-debug": { debug: false }
+});
+
+MultiStyleText.debugOptions.spans.enabled = true;
+MultiStyleText.debugOptions.objects.enabled = true;
+
+debug.x = 300 - debug.width / 2;
+debug.y = 2050;
+stage.addChild(debug);
+
+MultiStyleText.debugOptions.spans.enabled = false;
+MultiStyleText.debugOptions.objects.enabled = false;
 
 // Have Fun
 let funStyles = {
@@ -283,7 +331,7 @@ let funStyles = {
 let fun = new MultiStyleText("Now have fun making some <blue>beautiful</blue> <red>multistyle</red> text!", funStyles);
 
 fun.x = 300 - fun.width / 2;
-fun.y = 2180;
+fun.y = 2480;
 stage.addChild(fun);
 
 // Animate
@@ -291,9 +339,9 @@ function animate() {
 	requestAnimationFrame(animate);
 	renderer.render(stage);
 
-	// funStyles.default.dropShadowAngle += 0.02;
-	// funStyles.default.dropShadowBlur = Math.sin(funStyles.default.dropShadowAngle + Math.PI / 4) * 5 + 5;
-	// fun.styles = funStyles;
+	funStyles.default.dropShadowAngle += 0.02;
+	funStyles.default.dropShadowBlur = Math.sin(funStyles.default.dropShadowAngle + Math.PI / 4) * 5 + 5;
+	fun.styles = funStyles;
 }
 
 requestAnimationFrame(animate);
