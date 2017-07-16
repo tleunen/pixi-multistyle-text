@@ -44,8 +44,7 @@
 	&quot;default&quot;: {
 		fontFamily: &quot;Arial&quot;,
 		fontSize: &quot;24px&quot;,
-		fill: &quot;#cccccc&quot;,
-		valign: &quot;bottom&quot;
+		fill: &quot;#cccccc&quot;
 	},
 	&quot;outline&quot;: { stroke: &quot;black&quot;, strokeThickness: 2 },
 	&quot;b&quot;: { fontWeight: 700 },
@@ -182,8 +181,7 @@ let nested = new MultiStyleText("You can <outline>nest <b>tags <red>as <i>deeply
 	"default": {
 		fontFamily: "Arial",
 		fontSize: "24px",
-		fill: "#cccccc",
-		valign: "bottom"
+		fill: "#cccccc"
 	},
 	"outline": { stroke: "black", strokeThickness: 2 },
 	"b": { fontWeight: 700 },
@@ -204,20 +202,22 @@ let valign = new MultiStyleText("You can use <code>valign</code> <top>to</top> <
 	"default": {
 		fontFamily: "Arial",
 		fontSize: "24px",
-		fill: "#cccccc"
+		fill: "#cccccc",
+		debug: false
 	},
 	"code": {
 		fontFamily: "Inconsolata",
 		fontSize: "36px",
-		fill: "#ff8888"
+		fill: "#ff8888",
+		debug: true
 	},
-	"top": { fontSize: "14px", valign: "top" },
-	"middle": { fontSize: "14px", valign: "middle" },
-	"bottom": { fontSize: "14px", valign: "bottom" },
-	"baseline": { fontSize: "14px", valign: "baseline" },
-	"custom1": { fontSize: "14px", valign: 5 },
-	"custom2": { fontSize: "14px", valign: -70 },
-	"custom3": { fontSize: "14px", valign: 25 }
+	"top": { fontSize: "14px", valign: "top", debug: true },
+	"middle": { fontSize: "14px", valign: "middle", debug: true },
+	"bottom": { fontSize: "14px", valign: "bottom", debug: true },
+	"baseline": { fontSize: "14px", valign: "baseline", debug: true },
+	"custom1": { fontSize: "14px", valign: 5, debug: true },
+	"custom2": { fontSize: "14px", valign: -70, debug: true },
+	"custom3": { fontSize: "14px", valign: 25, debug: true }
 });
 
 valign.x = 300 - valign.width / 2;

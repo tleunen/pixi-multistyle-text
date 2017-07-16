@@ -4,6 +4,7 @@
 
 export interface ExtendedTextStyle extends PIXI.TextStyleOptions {
 	valign?: "top" | "middle" | "bottom" | "baseline" | number;
+	debug?: boolean;
 }
 
 export interface TextStyleSet {
@@ -43,12 +44,12 @@ export interface MstDebugOptions {
 		top?: string;
 		bottom?: string;
 		bounding?: string;
-		text?: string;
+		text?: boolean;
 	};
 	objects: {
 		enabled?: boolean;
 		bounding?: string;
-		text?: string;
+		text?: boolean;
 	}
 }
 
@@ -56,6 +57,7 @@ export default class MultiStyleText extends PIXI.Text {
 	private static DEFAULT_TAG_STYLE: ExtendedTextStyle = {
 		align: "left",
 		breakWords: false,
+		// debug intentionally not included
 		dropShadow: false,
 		dropShadowAngle: Math.PI / 6,
 		dropShadowBlur: 0,
@@ -88,12 +90,12 @@ export default class MultiStyleText extends PIXI.Text {
 			top: "#BB4444",
 			bottom: "#4444BB",
 			bounding: "rgba(255, 255, 255, 0.1)",
-			text: "#BBBB44"
+			text: true
 		},
 		objects: {
 			enabled: false,
 			bounding: "rgba(255, 255, 255, 0.05)",
-			text: "#FFFFFF"
+			text: true
 		}
 	};
 
@@ -302,7 +304,7 @@ export default class MultiStyleText extends PIXI.Text {
 
 				if (typeof sty.valign === "number") {
 					lineYMin = Math.min(lineYMin, sty.valign - outputTextData[i][j].fontProperties.descent);
-					lineYMax = Math.max(lineYMax, outputTextData[i][j].fontProperties.ascent - sty.valign);
+					lineYMax = Math.max(lineYMax, sty.valign + outputTextData[i][j].fontProperties.ascent);
 				} else {
 					lineYMin = Math.min(lineYMin, -outputTextData[i][j].fontProperties.descent);
 					lineYMax = Math.max(lineYMax, outputTextData[i][j].fontProperties.ascent);
@@ -318,17 +320,15 @@ export default class MultiStyleText extends PIXI.Text {
 		// transform styles in array
 		let stylesArray = Object.keys(textStyles).map((key) => textStyles[key]);
 
-		let maxStrokeThickness = stylesArray.reduce((prev, curr) => Math.max(prev, curr.strokeThickness || 0), 0);
+		let maxStrokeThickness = stylesArray.reduce((prev, cur) => Math.max(prev, cur.strokeThickness || 0), 0);
 
 		let dropShadowPadding = this.getDropShadowPadding();
 
-		let maxLineHeight = lineYMins.reduce((prev, curr, i) => Math.max(prev, lineYMaxs[i] - curr), 0);
+		let totalHeight = lineYMaxs.reduce((prev, cur) => prev + cur, 0) - lineYMins.reduce((prev, cur) => prev + cur, 0);
 
 		// define the right width and height
 		let width = maxLineWidth + maxStrokeThickness + 2 * dropShadowPadding;
-		let height = (maxLineHeight * lines.length) + 2 * dropShadowPadding;
-
-		console.log(lineYMins, lineYMaxs);
+		let height = totalHeight + 2 * dropShadowPadding;
 
 		this.canvas.width = (width + this.context.lineWidth) * this.resolution;
 		this.canvas.height = height * this.resolution;
@@ -378,7 +378,7 @@ export default class MultiStyleText extends PIXI.Text {
 						break;
 
 					case "middle":
-						linePositionY += (lineYMaxs[i] - height) / 2 - (maxStrokeThickness - style.strokeThickness) / 2;
+						linePositionY += (lineYMaxs[i] - lineYMins[i] - fontProperties.ascent - fontProperties.descent) / 2;
 						break;
 
 					case "bottom":
@@ -496,7 +496,11 @@ export default class MultiStyleText extends PIXI.Text {
 				this.context.fillText(text, x, y);
 			}
 
-			if (MultiStyleText.debugOptions.spans.enabled) {
+			let debugSpan = style.debug === undefined
+				? MultiStyleText.debugOptions.spans.enabled
+				: style.debug;
+
+			if (debugSpan) {
 				this.context.lineWidth = 1;
 
 				if (MultiStyleText.debugOptions.spans.bounding) {
@@ -537,10 +541,14 @@ export default class MultiStyleText extends PIXI.Text {
 				}
 
 				if (MultiStyleText.debugOptions.spans.text) {
-					this.context.fillStyle = MultiStyleText.debugOptions.spans.text;
+					this.context.fillStyle = "#ffffff";
+					this.context.strokeStyle = "#000000";
+					this.context.lineWidth = 2;
 					this.context.font = "8px monospace";
-					this.context.fillText(tagName, x, y - ascent + 8, width);
-					this.context.fillText(`${width.toFixed(2)}x${(ascent + descent).toFixed(2)}`, x, y - ascent + 16, width);
+					this.context.strokeText(tagName, x, y - ascent + 8);
+					this.context.fillText(tagName, x, y - ascent + 8);
+					this.context.strokeText(`${width.toFixed(2)}x${(ascent + descent).toFixed(2)}`, x, y - ascent + 16);
+					this.context.fillText(`${width.toFixed(2)}x${(ascent + descent).toFixed(2)}`, x, y - ascent + 16);
 				}
 			}
 		});
@@ -554,8 +562,11 @@ export default class MultiStyleText extends PIXI.Text {
 			}
 
 			if (MultiStyleText.debugOptions.objects.text) {
-				this.context.fillStyle = MultiStyleText.debugOptions.objects.text;
+				this.context.fillStyle = "#ffffff";
+				this.context.strokeStyle = "#000000";
+				this.context.lineWidth = 2;
 				this.context.font = "8px monospace";
+				this.context.strokeText(`${width.toFixed(2)}x${height.toFixed(2)}`, 0, 8, width);
 				this.context.fillText(`${width.toFixed(2)}x${height.toFixed(2)}`, 0, 8, width);
 			}
 		}
