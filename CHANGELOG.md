@@ -2,6 +2,21 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+<a name="0.6.0"></a>
+# [0.6.0](https://github.com/tleunen/pixi-multistyle-text/compare/v0.5.4...v0.6.0) (2017-07-17)
+
+
+### Feat
+
+* Add more valign options and a debug mode ([#51](https://github.com/tleunen/pixi-multistyle-text/issues/51)) ([49c9326](https://github.com/tleunen/pixi-multistyle-text/commit/49c9326)), closes [#41](https://github.com/tleunen/pixi-multistyle-text/issues/41) [#48](https://github.com/tleunen/pixi-multistyle-text/issues/48)
+
+
+### BREAKING CHANGES
+
+* The default text style changed from `bottom` to `baseline`.
+
+
+
 <a name="0.5.4"></a>
 ## [0.5.4](https://github.com/tleunen/pixi-multistyle-text/compare/v0.5.3...v0.5.4) (2017-06-30)
 
