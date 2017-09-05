@@ -207,7 +207,7 @@ export default class MultiStyleText extends PIXI.Text {
 			tagAlternation = `(?:${tagAlternation})`;
 		}
 
-		let reStr = `<${tagAlternation}(?:\\s+[A-Za-z0-9_\\-]+="(?:[^"]+|\\\\")*")*\\s*>|</${tagAlternation}\\s*>`;
+		let reStr = `<${tagAlternation}(?:\\s+[A-Za-z0-9_\\-]+=(?:"(?:[^"]+|\\\\")*"|'(?:[^']+|\\\\')*'))*\\s*>|</${tagAlternation}\\s*>`;
 
 		if (captureMatch) {
 			reStr = `(${reStr})`;
@@ -217,7 +217,7 @@ export default class MultiStyleText extends PIXI.Text {
 	}
 
 	private getPropertyRegex(): RegExp {
-		return new RegExp(`([A-Za-z0-9_\\-]+)="((?:[^"]+|\\\\")*)"`, "g");
+		return new RegExp(`([A-Za-z0-9_\\-]+)=(?:"((?:[^"]+|\\\\")*)"|'((?:[^']+|\\\\')*)')`, "g");
 	}
 
 	private _getTextDataPerLine (lines: string[]) {
@@ -270,7 +270,7 @@ export default class MultiStyleText extends PIXI.Text {
 						let propertyMatch: RegExpMatchArray;
 
 						while (propertyMatch = propertyRegex.exec(matches[j][0])) {
-							properties[propertyMatch[1]] = propertyMatch[2];
+							properties[propertyMatch[1]] = propertyMatch[2] || propertyMatch[3];
 						}
 
 						tagStack.push({ name: matches[j][1], properties });
