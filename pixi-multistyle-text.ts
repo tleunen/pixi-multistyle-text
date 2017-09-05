@@ -207,7 +207,7 @@ export default class MultiStyleText extends PIXI.Text {
 			tagAlternation = `(?:${tagAlternation})`;
 		}
 
-		let reStr = `<${tagAlternation}(?:\\s+[A-Za-z0-9_\\-]+="(?:[^"]*|\\")*")*\\s*>|</${tagAlternation}\\s*>`;
+		let reStr = `<${tagAlternation}(?:\\s+[A-Za-z0-9_\\-]+="(?:[^"]+|\\\\")*")*\\s*>|</${tagAlternation}\\s*>`;
 
 		if (captureMatch) {
 			reStr = `(${reStr})`;
@@ -217,7 +217,7 @@ export default class MultiStyleText extends PIXI.Text {
 	}
 
 	private getPropertyRegex(): RegExp {
-		return new RegExp(`([A-Za-z0-9_\\-]+)="((?:[^"]*|\\")*)"`, "g");
+		return new RegExp(`([A-Za-z0-9_\\-]+)="((?:[^"]+|\\\\")*)"`, "g");
 	}
 
 	private _getTextDataPerLine (lines: string[]) {
@@ -677,76 +677,74 @@ export default class MultiStyleText extends PIXI.Text {
 
 		for (let i = 0; i < lines.length; i++) {
 			let spaceLeft = wordWrapWidth;
-			const words = lines[i].split(" ");
+			const tagSplit = lines[i].split(re);
+			let firstWordOfLine = true;
 
-			for (let j = 0; j < words.length; j++) {
-				const parts = words[j].split(re);
-
-				for (let k = 0; k < parts.length; k++) {
-					if (re.test(parts[k])) {
-						result += parts[k];
-						if (parts[k][1] === "/") {
-							k += 2;
-							styleStack.pop();
-						} else {
-							k++;
-							styleStack.push(this.assign({}, styleStack[styleStack.length - 1], this.textStyles[parts[k]]));
-							k++;
-						}
-						this.context.font = this.getFontString(styleStack[styleStack.length - 1]);
-						continue;
+			for (let j = 0; j < tagSplit.length; j++) {
+				if (re.test(tagSplit[j])) {
+					result += tagSplit[j];
+					if (tagSplit[j][1] === "/") {
+						j += 2;
+						styleStack.pop();
+					} else {
+						j++;
+						styleStack.push(this.assign({}, styleStack[styleStack.length - 1], this.textStyles[tagSplit[j]]));
+						j++;
 					}
+					this.context.font = this.getFontString(styleStack[styleStack.length - 1]);
+				} else {
+					const words = tagSplit[j].split(" ");
 
-					const partWidth = this.context.measureText(parts[k]).width;
+					for (let k = 0; k < words.length; k++) {
+						const wordWidth = this.context.measureText(words[k]).width;
 
-					if (this._style.breakWords && partWidth > spaceLeft) {
-						// Part should be split in the middle
-						const characters = parts[k].split('');
+						if (this._style.breakWords && wordWidth > spaceLeft) {
+							// Part should be split in the middle
+							const characters = words[k].split('');
 
-						if (j > 0 && k === 0) {
-							result += " ";
-							spaceLeft -= this.context.measureText(" ").width;
-						}
+							if (k > 0) {
+								result += " ";
+								spaceLeft -= this.context.measureText(" ").width;
+							}
 
-						for (let c = 0; c < characters.length; c++) {
-							const characterWidth = this.context.measureText(characters[c]).width;
+							for (let c = 0; c < characters.length; c++) {
+								const characterWidth = this.context.measureText(characters[c]).width;
 
-							if (characterWidth > spaceLeft) {
-								result += `\n${characters[c]}`;
-								spaceLeft = wordWrapWidth - characterWidth;
+								if (characterWidth > spaceLeft) {
+									result += `\n${characters[c]}`;
+									spaceLeft = wordWrapWidth - characterWidth;
+								} else {
+									result += characters[c];
+									spaceLeft -= characterWidth;
+								}
+							}
+						} else if(this._style.breakWords) {
+							result += words[k];
+							spaceLeft -= wordWidth;
+						} else {
+							const paddedWordWidth =
+								wordWidth + (k > 0 ? this.context.measureText(" ").width : 0);
+
+							if (paddedWordWidth > spaceLeft) {
+								// Skip printing the newline if it's the first word of the line that is
+								// greater than the word wrap width.
+								if (!firstWordOfLine) {
+									result += "\n";
+								}
+
+								result += words[k];
+								spaceLeft = wordWrapWidth - wordWidth;
 							} else {
-								if (j > 0 && k === 0 && c === 0) {
+								spaceLeft -= paddedWordWidth;
+
+								if (k > 0) {
 									result += " ";
 								}
 
-								result += characters[c];
-								spaceLeft -= characterWidth;
+								result += words[k];
 							}
 						}
-					} else if(this._style.breakWords) {
-						result += parts[k];
-						spaceLeft -= partWidth;
-					} else {
-						const paddedPartWidth =
-							partWidth + (k === 0 ? this.context.measureText(" ").width : 0);
-
-						if (j === 0 || paddedPartWidth > spaceLeft) {
-							// Skip printing the newline if it's the first word of the line that is
-							// greater than the word wrap width.
-							if (j > 0) {
-								result += "\n";
-							}
-							result += parts[k];
-							spaceLeft = wordWrapWidth - partWidth;
-						} else {
-							spaceLeft -= paddedPartWidth;
-
-							if (k === 0) {
-								result += " ";
-							}
-
-							result += parts[k];
-						}
+						firstWordOfLine = false;
 					}
 				}
 			}

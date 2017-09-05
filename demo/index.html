@@ -133,10 +133,7 @@ let debug = new MultiStyleText(&quot;You can use &lt;code&gt;debug mode&lt;/code
 });</code></pre>
 
 <h2>Interaction Events</h2>
-<pre><code class="js">MultiStyleText.debugOptions.spans.enabled = true;
-MultiStyleText.debugOptions.objects.enabled = true;
-
-let debug = new MultiStyleText(&quot;You can use &lt;code&gt;debug mode&lt;/code&gt; to help you figure out what your text is doing.  You can use &lt;blue&gt;global, &lt;/blue&gt;&lt;red&gt;static&lt;/red&gt; settings or &lt;no-debug&gt;override those with the &lt;code&gt;debug&lt;/code&gt; style option.&lt;/no-debug&gt;&quot;,
+<pre><code class="js">let interaction = new MultiStyleText(`If you enable &lt;link name=&quot;interaction&quot;&gt;interaction&lt;/link&gt;, you can get &lt;link name=&quot;information&quot;&gt;information&lt;/link&gt; about which &lt;link name=&quot;tag&quot;&gt;tag&lt;/link&gt; corresponded to the &lt;link name=&quot;event&quot;&gt;event&lt;/link&gt;.`,
 {
 	&quot;default&quot;: {
 		fontFamily: &quot;Arial&quot;,
@@ -145,14 +142,18 @@ let debug = new MultiStyleText(&quot;You can use &lt;code&gt;debug mode&lt;/code
 		wordWrap: true,
 		wordWrapWidth: 500,
 	},
-	&quot;code&quot;: {
-		fontFamily: &quot;Inconsolata&quot;,
-		fontSize: &quot;36px&quot;,
-		fill: &quot;#ff8888&quot;
-	},
-	&quot;blue&quot;: { fill: 0x4488ff, stroke: 0x2244cc },
-	&quot;red&quot;: { fill: 0xff8888, stroke: 0xcc4444 },
-	&quot;no-debug&quot;: { debug: false }
+	&quot;link&quot;: {
+		fill: 0x4488ff,
+		fontStyle: &quot;italic&quot;
+	}
+});
+
+interaction.interactive = true;
+
+interaction.on(&quot;pointerdown&quot;, (e) =&gt; {
+	if (e.targetTag.name === &quot;link&quot;) {
+		alert(`You clicked on the link for &quot;${e.targetTag.properties.name}&quot;!`);
+	}
 });</code></pre>
 
 <h2>Have Fun</h2>
@@ -188,7 +189,7 @@ requestAnimationFrame(animate);</code></pre>
 			<div id="pixi-container">
 				<script>
 PIXI.settings.RESOLUTION = 2;
-let renderer = PIXI.autoDetectRenderer(600, 3000);
+let renderer = PIXI.autoDetectRenderer(600, 3100);
 renderer.backgroundColor = 0x333333;
 document.getElementById("pixi-container").appendChild(renderer.view);
 let stage = new PIXI.Container();
@@ -334,8 +335,8 @@ stage.addChild(debug);
 MultiStyleText.debugOptions.spans.enabled = false;
 MultiStyleText.debugOptions.objects.enabled = false;
 
-// Interaction
-let interaction = new MultiStyleText(`If you enable <link name="interaction">interaction</link>, you can get <link name="information">information</link> about which <link name="tag">tag</link> had the interaction.`,
+// Interaction Events
+let interaction = new MultiStyleText(`If you enable <link name="interaction">interaction</link>, you can get <link name="information">information</link> about which <link name="tag">tag</link> corresponded to the <link name="event">event</link>.`,
 {
 	"default": {
 		fontFamily: "Arial",
@@ -357,8 +358,7 @@ stage.addChild(interaction);
 interaction.interactive = true;
 interaction.on("pointerdown", (e) => {
 	if (e.targetTag.name === "link") {
-		console.log(e.targetTag);
-		alert(`You clicked on the link for ${e.targetTag.properties.name}!`);
+		alert(`You clicked on the link for "${e.targetTag.properties.name}"!`);
 	}
 });
 
@@ -385,19 +385,14 @@ fun.x = 300 - fun.width / 2;
 fun.y = 2900;
 stage.addChild(fun);
 
-fun.interactive = true;
-fun.on("pointerdown", (e) => {
-	console.log(e.targetTag);
-});
-
 // Animate
 function animate() {
 	requestAnimationFrame(animate);
 	renderer.render(stage);
 
-	// funStyles.default.dropShadowAngle += 0.02;
-	// funStyles.default.dropShadowBlur = Math.sin(funStyles.default.dropShadowAngle + Math.PI / 4) * 5 + 5;
-	// fun.styles = funStyles;
+	funStyles.default.dropShadowAngle += 0.02;
+	funStyles.default.dropShadowBlur = Math.sin(funStyles.default.dropShadowAngle + Math.PI / 4) * 5 + 5;
+	fun.styles = funStyles;
 }
 
 requestAnimationFrame(animate);
