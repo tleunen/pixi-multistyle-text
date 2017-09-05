@@ -23,7 +23,7 @@ interface TextData {
 	width: number;
 	height: number;
 	fontProperties: FontProperties;
-	tagName: string;
+	tag: TagData;
 }
 
 interface TextDrawingData {
@@ -34,7 +34,7 @@ interface TextDrawingData {
 	width: number;
 	ascent: number;
 	descent: number;
-	tagName: string;
+	tag: TagData;
 }
 
 export interface MstDebugOptions {
@@ -52,6 +52,44 @@ export interface MstDebugOptions {
 		text?: boolean;
 	}
 }
+
+export interface TagData {
+	name: string;
+	properties: { [key: string]: string };
+}
+
+export interface MstInteractionEvent extends PIXI.interaction.InteractionEvent {
+	targetTag: TagData;
+}
+
+const INTERACTION_EVENTS = [
+	"pointerover",
+	"pointerenter",
+	"pointerdown",
+	"pointermove",
+	"pointerup",
+	"pointercancel",
+	"pointerout",
+	"pointerleave",
+	"gotpointercapture",
+	"lostpointercapture",
+	"mouseover",
+	"mouseenter",
+	"mousedown",
+	"mousemove",
+	"mouseup",
+	"mousecancel",
+	"mouseout",
+	"mouseleave",
+	"touchover",
+	"touchenter",
+	"touchdown",
+	"touchmove",
+	"touchup",
+	"touchcancel",
+	"touchout",
+	"touchleave"
+];
 
 export default class MultiStyleText extends PIXI.Text {
 	private static DEFAULT_TAG_STYLE: ExtendedTextStyle = {
@@ -101,10 +139,24 @@ export default class MultiStyleText extends PIXI.Text {
 
 	private textStyles: TextStyleSet;
 
+	private hitboxes: { tag: TagData, hitbox: PIXI.Rectangle }[];
+
 	constructor(text: string, styles: TextStyleSet) {
 		super(text);
 
 		this.styles = styles;
+
+		INTERACTION_EVENTS.forEach((event) => {
+			this.on(event, (e: PIXI.interaction.InteractionEvent) => this.handleInteraction(e));
+		});
+	}
+
+	private handleInteraction(e: PIXI.interaction.InteractionEvent) {
+		let ev = e as MstInteractionEvent;
+
+		let localPoint = e.data.getLocalPosition(this);
+		let targetTag = this.hitboxes.reduce((prev, hitbox) => prev !== undefined ? prev : (hitbox.hitbox.contains(localPoint.x, localPoint.y) ? hitbox : undefined), undefined);
+		ev.targetTag = targetTag === undefined ? undefined : targetTag.tag;
 	}
 
 	public set styles(styles: TextStyleSet) {
@@ -146,13 +198,34 @@ export default class MultiStyleText extends PIXI.Text {
 		this.dirty = true;
 	}
 
+	private getTagRegex(captureName: boolean, captureMatch: boolean): RegExp {
+		let tagAlternation = Object.keys(this.textStyles).join("|");
+
+		if (captureName) {
+			tagAlternation = `(${tagAlternation})`;
+		} else {
+			tagAlternation = `(?:${tagAlternation})`;
+		}
+
+		let reStr = `<${tagAlternation}(?:\\s+[A-Za-z0-9_\\-]+="(?:[^"]*|\\")*")*\\s*>|</${tagAlternation}\\s*>`;
+
+		if (captureMatch) {
+			reStr = `(${reStr})`;
+		}
+
+		return new RegExp(reStr, "g");
+	}
+
+	private getPropertyRegex(): RegExp {
+		return new RegExp(`([A-Za-z0-9_\\-]+)="((?:[^"]*|\\")*)"`, "g");
+	}
+
 	private _getTextDataPerLine (lines: string[]) {
 		let outputTextData: TextData[][] = [];
-		let tags = Object.keys(this.textStyles).join("|");
-		let re = new RegExp(`<\/?(${tags})>`, "g");
+		let re = this.getTagRegex(true, false);
 
 		let styleStack = [this.assign({}, this.textStyles["default"])];
-		let tagNameStack = ["default"];
+		let tagStack: TagData[] = [{ name: "default", properties: {} }];
 
 		// determine the group of word for each line
 		for (let i = 0; i < lines.length; i++) {
@@ -168,7 +241,7 @@ export default class MultiStyleText extends PIXI.Text {
 
 			// if there is no match, we still need to add the line with the default style
 			if (matches.length === 0) {
-				lineTextData.push(this.createTextData(lines[i], styleStack[styleStack.length - 1], tagNameStack[tagNameStack.length - 1]));
+				lineTextData.push(this.createTextData(lines[i], styleStack[styleStack.length - 1], tagStack[tagStack.length - 1]));
 			}
 			else {
 				// We got a match! add the text with the needed style
@@ -180,18 +253,27 @@ export default class MultiStyleText extends PIXI.Text {
 						lineTextData.push(this.createTextData(
 							lines[i].substring(currentSearchIdx, matches[j].index),
 							styleStack[styleStack.length - 1],
-							tagNameStack[tagNameStack.length - 1]
+							tagStack[tagStack.length - 1]
 						));
 					}
 
 					if (matches[j][0][1] === "/") { // reset the style if end of tag
 						if (styleStack.length > 1) {
 							styleStack.pop();
-							tagNameStack.pop();
+							tagStack.pop();
 						}
 					} else { // set the current style
 						styleStack.push(this.assign({}, styleStack[styleStack.length - 1], this.textStyles[matches[j][1]]));
-						tagNameStack.push(matches[j][1]);
+
+						let properties: { [key: string]: string } = {};
+						let propertyRegex = this.getPropertyRegex();
+						let propertyMatch: RegExpMatchArray;
+
+						while (propertyMatch = propertyRegex.exec(matches[j][0])) {
+							properties[propertyMatch[1]] = propertyMatch[2];
+						}
+
+						tagStack.push({ name: matches[j][1], properties });
 					}
 
 					// update the current search index
@@ -203,7 +285,7 @@ export default class MultiStyleText extends PIXI.Text {
 					lineTextData.push(this.createTextData(
 						lines[i].substring(currentSearchIdx),
 						styleStack[styleStack.length - 1],
-						tagNameStack[tagNameStack.length - 1]
+						tagStack[tagStack.length - 1]
 					));
 				}
 			}
@@ -218,14 +300,14 @@ export default class MultiStyleText extends PIXI.Text {
 		return new PIXI.TextStyle(style).toFontString();
 	}
 
-	private createTextData(text: string, style: ExtendedTextStyle, tagName: string): TextData {
+	private createTextData(text: string, style: ExtendedTextStyle, tag: TagData): TextData {
 		return {
 			text,
 			style,
 			width: 0,
 			height: 0,
 			fontProperties: undefined,
-			tagName
+			tag
 		};
 	}
 
@@ -246,6 +328,8 @@ export default class MultiStyleText extends PIXI.Text {
 		if (!this.dirty) {
 			return;
 		}
+
+		this.hitboxes = [];
 
 		this.texture.baseTexture.resolution = this.resolution;
 		let textStyles = this.textStyles;
@@ -362,7 +446,7 @@ export default class MultiStyleText extends PIXI.Text {
 			}
 
 			for (let j = 0; j < line.length; j++) {
-				let { style, text, fontProperties, width, height, tagName } = line[j];
+				let { style, text, fontProperties, width, height, tag } = line[j];
 
 				linePositionX += maxStrokeThickness / 2;
 
@@ -400,7 +484,7 @@ export default class MultiStyleText extends PIXI.Text {
 						width,
 						ascent: fontProperties.ascent,
 						descent: fontProperties.descent,
-						tagName
+						tag
 					});
 
 					linePositionX += line[j].width;
@@ -420,7 +504,7 @@ export default class MultiStyleText extends PIXI.Text {
 							width,
 							ascent: fontProperties.ascent,
 							descent: fontProperties.descent,
-							tagName
+							tag
 						});
 
 						linePositionX += this.context.measureText(text.charAt(k)).width;
@@ -462,7 +546,7 @@ export default class MultiStyleText extends PIXI.Text {
 		this.context.restore();
 
 		// Second pass: draw strokes and fills
-		drawingData.forEach(({ style, text, x, y, width, ascent, descent, tagName }) => {
+		drawingData.forEach(({ style, text, x, y, width, ascent, descent, tag }) => {
 			this.context.font = this.getFontString(style);
 
 			let strokeStyle = style.stroke;
@@ -495,6 +579,13 @@ export default class MultiStyleText extends PIXI.Text {
 			if (style.fill) {
 				this.context.fillText(text, x, y);
 			}
+
+			let offset = -this._style.padding - this.getDropShadowPadding();
+
+			this.hitboxes.push({
+				tag,
+				hitbox: new PIXI.Rectangle(x + offset, y - ascent + offset, width, ascent + descent)
+			});
 
 			let debugSpan = style.debug === undefined
 				? MultiStyleText.debugOptions.spans.enabled
@@ -545,8 +636,8 @@ export default class MultiStyleText extends PIXI.Text {
 					this.context.strokeStyle = "#000000";
 					this.context.lineWidth = 2;
 					this.context.font = "8px monospace";
-					this.context.strokeText(tagName, x, y - ascent + 8);
-					this.context.fillText(tagName, x, y - ascent + 8);
+					this.context.strokeText(tag.name, x, y - ascent + 8);
+					this.context.fillText(tag.name, x, y - ascent + 8);
 					this.context.strokeText(`${width.toFixed(2)}x${(ascent + descent).toFixed(2)}`, x, y - ascent + 16);
 					this.context.fillText(`${width.toFixed(2)}x${(ascent + descent).toFixed(2)}`, x, y - ascent + 16);
 				}
@@ -576,9 +667,8 @@ export default class MultiStyleText extends PIXI.Text {
 
 	protected wordWrap(text: string): string {
 		// Greedy wrapping algorithm that will wrap words as the line grows longer than its horizontal bounds.
-		let result = '';
-		let tags = Object.keys(this.textStyles).join("|");
-		let re = new RegExp(`(<\/?(${tags})>)`, "g");
+		let result = "";
+		let re = this.getTagRegex(true, true);
 
 		const lines = text.split("\n");
 		const wordWrapWidth = this._style.wordWrapWidth;
@@ -596,11 +686,12 @@ export default class MultiStyleText extends PIXI.Text {
 					if (re.test(parts[k])) {
 						result += parts[k];
 						if (parts[k][1] === "/") {
-							k++;
+							k += 2;
 							styleStack.pop();
 						} else {
 							k++;
 							styleStack.push(this.assign({}, styleStack[styleStack.length - 1], this.textStyles[parts[k]]));
+							k++;
 						}
 						this.context.font = this.getFontString(styleStack[styleStack.length - 1]);
 						continue;
