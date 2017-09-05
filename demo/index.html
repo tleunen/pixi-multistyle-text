@@ -357,7 +357,7 @@ stage.addChild(interaction);
 
 interaction.interactive = true;
 interaction.on("pointerdown", (e) => {
-	if (e.targetTag.name === "link") {
+	if (e.targetTag !== undefined && e.targetTag.name === "link") {
 		alert(`You clicked on the link for "${e.targetTag.properties.name}"!`);
 	}
 });
