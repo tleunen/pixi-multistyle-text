@@ -132,6 +132,30 @@ let debug = new MultiStyleText(&quot;You can use &lt;code&gt;debug mode&lt;/code
 	&quot;no-debug&quot;: { debug: false }
 });</code></pre>
 
+<h2>Interaction Events</h2>
+<pre><code class="js">let interaction = new MultiStyleText(`If you enable &lt;link name=&quot;interaction&quot;&gt;interaction&lt;/link&gt;, you can get &lt;link name=&quot;information&quot;&gt;information&lt;/link&gt; about which &lt;link name=&quot;tag&quot;&gt;tag&lt;/link&gt; corresponded to the &lt;link name=&quot;event&quot;&gt;event&lt;/link&gt;.`,
+{
+	&quot;default&quot;: {
+		fontFamily: &quot;Arial&quot;,
+		fontSize: &quot;24px&quot;,
+		fill: &quot;#cccccc&quot;,
+		wordWrap: true,
+		wordWrapWidth: 500,
+	},
+	&quot;link&quot;: {
+		fill: 0x4488ff,
+		fontStyle: &quot;italic&quot;
+	}
+});
+
+interaction.interactive = true;
+
+interaction.on(&quot;pointerdown&quot;, (e) =&gt; {
+	if (e.targetTag.name === &quot;link&quot;) {
+		alert(`You clicked on the link for &quot;${e.targetTag.properties.name}&quot;!`);
+	}
+});</code></pre>
+
 <h2>Have Fun</h2>
 <pre><code class="js">let funStyles = {
 	&quot;default&quot;: {
@@ -165,7 +189,7 @@ requestAnimationFrame(animate);</code></pre>
 			<div id="pixi-container">
 				<script>
 PIXI.settings.RESOLUTION = 2;
-let renderer = PIXI.autoDetectRenderer(600, 2680);
+let renderer = PIXI.autoDetectRenderer(600, 3100);
 renderer.backgroundColor = 0x333333;
 document.getElementById("pixi-container").appendChild(renderer.view);
 let stage = new PIXI.Container();
@@ -311,6 +335,33 @@ stage.addChild(debug);
 MultiStyleText.debugOptions.spans.enabled = false;
 MultiStyleText.debugOptions.objects.enabled = false;
 
+// Interaction Events
+let interaction = new MultiStyleText(`If you enable <link name="interaction">interaction</link>, you can get <link name="information">information</link> about which <link name="tag">tag</link> corresponded to the <link name="event">event</link>.`,
+{
+	"default": {
+		fontFamily: "Arial",
+		fontSize: "24px",
+		fill: "#cccccc",
+		wordWrap: true,
+		wordWrapWidth: 500,
+	},
+	"link": {
+		fill: 0x4488ff,
+		fontStyle: "italic"
+	}
+});
+
+interaction.x = 300 - interaction.width / 2;
+interaction.y = 2480;
+stage.addChild(interaction);
+
+interaction.interactive = true;
+interaction.on("pointerdown", (e) => {
+	if (e.targetTag !== undefined && e.targetTag.name === "link") {
+		alert(`You clicked on the link for "${e.targetTag.properties.name}"!`);
+	}
+});
+
 // Have Fun
 let funStyles = {
 	"default": {
@@ -331,7 +382,7 @@ let funStyles = {
 let fun = new MultiStyleText("Now have fun making some <blue>beautiful</blue> <red>multistyle</red> text!", funStyles);
 
 fun.x = 300 - fun.width / 2;
-fun.y = 2480;
+fun.y = 2900;
 stage.addChild(fun);
 
 // Animate
