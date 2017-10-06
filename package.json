@@ -32,16 +32,25 @@
   "license": "MIT",
   "dependencies": {},
   "devDependencies": {
-    "@types/pixi.js": "^4.5.0",
+    "@types/pixi.js": "^4.5.6",
+    "argos-cli": "0.0.9",
     "browserify": "^14.4.0",
+    "happo": "^3.0.2",
+    "pixi.js": "^4.5.6",
     "standard-version": "^4.2.0",
     "tsify": "^3.0.1",
     "typescript": "^2.3.4"
+  },
+  "peerDependencies": {
+    "pixi.js": "^4.5.6"
   },
   "scripts": {
     "demo": "npm run build && open demo/index.html",
     "build": "tsc && browserify index.js -p tsify -s MultiStyleText -o dist/pixi-multistyle-text.js -d",
     "prepublish": "npm run build",
-    "release": "standard-version"
+    "release": "standard-version",
+    "snapshot": "rm -rf happo-snapshots && happo run",
+    "happo": "./scripts/happo-ci.sh",
+    "test": "npm run happo"
   }
 }
