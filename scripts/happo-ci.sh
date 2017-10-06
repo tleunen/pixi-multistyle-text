@@ -21,8 +21,9 @@ happo_run() {
   xvfb-run -a happo run
 }
 
-echo "Running Happo on latest master"
-happo_run origin/master
+# Can't do this yet - no happo files on master!
+# echo "Running Happo on latest master"
+# happo_run origin/master
 
 echo "Running Happo on current PR commit ($CIRCLE_SHA1)"
 happo_run "$CIRCLE_SHA1"
