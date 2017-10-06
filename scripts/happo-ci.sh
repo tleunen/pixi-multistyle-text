@@ -3,11 +3,6 @@
 # Exit as soon as the script fails
 set -ex
 
-if [ -z "$CI_PULL_REQUEST" ]; then
-  echo "This is not a pull request build."
-  exit 0
-fi
-
 happo_run() {
   echo "Checking out $1"
 
