@@ -26,3 +26,6 @@ happo_run origin/master
 
 echo "Running Happo on current PR commit ($CIRCLE_SHA1)"
 happo_run "$CIRCLE_SHA1"
+
+ARGOS_COMMIT=$CIRCLE_SHA1 ARGOS_BRANCH=$CIRCLE_BRANCH \
+  argos upload happo-snapshots --token $ARGOS_TOKEN || true
