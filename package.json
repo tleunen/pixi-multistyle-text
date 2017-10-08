@@ -36,7 +36,7 @@
     "argos-cli": "0.0.9",
     "browserify": "^14.4.0",
     "fs-extra": "^4.0.2",
-    "happo": "^5.0.0-rc.3",
+    "happo": "3.0.2",
     "pixi.js": "^4.5.6",
     "standard-version": "^4.2.0",
     "tsify": "^3.0.1",

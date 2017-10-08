@@ -1,38 +1,27 @@
-// Taken from https://github.com/argos-ci/argos/blob/master/examples/with-happo/test/normalize.js
+const path = require("path");
+const fs = require("fs-extra");
 
-const path = require('path')
-const fs = require('fs-extra')
-const initializeConfig = require('happo/lib/initializeConfig')
-const { config, getLastResultSummary, pathToSnapshot } = require('happo-core')
+const snapshotsFolder = "happo-snapshots";
 
-config.set(initializeConfig())
-const resultSummaryJSON = getLastResultSummary()
+fs.readFile(path.join(snapshotsFolder, "resultSummary.json"))
+	.then((buffer) => JSON.parse(buffer.toString()))
+	.then((results) =>
+		Promise.all(
+			results.newImages.map((newImage) => {
+				const input = path.join(
+					snapshotsFolder,
+					new Buffer(newImage.description).toString("base64"),
+					"@test/current.png"
+				);
 
-Promise.all(
-	resultSummaryJSON.newImages.map(newImage => {
-		console.log(newImage);
-		const input = pathToSnapshot(Object.assign({
-			fileName: 'current.png',
-		}, newImage));
-		const output = path.join(
-			config.get().snapshotsFolder,
-			`${newImage.description}.png`
-		)
+				const output = path.join(
+					snapshotsFolder,
+					`${newImage.description}.png`
+				);
 
-		return new Promise((accept, reject) => {
-			fs.move(input, output, err => {
-				if (err) {
-					reject(err)
-					return
-				}
-				fs.remove(input.replace(`/@${newImage.viewportName}/current.png`, ''), err2 => {
-					if (err2) {
-						reject(err2)
-						return
-					}
-					accept()
-				})
+				return fs.move(input, output)
+					.then(() => fs.remove(path.join(input, "../..")));
 			})
-		})
-	})
-)
+		)
+	)
+	.then(() => fs.remove(path.join(snapshotsFolder, "resultSummary.json")));

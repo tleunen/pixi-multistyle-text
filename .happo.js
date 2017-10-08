@@ -11,7 +11,7 @@ module.exports = {
 	publicDirectories: [],
 	snapshotsFolder: 'happo-snapshots',
 	viewports: {
-		large: {
+		test: {
 			width: 2048,
 			height: 2048,
 		}
