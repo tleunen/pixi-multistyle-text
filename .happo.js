@@ -5,7 +5,7 @@ module.exports = {
 	sourceFiles: [
 		"node_modules/pixi.js/dist/pixi.js",
 		"dist/pixi-multistyle-text.js",
-		"tests.js"
+		"test/tests.js"
 	],
 	stylesheets: [],
 	publicDirectories: [],
