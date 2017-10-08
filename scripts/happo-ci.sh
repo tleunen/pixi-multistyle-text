@@ -11,7 +11,7 @@ happo_run() {
   npm install
   npm run build
 
-  rm -rf node_modules
+  rm -rf happo-snapshots
 
   # Run Happo for the current commit. We use `xvfb-run` so that we can run
   # Happo (which uses Firefox) in a headless display environment.
