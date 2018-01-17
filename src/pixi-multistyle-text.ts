@@ -365,7 +365,7 @@ export default class MultiStyleText extends PIXI.Text {
 				// save the width
 				outputTextData[i][j].width = this.context.measureText(outputTextData[i][j].text).width;
 
-				if (outputTextData[i][j].text.length === 0) {
+				if (outputTextData[i][j].text.length !== 0) {
 					outputTextData[i][j].width += (outputTextData[i][j].text.length - 1) * sty.letterSpacing;
 
 					if (j > 0) {
@@ -383,15 +383,28 @@ export default class MultiStyleText extends PIXI.Text {
 				outputTextData[i][j].fontProperties = PIXI.TextMetrics.measureFont(this.context.font);
 
 				// save the height
-				outputTextData[i][j].height =
-						outputTextData[i][j].fontProperties.fontSize + outputTextData[i][j].style.strokeThickness;
+				outputTextData[i][j].height = outputTextData[i][j].fontProperties.fontSize;
 
 				if (typeof sty.valign === "number") {
-					lineYMin = Math.min(lineYMin, sty.valign - outputTextData[i][j].fontProperties.descent);
-					lineYMax = Math.max(lineYMax, sty.valign + outputTextData[i][j].fontProperties.ascent);
+					lineYMin =
+						Math.min(
+							lineYMin,
+							sty.valign
+								- outputTextData[i][j].fontProperties.descent);
+					lineYMax =
+						Math.max(
+							lineYMax,
+							sty.valign
+								+ outputTextData[i][j].fontProperties.ascent);
 				} else {
-					lineYMin = Math.min(lineYMin, -outputTextData[i][j].fontProperties.descent);
-					lineYMax = Math.max(lineYMax, outputTextData[i][j].fontProperties.ascent);
+					lineYMin =
+						Math.min(
+							lineYMin,
+							-outputTextData[i][j].fontProperties.descent);
+					lineYMax =
+						Math.max(
+							lineYMax,
+							outputTextData[i][j].fontProperties.ascent);
 				}
 			}
 
@@ -411,10 +424,10 @@ export default class MultiStyleText extends PIXI.Text {
 		let totalHeight = lineYMaxs.reduce((prev, cur) => prev + cur, 0) - lineYMins.reduce((prev, cur) => prev + cur, 0);
 
 		// define the right width and height
-		let width = maxLineWidth + maxStrokeThickness + 2 * dropShadowPadding;
-		let height = totalHeight + 2 * dropShadowPadding;
+		let width = maxLineWidth + 2 * maxStrokeThickness + 2 * dropShadowPadding;
+		let height = totalHeight + 2 * maxStrokeThickness + 2 * dropShadowPadding;
 
-		this.canvas.width = (width + this.context.lineWidth) * this.resolution;
+		this.canvas.width = width * this.resolution;
 		this.canvas.height = height * this.resolution;
 
 		this.context.scale(this.resolution, this.resolution);
@@ -422,7 +435,7 @@ export default class MultiStyleText extends PIXI.Text {
 		this.context.textBaseline = "alphabetic";
 		this.context.lineJoin = "round";
 
-		let basePositionY = dropShadowPadding;
+		let basePositionY = dropShadowPadding + maxStrokeThickness;
 
 		let drawingData: TextDrawingData[] = [];
 
@@ -433,24 +446,22 @@ export default class MultiStyleText extends PIXI.Text {
 
 			switch (this._style.align) {
 				case "left":
-					linePositionX = dropShadowPadding;
+					linePositionX = dropShadowPadding + maxStrokeThickness;
 					break;
 
 				case "center":
-					linePositionX = dropShadowPadding + (maxLineWidth - lineWidths[i]) / 2;
+					linePositionX = dropShadowPadding + maxStrokeThickness + (maxLineWidth - lineWidths[i]) / 2;
 					break;
 
 				case "right":
-					linePositionX = dropShadowPadding + maxLineWidth - lineWidths[i];
+					linePositionX = dropShadowPadding + maxStrokeThickness + maxLineWidth - lineWidths[i];
 					break;
 			}
 
 			for (let j = 0; j < line.length; j++) {
 				let { style, text, fontProperties, width, height, tag } = line[j];
 
-				linePositionX += maxStrokeThickness / 2;
-
-				let linePositionY = maxStrokeThickness / 2 + basePositionY + fontProperties.ascent;
+				let linePositionY = basePositionY + fontProperties.ascent;
 
 				switch (style.valign) {
 					case "top":
@@ -496,26 +507,26 @@ export default class MultiStyleText extends PIXI.Text {
 							linePositionX += style.letterSpacing / 2;
 						}
 
+						let charWidth = this.context.measureText(text.charAt(k)).width;
+
 						drawingData.push({
 							text: text.charAt(k),
 							style,
 							x: linePositionX,
 							y: linePositionY,
-							width,
+							width: charWidth,
 							ascent: fontProperties.ascent,
 							descent: fontProperties.descent,
 							tag
 						});
 
-						linePositionX += this.context.measureText(text.charAt(k)).width;
+						linePositionX += charWidth;
 
 						if (k < text.length - 1 || j < line.length - 1) {
 							linePositionX += style.letterSpacing / 2;
 						}
 					}
 				}
-
-				linePositionX -= maxStrokeThickness / 2;
 			}
 
 			basePositionY += lineYMaxs[i] - lineYMins[i];
