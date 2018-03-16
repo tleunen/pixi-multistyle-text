@@ -32,6 +32,12 @@ let text = new MultiStyleText("Let's make some <ml>multiline</ml>\nand <ms>multi
 	}
 });
 ```
+## Build instructions
+
+```
+$ npm install
+$ npm run build
+```
 
 ## Usage
 
@@ -53,6 +59,12 @@ If text is rendered without any value assigned to a given parameter, Pixi's defa
 ## Demo
 
 Open `demo/index.html` in a browser for several helpful examples.
+
+Or:
+```
+$ npm run demo
+```
+
 
 ## License
 
