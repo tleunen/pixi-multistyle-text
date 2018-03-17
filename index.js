@@ -1,1 +1,0 @@
-module.exports = require("./pixi-multistyle-text").default;

@@ -2,7 +2,10 @@
   "name": "pixi-multistyle-text",
   "version": "0.7.0-rc.1",
   "description": "Multi-Style Text for pixi.js",
+  "source": "src/pixi-multistyle-text.ts",
   "main": "dist/pixi-multistyle-text.js",
+  "umd:main": "dist/pixi-multistyle-text.umd.js",
+  "module": "dist/pixi-multistyle-text.m.js",
   "types": "dist/pixi-multistyle-text.d.ts",
   "files": [
     "dist"
@@ -32,22 +35,23 @@
   "license": "MIT",
   "dependencies": {},
   "devDependencies": {
-    "@types/pixi.js": "^4.5.6",
+    "@types/pixi.js": "^4.7.2",
     "argos-cli": "0.0.9",
-    "browserify": "^14.4.0",
-    "fs-extra": "^4.0.2",
-    "happo": "^5.0.0-rc.3",
-    "pixi.js": "^4.5.6",
-    "standard-version": "^4.2.0",
-    "tsify": "^3.0.1",
-    "typescript": "^2.3.4"
+    "fs-extra": "^5.0.0",
+    "happo": "^5.0.0",
+    "happo-target-firefox": "^5.0.0",
+    "microbundle": "^0.4.4",
+    "pixi.js": "^4.7.1",
+    "standard-version": "^4.3.0",
+    "typescript": "^2.7.2"
   },
   "peerDependencies": {
     "pixi.js": "^4.5.6"
   },
   "scripts": {
     "demo": "npm run build && open demo/index.html",
-    "build": "tsc && browserify index.js -p tsify -s MultiStyleText -o dist/pixi-multistyle-text.js -d",
+    "dev": "microbundle watch",
+    "build": "microbundle --name MultiStyleText",
     "prepublish": "npm run build",
     "release": "standard-version",
     "snapshot": "rm -rf happo-snapshots && happo run",
