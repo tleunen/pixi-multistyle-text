@@ -1,0 +1,9 @@
+version: 2
+jobs:
+   build:
+     docker:
+       - image: cypress/browsers:chrome63-ff57
+     steps:
+       - checkout
+       - run: npm i
+       - run: npm test

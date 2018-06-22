@@ -57,10 +57,6 @@ The `align`, `wordWrap`, `wordWrapWidth`, and `breakWord` properties are ignored
 If text is rendered without any value assigned to a given parameter, Pixi's defaults are used.
 
 ## Demo
-
-Open `demo/index.html` in a browser for several helpful examples.
-
-Or:
 ```
 $ npm run demo
 ```
