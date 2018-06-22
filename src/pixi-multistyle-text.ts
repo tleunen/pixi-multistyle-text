@@ -556,8 +556,12 @@ export default class MultiStyleText extends PIXI.Text {
 
 		this.context.restore();
 
-		// Second pass: draw strokes and fills
+		// Second pass: draw the strokes only
 		drawingData.forEach(({ style, text, x, y, width, ascent, descent, tag }) => {
+			if (!style.stroke || !style.strokeThickness) {
+				return; // Skip this step if we have no stroke
+			}
+
 			this.context.font = this.getFontString(style);
 
 			let strokeStyle = style.stroke;
@@ -567,6 +571,17 @@ export default class MultiStyleText extends PIXI.Text {
 
 			this.context.strokeStyle = strokeStyle;
 			this.context.lineWidth = style.strokeThickness;
+
+			this.context.strokeText(text, x, y);
+		});
+
+		// Third pass: draw the fills only
+		drawingData.forEach(({ style, text, x, y, width, ascent, descent, tag }) => {
+			if (!style.fill) {
+				return; // Skip this step if we have no fill
+			}
+
+			this.context.font = this.getFontString(style);
 
 			// set canvas text styles
 			let fillStyle = style.fill;
@@ -583,14 +598,11 @@ export default class MultiStyleText extends PIXI.Text {
 			this.context.fillStyle = this._generateFillStyle(new PIXI.TextStyle(style), [text]) as string | CanvasGradient;
 			// Typecast required for proper typechecking
 
-			if (style.stroke && style.strokeThickness) {
-				this.context.strokeText(text, x, y);
-			}
+			this.context.fillText(text, x, y);
+		});
 
-			if (style.fill) {
-				this.context.fillText(text, x, y);
-			}
-
+		// Fourth pass: collect the bounding boxes and draw the debug information
+		drawingData.forEach(({ style, text, x, y, width, ascent, descent, tag }) => {
 			let offset = -this._style.padding - this.getDropShadowPadding();
 
 			this.hitboxes.push({
