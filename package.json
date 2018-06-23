@@ -1,6 +1,6 @@
 {
   "name": "pixi-multistyle-text",
-  "version": "0.7.0-rc.1",
+  "version": "0.6.0",
   "description": "Multi-Style Text for pixi.js",
   "source": "src/pixi-multistyle-text.ts",
   "main": "dist/pixi-multistyle-text.js",
@@ -35,15 +35,15 @@
   "license": "MIT",
   "dependencies": {},
   "devDependencies": {
-    "@types/pixi.js": "^4.7.2",
+    "@types/pixi.js": "^4.8.0",
     "argos-cli": "0.0.9",
-    "fs-extra": "^5.0.0",
+    "fs-extra": "^6.0.1",
     "happo": "^5.0.0",
-    "happo-target-firefox": "^5.0.0",
+    "happo-target-firefox": "^5.0.2",
     "microbundle": "^0.4.4",
-    "pixi.js": "^4.7.1",
-    "standard-version": "^4.3.0",
-    "typescript": "^2.7.2"
+    "pixi.js": "^4.8.1",
+    "standard-version": "^4.4.0",
+    "typescript": "^2.9.2"
   },
   "peerDependencies": {
     "pixi.js": "^4.5.6"
