@@ -3,6 +3,8 @@
 # Exit as soon as the script fails
 set -ex
 
+npm run build
+
 # Run Happo for the current commit. We use `xvfb-run` so that we can run
 # Happo (which uses Firefox) in a headless display environment.
 xvfb-run -a happo run
