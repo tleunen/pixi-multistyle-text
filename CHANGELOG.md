@@ -2,6 +2,27 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+<a name="0.7.0"></a>
+# [0.7.0](https://github.com/tleunen/pixi-multistyle-text/compare/v0.6.0...v0.7.0) (2018-10-29)
+
+
+### Bug Fixes
+
+* Fix Stroke thickness issues ([#73](https://github.com/tleunen/pixi-multistyle-text/issues/73)) ([36cfc62](https://github.com/tleunen/pixi-multistyle-text/commit/36cfc62)), closes [#59](https://github.com/tleunen/pixi-multistyle-text/issues/59) [#60](https://github.com/tleunen/pixi-multistyle-text/issues/60)
+* text not rendered when `stroke` or `fill` is 0x000000 ([#69](https://github.com/tleunen/pixi-multistyle-text/issues/69)) ([aa0e7de](https://github.com/tleunen/pixi-multistyle-text/commit/aa0e7de))
+
+
+### Chores
+
+* fix happo, use microbundle to create the dist files, use circleci v2 ([#63](https://github.com/tleunen/pixi-multistyle-text/issues/63)) ([56c7a80](https://github.com/tleunen/pixi-multistyle-text/commit/56c7a80))
+
+
+### BREAKING CHANGES
+
+* Since we now use microbundle to create the library. The output changes a bit and the output file in a CJS file only. If you need to use the library with a script tag, you should use the UMD build.
+
+
+
 <a name="0.6.0"></a>
 # [0.6.0](https://github.com/tleunen/pixi-multistyle-text/compare/v0.5.4...v0.6.0) (2017-07-17)
 
