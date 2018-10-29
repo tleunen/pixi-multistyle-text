@@ -572,11 +572,11 @@ export default class MultiStyleText extends PIXI.Text {
 			this.context.fillStyle = this._generateFillStyle(new PIXI.TextStyle(style), [text]) as string | CanvasGradient;
 			// Typecast required for proper typechecking
 
-			if (style.stroke && style.strokeThickness) {
+			if (style.stroke !== undefined && style.strokeThickness) {
 				this.context.strokeText(text, x, y);
 			}
 
-			if (style.fill) {
+			if (style.fill !== undefined) {
 				this.context.fillText(text, x, y);
 			}
 
