@@ -1,6 +1,7 @@
 .DS_Store
 node_modules/
-.rpt2_cache/
+.rpt2*
+.rts2*
 
 dist/
 happo-snapshots/
