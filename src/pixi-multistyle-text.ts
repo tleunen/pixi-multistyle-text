@@ -5,6 +5,7 @@
 export interface ExtendedTextStyle extends PIXI.TextStyleOptions {
 	valign?: "top" | "middle" | "bottom" | "baseline" | number;
 	debug?: boolean;
+	tagStyle?: Array<string>;
 }
 
 export interface TextStyleSet {
@@ -118,7 +119,8 @@ export default class MultiStyleText extends PIXI.Text {
 		textBaseline: "alphabetic",
 		valign: "baseline",
 		wordWrap: false,
-		wordWrapWidth: 100
+		wordWrapWidth: 100,
+		tagStyle: ["<", ">"]
 	};
 
 	public static debugOptions: MstDebugOptions = {
@@ -207,7 +209,8 @@ export default class MultiStyleText extends PIXI.Text {
 			tagAlternation = `(?:${tagAlternation})`;
 		}
 
-		let reStr = `<${tagAlternation}(?:\\s+[A-Za-z0-9_\\-]+=(?:"(?:[^"]+|\\\\")*"|'(?:[^']+|\\\\')*'))*\\s*>|</${tagAlternation}\\s*>`;
+		const { tagStyle } = this.textStyles.default;
+		let reStr = `\\${tagStyle[0]}${tagAlternation}(?:\\s+[A-Za-z0-9_\\-]+=(?:"(?:[^"]+|\\\\")*"|'(?:[^']+|\\\\')*'))*\\s*\\${tagStyle[1]}|\\${tagStyle[0]}\\/${tagAlternation}\\s*\\${tagStyle[1]}`;
 
 		if (captureMatch) {
 			reStr = `(${reStr})`;
