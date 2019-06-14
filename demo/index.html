@@ -1,22 +1,24 @@
-<!DOCTYPE HTML>
+<!DOCTYPE html>
 <html>
-<head>
-	<title>Pixi MultiStyle Text Demo</title>
-    <meta charset="UTF-8">
-	<link rel="stylesheet" href="style.css" />
-	<link href="https://fonts.googleapis.com/css?family=Inconsolata" rel="stylesheet">
+  <head>
+    <title>Pixi MultiStyle Text Demo</title>
+    <meta charset="UTF-8" />
+    <link rel="stylesheet" href="style.css" />
+    <link href="https://fonts.googleapis.com/css?family=Inconsolata" rel="stylesheet" />
 
-	<script src="https://cdnjs.cloudflare.com/ajax/libs/pixi.js/4.5.6/pixi.js"></script>
-	<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.9.0/highlight.min.js"></script>
-	<script src="../dist/pixi-multistyle-text.umd.js"></script>
-	<script>hljs.initHighlightingOnLoad();</script>
-</head>
-	<body>
-		<h1>Pixi Multistyle Text Demo</h1>
-		<main>
-			<div id="code-container">
-<h2>Basics</h2>
-<pre><code class="js">let text = new MultiStyleText(&quot;Let's make some &lt;ml&gt;multiline&lt;/ml&gt;\nand &lt;ms&gt;multistyle&lt;/ms&gt; text for\n&lt;pixi&gt;Pixi.js!&lt;/pixi&gt;&quot;,
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/pixi.js/4.5.6/pixi.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.9.0/highlight.min.js"></script>
+    <script src="../dist/pixi-multistyle-text.umd.js"></script>
+    <script>
+      hljs.initHighlightingOnLoad();
+    </script>
+  </head>
+  <body>
+    <h1>Pixi Multistyle Text Demo</h1>
+    <main>
+      <div id="code-container">
+        <h2>Basics</h2>
+        <pre><code class="js">let text = new MultiStyleText(&quot;Let's make some &lt;ml&gt;multiline&lt;/ml&gt;\nand &lt;ms&gt;multistyle&lt;/ms&gt; text for\n&lt;pixi&gt;Pixi.js!&lt;/pixi&gt;&quot;,
 {
 	&quot;default&quot;: {
 		fontFamily: &quot;Arial&quot;,
@@ -38,8 +40,8 @@
 	}
 });</code></pre>
 
-<h2>Nesting Tags</h2>
-<pre><code class="js">let nested = new MultiStyleText(&quot;You can &lt;outline&gt;nest &lt;b&gt;tags &lt;red&gt;as &lt;i&gt;deeply &lt;thicker&gt;as &lt;shadow&gt;you'd &lt;large&gt;like&lt;/large&gt;&lt;/shadow&gt;&lt;/thicker&gt;&lt;/i&gt;&lt;/red&gt;&lt;/b&gt;&lt;/outline&gt;&quot;,
+        <h2>Nesting Tags</h2>
+        <pre><code class="js">let nested = new MultiStyleText(&quot;You can &lt;outline&gt;nest &lt;b&gt;tags &lt;red&gt;as &lt;i&gt;deeply &lt;thicker&gt;as &lt;shadow&gt;you'd &lt;large&gt;like&lt;/large&gt;&lt;/shadow&gt;&lt;/thicker&gt;&lt;/i&gt;&lt;/red&gt;&lt;/b&gt;&lt;/outline&gt;&quot;,
 {
 	&quot;default&quot;: {
 		fontFamily: &quot;Arial&quot;,
@@ -55,8 +57,8 @@
 	&quot;large&quot;: { fontSize: &quot;36px&quot; }
 });</code></pre>
 
-<h2>Vertical Alignment</h2>
-<pre><code class="js">let valign = new MultiStyleText(&quot;You can use &lt;code&gt;valign&lt;/code&gt; &lt;top&gt;to&lt;/top&gt; &lt;middle&gt;control&lt;/middle&gt; &lt;baseline&gt;the&lt;/baseline&gt; &lt;bottom&gt;vertical&lt;/bottom&gt; &lt;custom1&gt;alignment&lt;/custom1&gt; &lt;custom2&gt;of&lt;/custom2&gt; &lt;custom3&gt;text&lt;/custom3&gt;.&quot;,
+        <h2>Vertical Alignment</h2>
+        <pre><code class="js">let valign = new MultiStyleText(&quot;You can use &lt;code&gt;valign&lt;/code&gt; &lt;top&gt;to&lt;/top&gt; &lt;middle&gt;control&lt;/middle&gt; &lt;baseline&gt;the&lt;/baseline&gt; &lt;bottom&gt;vertical&lt;/bottom&gt; &lt;custom1&gt;alignment&lt;/custom1&gt; &lt;custom2&gt;of&lt;/custom2&gt; &lt;custom3&gt;text&lt;/custom3&gt;.&quot;,
 {
 	&quot;default&quot;: {
 		fontFamily: &quot;Arial&quot;,
@@ -77,8 +79,8 @@
 	&quot;custom3&quot;: { fontSize: &quot;14px&quot;, valign: 25 }
 });</code></pre>
 
-<h2>Wrapping and Alignment</h2>
-<pre><code class="js">let wrapping = new MultiStyleText(&quot;Global word wrap and alignment properties are controlled by the \&quot;default\&quot; style, and can't be overridden by other styles.&quot;,
+        <h2>Wrapping and Alignment</h2>
+        <pre><code class="js">let wrapping = new MultiStyleText(&quot;Global word wrap and alignment properties are controlled by the \&quot;default\&quot; style, and can't be overridden by other styles.&quot;,
 {
 	&quot;default&quot;: {
 		fontFamily: &quot;Arial&quot;,
@@ -90,8 +92,8 @@
 	}
 });</code></pre>
 
-<h2>Wrapping and Alignment II</h2>
-<pre><code class="js">// breakWords allows newlines to be inserted anywhere - not just at whitespaces.
+        <h2>Wrapping and Alignment II</h2>
+        <pre><code class="js">// breakWords allows newlines to be inserted anywhere - not just at whitespaces.
 // This is useful for some languages like Chinese.
 
 let wrapping2 = new MultiStyleText(&quot;全局设置的&lt;blue&gt;对齐&lt;/blue&gt;属性由「默认」来&lt;big&gt;控制&lt;/big&gt;。而且不能被&lt;blue&gt;别的样式&lt;/blue&gt;所&lt;red&gt;覆盖&lt;/red&gt;。&quot;,
@@ -109,8 +111,8 @@ let wrapping2 = new MultiStyleText(&quot;全局设置的&lt;blue&gt;对齐&lt;/b
 	&quot;big&quot;: { fill: 0x88ff88, stroke: 0x44cc44, fontSize: &quot;36px&quot; }
 });</code></pre>
 
-<h2>Debug Mode</h2>
-<pre><code class="js">MultiStyleText.debugOptions.spans.enabled = true;
+        <h2>Debug Mode</h2>
+        <pre><code class="js">MultiStyleText.debugOptions.spans.enabled = true;
 MultiStyleText.debugOptions.objects.enabled = true;
 
 let debug = new MultiStyleText(&quot;You can use &lt;code&gt;debug mode&lt;/code&gt; to help you figure out what your text is doing.  You can use &lt;blue&gt;global, &lt;/blue&gt;&lt;red&gt;static&lt;/red&gt; settings or &lt;no-debug&gt;override those with the &lt;code&gt;debug&lt;/code&gt; style option.&lt;/no-debug&gt;&quot;,
@@ -132,8 +134,8 @@ let debug = new MultiStyleText(&quot;You can use &lt;code&gt;debug mode&lt;/code
 	&quot;no-debug&quot;: { debug: false }
 });</code></pre>
 
-<h2>Interaction Events</h2>
-<pre><code class="js">let interaction = new MultiStyleText(`If you enable &lt;link name=&quot;interaction&quot;&gt;interaction&lt;/link&gt;, you can get &lt;link name=&quot;information&quot;&gt;information&lt;/link&gt; about which &lt;link name=&quot;tag&quot;&gt;tag&lt;/link&gt; corresponded to the &lt;link name=&quot;event&quot;&gt;event&lt;/link&gt;.`,
+        <h2>Interaction Events</h2>
+        <pre><code class="js">let interaction = new MultiStyleText(`If you enable &lt;link name=&quot;interaction&quot;&gt;interaction&lt;/link&gt;, you can get &lt;link name=&quot;information&quot;&gt;information&lt;/link&gt; about which &lt;link name=&quot;tag&quot;&gt;tag&lt;/link&gt; corresponded to the &lt;link name=&quot;event&quot;&gt;event&lt;/link&gt;.`,
 {
 	&quot;default&quot;: {
 		fontFamily: &quot;Arial&quot;,
@@ -156,8 +158,8 @@ interaction.on(&quot;pointerdown&quot;, (e) =&gt; {
 	}
 });</code></pre>
 
-<h2>Have Fun</h2>
-<pre><code class="js">let funStyles = {
+        <h2>Have Fun</h2>
+        <pre><code class="js">let funStyles = {
 	&quot;default&quot;: {
 		fontFamily: &quot;Arial&quot;,
 		fontSize: &quot;24px&quot;,
@@ -185,219 +187,228 @@ function animate() {
 }
 
 requestAnimationFrame(animate);</code></pre>
-			</div>
-			<div id="pixi-container">
-				<script>
-PIXI.settings.RESOLUTION = 2;
-let renderer = PIXI.autoDetectRenderer(600, 3100);
-renderer.backgroundColor = 0x333333;
-document.getElementById("pixi-container").appendChild(renderer.view);
-let stage = new PIXI.Container();
+      </div>
+      <div id="pixi-container">
+        <script>
+          PIXI.settings.RESOLUTION = 2;
+          let renderer = PIXI.autoDetectRenderer(600, 3100);
+          renderer.backgroundColor = 0x333333;
+          document.getElementById('pixi-container').appendChild(renderer.view);
+          let stage = new PIXI.Container();
 
-// Basics
-let text = new MultiStyleText("Let's make some <ml>multiline</ml>\nand <ms>multistyle</ms> text for\n<pixi>Pixi.js!</pixi>",
-{
-	"default": {
-		fontFamily: "Arial",
-		fontSize: "24px",
-		fill: "#cccccc",
-		align: "center"
-	},
-	"ml": {
-		fontStyle: "italic",
-		fill: "#ff8888"
-	},
-	"ms": {
-		fontStyle: "italic",
-		fill: "#4488ff"
-	},
-	"pixi": {
-		fontSize: "64px",
-		fill: "#efefef"
-	}
-});
+          // Basics
+          let text = new MultiStyleText(
+            "[spacing=19]spaced out [/spacing][font=Cursive]comix[/font] comix [shadow=red]DropShadow[/shadow] [size=15]Let's[/size] do [outline=black][color=pink][size=40]outlined text[/size][/color][/outline] [color=yellow]bbcolors[/color] [i]italic[/i]\nand [b]bold[/b] text for\n[pixi]Pixi.js![/pixi]",
+            {
+              default: {
+                fontFamily: 'Arial',
+                fontSize: '24px',
+                fill: '#cccccc',
+                align: 'center',
+                tagStyle: ['[', ']'],
+                wordWrap: true,
+                wordWrapWidth: 250,
+                align: 'left',
+              },
+            }
+          );
 
-text.x = 300 - text.width / 2;
-text.y = 150;
-stage.addChild(text);
+          text.x = 300 - text.width / 2;
+          text.y = 150;
+          stage.addChild(text);
 
-// Nesting Tags
-let nested = new MultiStyleText("You can <outline>nest <b>tags <red>as <i>deeply <thicker>as <shadow>you'd <large>like</large></shadow></thicker></i></red></b></outline>",
-{
-	"default": {
-		fontFamily: "Arial",
-		fontSize: "24px",
-		fill: "#cccccc"
-	},
-	"outline": { stroke: "black", strokeThickness: 2 },
-	"b": { fontWeight: 700 },
-	"red": { fill: "#ff8888" },
-	"i": { fontStyle: "italic" },
-	"thicker": { strokeThickness: 6 },
-	"shadow": { dropShadow: true, dropShadowColor: "#888888" },
-	"large": { fontSize: "36px" }
-});
+          // Nesting Tags
+          let nested = new MultiStyleText(
+            "You can <outline>nest <b>tags <red>as <i>deeply <thicker>as <shadow>you'd <large>like</large></shadow></thicker></i></red></b></outline>",
+            {
+              default: {
+                fontFamily: 'Arial',
+                fontSize: '24px',
+                fill: '#cccccc',
+              },
+              outline: { stroke: 'black', strokeThickness: 2 },
+              b: { fontWeight: 700 },
+              red: { fill: '#ff8888' },
+              i: { fontStyle: 'italic' },
+              thicker: { strokeThickness: 6 },
+              shadow: { dropShadow: true, dropShadowColor: '#888888' },
+              large: { fontSize: '36px' },
+            }
+          );
 
-nested.x = 300 - nested.width / 2;
-nested.y = 550;
-stage.addChild(nested);
+          nested.x = 300 - nested.width / 2;
+          nested.y = 550;
+          stage.addChild(nested);
 
-// Vertical Alignment
-let valign = new MultiStyleText("You can use <code>valign</code> <top>to</top> <middle>control</middle> <baseline>the</baseline> <bottom>vertical</bottom> <custom1>alignment</custom1> <custom2>of</custom2> <custom3>text</custom3>.",
-{
-	"default": {
-		fontFamily: "Arial",
-		fontSize: "24px",
-		fill: "#cccccc"
-	},
-	"code": {
-		fontFamily: "Inconsolata",
-		fontSize: "36px",
-		fill: "#ff8888"
-	},
-	"top": { fontSize: "14px", valign: "top" },
-	"middle": { fontSize: "14px", valign: "middle" },
-	"bottom": { fontSize: "14px", valign: "bottom" },
-	"baseline": { fontSize: "14px", valign: "baseline" },
-	"custom1": { fontSize: "14px", valign: 5 },
-	"custom2": { fontSize: "14px", valign: -70 },
-	"custom3": { fontSize: "14px", valign: 25 }
-});
+          // Vertical Alignment
+          let valign = new MultiStyleText(
+            'You can use <code>valign</code> <top>to</top> <middle>control</middle> <baseline>the</baseline> <bottom>vertical</bottom> <custom1>alignment</custom1> <custom2>of</custom2> <custom3>text</custom3>.',
+            {
+              default: {
+                fontFamily: 'Arial',
+                fontSize: '24px',
+                fill: '#cccccc',
+              },
+              code: {
+                fontFamily: 'Inconsolata',
+                fontSize: '36px',
+                fill: '#ff8888',
+              },
+              top: { fontSize: '14px', valign: 'top' },
+              middle: { fontSize: '14px', valign: 'middle' },
+              bottom: { fontSize: '14px', valign: 'bottom' },
+              baseline: { fontSize: '14px', valign: 'baseline' },
+              custom1: { fontSize: '14px', valign: 5 },
+              custom2: { fontSize: '14px', valign: -70 },
+              custom3: { fontSize: '14px', valign: 25 },
+            }
+          );
 
-valign.x = 300 - valign.width / 2;
-valign.y = 960;
-stage.addChild(valign);
+          valign.x = 300 - valign.width / 2;
+          valign.y = 960;
+          stage.addChild(valign);
 
-// Wrapping and Alignment
-let wrapping = new MultiStyleText("Global word wrap and alignment properties are controlled by the \"default\" style, and can't be overridden by other styles.",
-{
-	"default": {
-		fontFamily: "Arial",
-		fontSize: "24px",
-		fill: "#cccccc",
-		wordWrap: true,
-		wordWrapWidth: 150,
-		align: "right"
-	}
-});
+          // Wrapping and Alignment
+          let wrapping = new MultiStyleText(
+            'Global word wrap and alignment properties are controlled by the "default" style, and can\'t be overridden by other styles.',
+            {
+              default: {
+                fontFamily: 'Arial',
+                fontSize: '24px',
+                fill: '#cccccc',
+                wordWrap: true,
+                wordWrapWidth: 150,
+                align: 'right',
+              },
+            }
+          );
 
-wrapping.x = 550 - wrapping.width;
-wrapping.y = 1220;
-stage.addChild(wrapping);
+          wrapping.x = 550 - wrapping.width;
+          wrapping.y = 1220;
+          stage.addChild(wrapping);
 
-// Wrapping and Alignment II
-let wrapping2 = new MultiStyleText("全局设置的<blue>对齐</blue>属性由「默认」来<big>控制</big>。而且不能被<blue>别的样式</blue>所<red>覆盖</red>。",
-{
-	"default": {
-		fontFamily: "Arial",
-		fontSize: "16px",
-		fill: "#cccccc",
-		wordWrap: true,
-		wordWrapWidth: 250,
-		breakWords: true,
-	},
-	"blue": { fill: 0x4488ff, stroke: 0x2244cc, fontSize: "24px" },
-	"red": { fill: 0xff8888, stroke: 0xcc4444 },
-	"big": { fill: 0x88ff88, stroke: 0x44cc44, fontSize: "36px" }
-});
+          // Wrapping and Alignment II
+          let wrapping2 = new MultiStyleText(
+            '全局设置的<blue>对齐</blue>属性由「默认」来<big>控制</big>。而且不能被<blue>别的样式</blue>所<red>覆盖</red>。',
+            {
+              default: {
+                fontFamily: 'Arial',
+                fontSize: '16px',
+                fill: '#cccccc',
+                wordWrap: true,
+                wordWrapWidth: 250,
+                breakWords: true,
+              },
+              blue: { fill: 0x4488ff, stroke: 0x2244cc, fontSize: '24px' },
+              red: { fill: 0xff8888, stroke: 0xcc4444 },
+              big: { fill: 0x88ff88, stroke: 0x44cc44, fontSize: '36px' },
+            }
+          );
 
-wrapping2.x = 440 - wrapping2.width;
-wrapping2.y = 1700;
-stage.addChild(wrapping2);
+          wrapping2.x = 440 - wrapping2.width;
+          wrapping2.y = 1700;
+          stage.addChild(wrapping2);
 
-// Debug Mode
-let debug = new MultiStyleText("You can use <code>debug mode</code> to help you figure out what your text is doing.  You can use <blue>global, </blue><red>static</red> settings or <no-debug>override those with the <code>debug</code> style option.</no-debug>",
-{
-	"default": {
-		fontFamily: "Arial",
-		fontSize: "24px",
-		fill: "#cccccc",
-		wordWrap: true,
-		wordWrapWidth: 500,
-	},
-	"code": {
-		fontFamily: "Inconsolata",
-		fontSize: "36px",
-		fill: "#ff8888"
-	},
-	"blue": { fill: 0x4488ff, stroke: 0x2244cc },
-	"red": { fill: 0xff8888, stroke: 0xcc4444 },
-	"no-debug": { debug: false }
-});
+          // Debug Mode
+          let debug = new MultiStyleText(
+            'You can use <code>debug mode</code> to help you figure out what your text is doing.  You can use <blue>global, </blue><red>static</red> settings or <no-debug>override those with the <code>debug</code> style option.</no-debug>',
+            {
+              default: {
+                fontFamily: 'Arial',
+                fontSize: '24px',
+                fill: '#cccccc',
+                wordWrap: true,
+                wordWrapWidth: 500,
+              },
+              code: {
+                fontFamily: 'Inconsolata',
+                fontSize: '36px',
+                fill: '#ff8888',
+              },
+              blue: { fill: 0x4488ff, stroke: 0x2244cc },
+              red: { fill: 0xff8888, stroke: 0xcc4444 },
+              'no-debug': { debug: false },
+            }
+          );
 
-MultiStyleText.debugOptions.spans.enabled = true;
-MultiStyleText.debugOptions.objects.enabled = true;
+          MultiStyleText.debugOptions.spans.enabled = true;
+          MultiStyleText.debugOptions.objects.enabled = true;
 
-debug.x = 300 - debug.width / 2;
-debug.y = 2050;
-stage.addChild(debug);
+          debug.x = 300 - debug.width / 2;
+          debug.y = 2050;
+          stage.addChild(debug);
 
-MultiStyleText.debugOptions.spans.enabled = false;
-MultiStyleText.debugOptions.objects.enabled = false;
+          MultiStyleText.debugOptions.spans.enabled = false;
+          MultiStyleText.debugOptions.objects.enabled = false;
 
-// Interaction Events
-let interaction = new MultiStyleText(`If you enable <link name="interaction">interaction</link>, you can get <link name="information">information</link> about which <link name="tag">tag</link> corresponded to the <link name="event">event</link>.`,
-{
-	"default": {
-		fontFamily: "Arial",
-		fontSize: "24px",
-		fill: "#cccccc",
-		wordWrap: true,
-		wordWrapWidth: 500,
-	},
-	"link": {
-		fill: 0x4488ff,
-		fontStyle: "italic"
-	}
-});
+          // Interaction Events
+          let interaction = new MultiStyleText(
+            `If you enable <link name="interaction">interaction</link>, you can get <link name="information">information</link> about which <link name="tag">tag</link> corresponded to the <link name="event">event</link>.`,
+            {
+              default: {
+                fontFamily: 'Arial',
+                fontSize: '24px',
+                fill: '#cccccc',
+                wordWrap: true,
+                wordWrapWidth: 500,
+              },
+              link: {
+                fill: 0x4488ff,
+                fontStyle: 'italic',
+              },
+            }
+          );
 
-interaction.x = 300 - interaction.width / 2;
-interaction.y = 2480;
-stage.addChild(interaction);
+          interaction.x = 300 - interaction.width / 2;
+          interaction.y = 2480;
+          stage.addChild(interaction);
 
-interaction.interactive = true;
-interaction.on("pointerdown", (e) => {
-	if (e.targetTag !== undefined && e.targetTag.name === "link") {
-		alert(`You clicked on the link for "${e.targetTag.properties.name}"!`);
-	}
-});
+          interaction.interactive = true;
+          interaction.on('pointerdown', e => {
+            if (e.targetTag !== undefined && e.targetTag.name === 'link') {
+              alert(`You clicked on the link for "${e.targetTag.properties.name}"!`);
+            }
+          });
 
-// Have Fun
-let funStyles = {
-	"default": {
-		fontFamily: "Arial",
-		fontSize: "24px",
-		fill: "#cccccc",
-		strokeThickness: 1,
-		stroke: "#aaaaaa",
-		dropShadow: true,
-		dropShadowBlur: 10,
-		dropShadowDistance: 8,
-		dropShadowAngle: 0
-	},
-	"blue": { fill: 0x4488ff, stroke: 0x2244cc },
-	"red": { fill: 0xff8888, stroke: 0xcc4444 }
-};
+          // Have Fun
+          let funStyles = {
+            default: {
+              fontFamily: 'Arial',
+              fontSize: '24px',
+              fill: '#cccccc',
+              strokeThickness: 1,
+              stroke: '#aaaaaa',
+              dropShadow: true,
+              dropShadowBlur: 10,
+              dropShadowDistance: 8,
+              dropShadowAngle: 0,
+            },
+            blue: { fill: 0x4488ff, stroke: 0x2244cc },
+            red: { fill: 0xff8888, stroke: 0xcc4444 },
+          };
 
-let fun = new MultiStyleText("Now have fun making some <blue>beautiful</blue> <red>multistyle</red> text!", funStyles);
+          let fun = new MultiStyleText(
+            'Now have fun making some <blue>beautiful</blue> <red>multistyle</red> text!',
+            funStyles
+          );
 
-fun.x = 300 - fun.width / 2;
-fun.y = 2900;
-stage.addChild(fun);
+          fun.x = 300 - fun.width / 2;
+          fun.y = 2900;
+          stage.addChild(fun);
 
-// Animate
-function animate() {
-	requestAnimationFrame(animate);
-	renderer.render(stage);
+          // Animate
+          function animate() {
+            requestAnimationFrame(animate);
+            renderer.render(stage);
 
-	funStyles.default.dropShadowAngle += 0.02;
-	funStyles.default.dropShadowBlur = Math.sin(funStyles.default.dropShadowAngle + Math.PI / 4) * 5 + 5;
-	fun.styles = funStyles;
-}
+            funStyles.default.dropShadowAngle += 0.02;
+            funStyles.default.dropShadowBlur = Math.sin(funStyles.default.dropShadowAngle + Math.PI / 4) * 5 + 5;
+            fun.styles = funStyles;
+          }
 
-requestAnimationFrame(animate);
-				</script>
-			</div>
-		</main>
-	</body>
+          requestAnimationFrame(animate);
+        </script>
+      </div>
+    </main>
+  </body>
 </html>

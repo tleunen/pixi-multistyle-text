@@ -173,6 +173,19 @@ export default class MultiStyleText extends PIXI.Text {
 				this.textStyles[style] = this.assign({}, styles[style]);
 			}
 		}
+		if (this.textStyles.default.tagStyle[0] ==="[") {
+			// when using bbcode parsing, register a bunch of standard bbcode tags and some cool pixi ones
+			this.textStyles.b = this.assign({}, {fontStyle: 'bold'});
+			this.textStyles.i = this.assign({}, {fontStyle: 'italic'});
+			this.textStyles.color = this.assign({}, {fill: ''}); // an array would result in gradients
+			this.textStyles.outline = this.assign({}, {stroke: '', strokeThickness: 6});
+			this.textStyles.font = this.assign({}, {fontFamily: ''});
+			this.textStyles.shadow = this.assign({}, {
+				dropShadowColor: '', dropShadow: true, dropShadowBlur: 3, dropShadowDistance: 3, dropShadowAngle: 2,});
+			this.textStyles.size = this.assign({}, {fontSize: 'px'});
+			this.textStyles.spacing = this.assign({}, {letterSpacing: ''});
+			this.textStyles.align = this.assign({}, {align: ''});
+		}
 
 		this._style = new PIXI.TextStyle(this.textStyles["default"]);
 		this.dirty = true;
@@ -202,6 +215,8 @@ export default class MultiStyleText extends PIXI.Text {
 
 	private getTagRegex(captureName: boolean, captureMatch: boolean): RegExp {
 		let tagAlternation = Object.keys(this.textStyles).join("|");
+		const { tagStyle } = this.textStyles.default;
+		if (tagStyle[0] === "[") tagAlternation = "[A-z]+";
 
 		if (captureName) {
 			tagAlternation = `(${tagAlternation})`;
@@ -209,8 +224,8 @@ export default class MultiStyleText extends PIXI.Text {
 			tagAlternation = `(?:${tagAlternation})`;
 		}
 
-		const { tagStyle } = this.textStyles.default;
-		let reStr = `\\${tagStyle[0]}${tagAlternation}(?:\\s+[A-Za-z0-9_\\-]+=(?:"(?:[^"]+|\\\\")*"|'(?:[^']+|\\\\')*'))*\\s*\\${tagStyle[1]}|\\${tagStyle[0]}\\/${tagAlternation}\\s*\\${tagStyle[1]}`;
+		let reStr = tagStyle[0] === "[" ? `\\${tagStyle[0]}${tagAlternation}(?:\\=(?:[A-Za-z0-9_\\-]+|'(?:[^']+|\\\\')*'))*\\s*\\${tagStyle[1]}|\\${tagStyle[0]}\\/${tagAlternation}\\s*\\${tagStyle[1]}`
+		: `\\${tagStyle[0]}${tagAlternation}(?:\\s+[A-Za-z0-9_\\-]+=(?:"(?:[^"]+|\\\\")*"|'(?:[^']+|\\\\')*'))*\\s*\\${tagStyle[1]}|\\${tagStyle[0]}\\/${tagAlternation}\\s*\\${tagStyle[1]}`;
 
 		if (captureMatch) {
 			reStr = `(${reStr})`;
@@ -221,6 +236,10 @@ export default class MultiStyleText extends PIXI.Text {
 
 	private getPropertyRegex(): RegExp {
 		return new RegExp(`([A-Za-z0-9_\\-]+)=(?:"((?:[^"]+|\\\\")*)"|'((?:[^']+|\\\\')*)')`, "g");
+	}
+
+	private getBBcodePropertyRegex(): RegExp {
+		return new RegExp(`[A-Za-z0-9_\\-]+=([A-Za-z0-9_\\-]+)`, "g");
 	}
 
 	private _getTextDataPerLine (lines: string[]) {
@@ -241,6 +260,7 @@ export default class MultiStyleText extends PIXI.Text {
 			while (matchArray = re.exec(lines[i])) {
 				matches.push(matchArray);
 			}
+			console.log(matches)
 
 			// if there is no match, we still need to add the line with the default style
 			if (matches.length === 0) {
@@ -266,17 +286,30 @@ export default class MultiStyleText extends PIXI.Text {
 							tagStack.pop();
 						}
 					} else { // set the current style
-						styleStack.push(this.assign({}, styleStack[styleStack.length - 1], this.textStyles[matches[j][1]]));
-
 						let properties: { [key: string]: string } = {};
 						let propertyRegex = this.getPropertyRegex();
 						let propertyMatch: RegExpMatchArray;
-
+						
 						while (propertyMatch = propertyRegex.exec(matches[j][0])) {
 							properties[propertyMatch[1]] = propertyMatch[2] || propertyMatch[3];
 						}
-
+						
 						tagStack.push({ name: matches[j][1], properties });
+
+						const { tagStyle } = this.textStyles.default;
+						// if using bbtag style, take styling information in a different way
+						if (tagStyle[0] === "[" && matches[j][0].includes('=')) {
+							const bbcodeRegex = this.getBBcodePropertyRegex();
+							const bbcodeTags = bbcodeRegex.exec(matches[j][0]);
+							let bbStyle:{ [key: string]: string } = {};
+							Object.entries(this.textStyles[matches[j][1]]).forEach( style => {
+								bbStyle[style[0]] = typeof style[1] !== 'string'? style[1] : bbcodeTags[1] + style[1];
+							})
+							styleStack.push(this.assign({}, styleStack[styleStack.length - 1], bbStyle));
+
+						} else {
+							styleStack.push(this.assign({}, styleStack[styleStack.length - 1], this.textStyles[matches[j][1]]));
+						}
 					}
 
 					// update the current search index
