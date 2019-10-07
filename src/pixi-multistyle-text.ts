@@ -316,14 +316,6 @@ export default class MultiStyleText extends PIXI.Text {
 
 				// is there any character left?
 				if (currentSearchIdx < lines[i].length) {
-					// when using bbcode and part of the text is clipped, clip out the incomplete tag, preserve the style - good for scrolling text in games
-					let textLine = lines[i].match(/^[a-zA-z=]+\](.*)[\[]|^[a-zA-z=]+\](.*)$/);
-					const { tagStyle } = this.textStyles.default;
-					if (tagStyle[0] === "[" && textLine && textLine.length > 0) {
-						textLine = textLine.filter(line => line !== undefined && line.length);
-						lines[i] = textLine[textLine.length-1];
-						currentSearchIdx = -1;
-					}
 					const result =this.createTextData(
 						currentSearchIdx ? lines[i].substring(currentSearchIdx) : lines[i],
 						styleStack[styleStack.length - 1],
@@ -334,6 +326,16 @@ export default class MultiStyleText extends PIXI.Text {
 			}
 
 			outputTextData.push(lineTextData);
+		}
+
+		// when using bbcode and part of the text is clipped, remove any incomplete tags, preserve the style - good for scrolling text in games
+		const { tagStyle } = this.textStyles.default;
+		if (tagStyle[0] === "[") {
+			outputTextData.map( lineTextData => 
+				lineTextData.map( data => {
+					if (data.text.includes("[")) data.text = data.text.match(/^(.*)\[/)[1]	
+				})
+			)
 		}
 
 		return outputTextData;
