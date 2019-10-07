@@ -260,8 +260,6 @@ export default class MultiStyleText extends PIXI.Text {
 			while (matchArray = re.exec(lines[i])) {
 				matches.push(matchArray);
 			}
-			console.log(matches)
-
 			// if there is no match, we still need to add the line with the default style
 			if (matches.length === 0) {
 				lineTextData.push(this.createTextData(lines[i], styleStack[styleStack.length - 1], tagStack[tagStack.length - 1]));
@@ -318,11 +316,20 @@ export default class MultiStyleText extends PIXI.Text {
 
 				// is there any character left?
 				if (currentSearchIdx < lines[i].length) {
-					lineTextData.push(this.createTextData(
-						lines[i].substring(currentSearchIdx),
+					// when using bbcode and part of the text is clipped, clip out the incomplete tag, preserve the style - good for scrolling text in games
+					let textLine = lines[i].match(/^[a-zA-z=]+\](.*)[\[]|^[a-zA-z=]+\](.*)$/);
+					const { tagStyle } = this.textStyles.default;
+					if (tagStyle[0] === "[" && textLine && textLine.length > 0) {
+						textLine = textLine.filter(line => line !== undefined && line.length);
+						lines[i] = textLine[textLine.length-1];
+						currentSearchIdx = -1;
+					}
+					const result =this.createTextData(
+						currentSearchIdx ? lines[i].substring(currentSearchIdx) : lines[i],
 						styleStack[styleStack.length - 1],
 						tagStack[tagStack.length - 1]
-					));
+					)
+					lineTextData.push(result);
 				}
 			}
 
