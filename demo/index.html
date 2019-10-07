@@ -4,7 +4,10 @@
     <title>Pixi MultiStyle Text Demo</title>
     <meta charset="UTF-8" />
     <link rel="stylesheet" href="style.css" />
-    <link href="https://fonts.googleapis.com/css?family=Inconsolata" rel="stylesheet" />
+    <link
+      href="https://fonts.googleapis.com/css?family=Inconsolata"
+      rel="stylesheet"
+    />
 
     <script src="https://cdnjs.cloudflare.com/ajax/libs/pixi.js/4.5.6/pixi.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.9.0/highlight.min.js"></script>
@@ -196,6 +199,7 @@ requestAnimationFrame(animate);</code></pre>
           document.getElementById('pixi-container').appendChild(renderer.view);
           let stage = new PIXI.Container();
 
+          const MultiStyleText = this.pixiMultistyleText;
           // Basics
           let text = new MultiStyleText(
             "[spacing=19]spaced out [/spacing][font=Cursive]comix[/font] comix [shadow=red]DropShadow[/shadow] [size=15]Let's[/size] do [outline=black][color=pink][size=40]outlined text[/size][/color][/outline] [color=yellow]bbcolors[/color] [i]italic[/i]\nand [b]bold[/b] text for\n[pixi]Pixi.js![/pixi]",
@@ -366,7 +370,9 @@ requestAnimationFrame(animate);</code></pre>
           interaction.interactive = true;
           interaction.on('pointerdown', e => {
             if (e.targetTag !== undefined && e.targetTag.name === 'link') {
-              alert(`You clicked on the link for "${e.targetTag.properties.name}"!`);
+              alert(
+                `You clicked on the link for "${e.targetTag.properties.name}"!`
+              );
             }
           });
 
@@ -402,7 +408,8 @@ requestAnimationFrame(animate);</code></pre>
             renderer.render(stage);
 
             funStyles.default.dropShadowAngle += 0.02;
-            funStyles.default.dropShadowBlur = Math.sin(funStyles.default.dropShadowAngle + Math.PI / 4) * 5 + 5;
+            funStyles.default.dropShadowBlur =
+              Math.sin(funStyles.default.dropShadowAngle + Math.PI / 4) * 5 + 5;
             fun.styles = funStyles;
           }
 
