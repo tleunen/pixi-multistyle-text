@@ -194,6 +194,7 @@ renderer.backgroundColor = 0x333333;
 document.getElementById("pixi-container").appendChild(renderer.view);
 let stage = new PIXI.Container();
 
+const MultiStyleText = this.pixiMultistyleText;
 // Basics
 let text = new MultiStyleText("Let's make some <ml>multiline</ml>\nand <ms>multistyle</ms> text for\n<pixi>Pixi.js!</pixi>",
 {
