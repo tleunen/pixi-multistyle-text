@@ -224,7 +224,7 @@ export default class MultiStyleText extends PIXI.Text {
 			tagAlternation = `(?:${tagAlternation})`;
 		}
 
-		let reStr = tagStyle[0] === "[" ? `\\${tagStyle[0]}${tagAlternation}(?:\\=(?:[A-Za-z0-9_\\-]+|'(?:[^']+|\\\\')*'))*\\s*\\${tagStyle[1]}|\\${tagStyle[0]}\\/${tagAlternation}\\s*\\${tagStyle[1]}`
+		let reStr = tagStyle[0] === "[" ? `\\${tagStyle[0]}${tagAlternation}(?:\\=(?:[A-Za-z0-9_\\-\\#]+|'(?:[^']+|\\\\')*'))*\\s*\\${tagStyle[1]}|\\${tagStyle[0]}\\/${tagAlternation}\\s*\\${tagStyle[1]}`
 		: `\\${tagStyle[0]}${tagAlternation}(?:\\s+[A-Za-z0-9_\\-]+=(?:"(?:[^"]+|\\\\")*"|'(?:[^']+|\\\\')*'))*\\s*\\${tagStyle[1]}|\\${tagStyle[0]}\\/${tagAlternation}\\s*\\${tagStyle[1]}`;
 
 		if (captureMatch) {
@@ -239,7 +239,7 @@ export default class MultiStyleText extends PIXI.Text {
 	}
 
 	private getBBcodePropertyRegex(): RegExp {
-		return new RegExp(`[A-Za-z0-9_\\-]+=([A-Za-z0-9_\\-]+)`, "g");
+		return new RegExp(`[A-Za-z0-9_\\-]+=([A-Za-z0-9_\\-\\#]+)`, "g");
 	}
 
 	private _getTextDataPerLine (lines: string[]) {
