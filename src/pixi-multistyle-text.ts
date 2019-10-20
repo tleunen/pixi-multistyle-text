@@ -5,7 +5,7 @@
 export interface ExtendedTextStyle extends PIXI.TextStyleOptions {
 	valign?: "top" | "middle" | "bottom" | "baseline" | number;
 	debug?: boolean;
-	tagStyle?: Array<string>;
+	tagStyle?: "xml" | "bbcode";
 }
 
 export interface TextStyleSet {
@@ -92,6 +92,16 @@ const INTERACTION_EVENTS = [
 	"touchleave"
 ];
 
+const TAG_STYLE = {
+	bbcode: "bbcode",
+	xml: "xml"
+};
+
+const TAG = {
+	bbcode: ["[","]"],
+	xml: ["<",">"]
+};
+
 export default class MultiStyleText extends PIXI.Text {
 	private static DEFAULT_TAG_STYLE: ExtendedTextStyle = {
 		align: "left",
@@ -120,7 +130,7 @@ export default class MultiStyleText extends PIXI.Text {
 		valign: "baseline",
 		wordWrap: false,
 		wordWrapWidth: 100,
-		tagStyle: ["<", ">"]
+		tagStyle: "xml"
 	};
 
 	public static debugOptions: MstDebugOptions = {
@@ -173,7 +183,7 @@ export default class MultiStyleText extends PIXI.Text {
 				this.textStyles[style] = this.assign({}, styles[style]);
 			}
 		}
-		if (this.textStyles.default.tagStyle[0] ==="[") {
+		if (this.textStyles.default.tagStyle === TAG_STYLE.bbcode) {
 			// when using bbcode parsing, register a bunch of standard bbcode tags and some cool pixi ones
 			this.textStyles.b = this.assign({}, {fontStyle: 'bold'});
 			this.textStyles.i = this.assign({}, {fontStyle: 'italic'});
@@ -216,7 +226,7 @@ export default class MultiStyleText extends PIXI.Text {
 	private getTagRegex(captureName: boolean, captureMatch: boolean): RegExp {
 		let tagAlternation = Object.keys(this.textStyles).join("|");
 		const { tagStyle } = this.textStyles.default;
-		if (tagStyle[0] === "[") tagAlternation = "[A-z]+";
+		if (tagStyle === TAG_STYLE.bbcode) tagAlternation = "[A-z]+";
 
 		if (captureName) {
 			tagAlternation = `(${tagAlternation})`;
@@ -224,8 +234,8 @@ export default class MultiStyleText extends PIXI.Text {
 			tagAlternation = `(?:${tagAlternation})`;
 		}
 
-		let reStr = tagStyle[0] === "[" ? `\\${tagStyle[0]}${tagAlternation}(?:\\=(?:[A-Za-z0-9_\\-\\#]+|'(?:[^']+|\\\\')*'))*\\s*\\${tagStyle[1]}|\\${tagStyle[0]}\\/${tagAlternation}\\s*\\${tagStyle[1]}`
-		: `\\${tagStyle[0]}${tagAlternation}(?:\\s+[A-Za-z0-9_\\-]+=(?:"(?:[^"]+|\\\\")*"|'(?:[^']+|\\\\')*'))*\\s*\\${tagStyle[1]}|\\${tagStyle[0]}\\/${tagAlternation}\\s*\\${tagStyle[1]}`;
+		let reStr = tagStyle === TAG_STYLE.bbcode ? `\\${TAG.bbcode[0]}${tagAlternation}(?:\\=(?:[A-Za-z0-9_\\-\\#]+|'(?:[^']+|\\\\')*'))*\\s*\\${TAG.bbcode[1]}|\\${TAG.bbcode[0]}\\/${tagAlternation}\\s*\\${TAG.bbcode[1]}`
+		: `\\${TAG.xml[0]}${tagAlternation}(?:\\s+[A-Za-z0-9_\\-]+=(?:"(?:[^"]+|\\\\")*"|'(?:[^']+|\\\\')*'))*\\s*\\${TAG.xml[1]}|\\${TAG.xml[0]}\\/${tagAlternation}\\s*\\${TAG.xml[1]}`;
 
 		if (captureMatch) {
 			reStr = `(${reStr})`;
@@ -296,7 +306,7 @@ export default class MultiStyleText extends PIXI.Text {
 
 						const { tagStyle } = this.textStyles.default;
 						// if using bbtag style, take styling information in a different way
-						if (tagStyle[0] === "[" && matches[j][0].includes('=')) {
+						if (tagStyle === TAG_STYLE.bbcode && matches[j][0].includes('=')) {
 							const bbcodeRegex = this.getBBcodePropertyRegex();
 							const bbcodeTags = bbcodeRegex.exec(matches[j][0]);
 							let bbStyle:{ [key: string]: string } = {};
@@ -330,10 +340,10 @@ export default class MultiStyleText extends PIXI.Text {
 
 		// when using bbcode and part of the text is clipped, remove any incomplete tags, preserve the style - good for scrolling text in games
 		const { tagStyle } = this.textStyles.default;
-		if (tagStyle[0] === "[") {
+		if (tagStyle === TAG_STYLE.bbcode) {
 			outputTextData.map( lineTextData => 
 				lineTextData.map( data => {
-					if (data.text.includes("[")) data.text = data.text.match(/^(.*)\[/)[1]	
+					if (data.text.includes(TAG.bbcode[0])) data.text = data.text.match(/^(.*)\[/)[1]	
 				})
 			)
 		}
