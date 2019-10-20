@@ -98,8 +98,8 @@ const TAG_STYLE = {
 };
 
 const TAG = {
-	bbcode: ["[","]"],
-	xml: ["<",">"]
+	bbcode: ["[", "]"],
+	xml: ["<", ">"]
 };
 
 export default class MultiStyleText extends PIXI.Text {
@@ -297,11 +297,11 @@ export default class MultiStyleText extends PIXI.Text {
 						let properties: { [key: string]: string } = {};
 						let propertyRegex = this.getPropertyRegex();
 						let propertyMatch: RegExpMatchArray;
-						
+
 						while (propertyMatch = propertyRegex.exec(matches[j][0])) {
 							properties[propertyMatch[1]] = propertyMatch[2] || propertyMatch[3];
 						}
-						
+
 						tagStack.push({ name: matches[j][1], properties });
 
 						const { tagStyle } = this.textStyles.default;
@@ -326,7 +326,7 @@ export default class MultiStyleText extends PIXI.Text {
 
 				// is there any character left?
 				if (currentSearchIdx < lines[i].length) {
-					const result =this.createTextData(
+					const result = this.createTextData(
 						currentSearchIdx ? lines[i].substring(currentSearchIdx) : lines[i],
 						styleStack[styleStack.length - 1],
 						tagStack[tagStack.length - 1]
