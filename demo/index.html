@@ -38,6 +38,16 @@
 	}
 });</code></pre>
 
+<h2>Tag Styles</h2>
+<pre><code class="js">let text = new MultiStyleText(&quot;Let's make some [b]bold[/b]\n [color=yellow][i]multistyle[/i][/color] [size=40]bbcode[/size] [outline=purple]tags[/outline] text for \n[spacing=10]Pixi.js![/spacing]&quot;,
+{
+	&quot;default&quot;: {
+		tagStyle: &quot;bbcode&quot;, //bbcode and xml (default) supported..
+		fill: &quot;#cccccc&quot;,
+		align: &quot;center&quot;
+	},
+});</code></pre>
+
 <h2>Nesting Tags</h2>
 <pre><code class="js">let nested = new MultiStyleText(&quot;You can &lt;outline&gt;nest &lt;b&gt;tags &lt;red&gt;as &lt;i&gt;deeply &lt;thicker&gt;as &lt;shadow&gt;you'd &lt;large&gt;like&lt;/large&gt;&lt;/shadow&gt;&lt;/thicker&gt;&lt;/i&gt;&lt;/red&gt;&lt;/b&gt;&lt;/outline&gt;&quot;,
 {
@@ -189,10 +199,11 @@ requestAnimationFrame(animate);</code></pre>
 			<div id="pixi-container">
 				<script>
 PIXI.settings.RESOLUTION = 2;
-let renderer = PIXI.autoDetectRenderer(600, 3100);
+let renderer = PIXI.autoDetectRenderer(600, 3425);
 renderer.backgroundColor = 0x333333;
 document.getElementById("pixi-container").appendChild(renderer.view);
 let stage = new PIXI.Container();
+const MultiStyleText = this.pixiMultistyleText;
 
 // Basics
 let text = new MultiStyleText("Let's make some <ml>multiline</ml>\nand <ms>multistyle</ms> text for\n<pixi>Pixi.js!</pixi>",
@@ -221,6 +232,20 @@ text.x = 300 - text.width / 2;
 text.y = 150;
 stage.addChild(text);
 
+// Tag Styles
+let bbcode = new MultiStyleText("Let's make some [b]bold[/b]\n [color=yellow][i]multistyle[/i][/color] [size=40]bbcode[/size] [outline=purple]tags[/outline] text for \n[spacing=10]Pixi.js![/spacing]",
+{
+	"default": {
+		tagStyle: "bbcode",
+		fill: "#cccccc",
+		align: "center"
+	}
+});
+
+bbcode.x = 300 - bbcode.width / 2;
+bbcode.y = 550;
+stage.addChild(bbcode);
+
 // Nesting Tags
 let nested = new MultiStyleText("You can <outline>nest <b>tags <red>as <i>deeply <thicker>as <shadow>you'd <large>like</large></shadow></thicker></i></red></b></outline>",
 {
@@ -239,7 +264,7 @@ let nested = new MultiStyleText("You can <outline>nest <b>tags <red>as <i>deeply
 });
 
 nested.x = 300 - nested.width / 2;
-nested.y = 550;
+nested.y = 960;
 stage.addChild(nested);
 
 // Vertical Alignment
@@ -265,7 +290,7 @@ let valign = new MultiStyleText("You can use <code>valign</code> <top>to</top> <
 });
 
 valign.x = 300 - valign.width / 2;
-valign.y = 960;
+valign.y = 1280;
 stage.addChild(valign);
 
 // Wrapping and Alignment
@@ -282,7 +307,7 @@ let wrapping = new MultiStyleText("Global word wrap and alignment properties are
 });
 
 wrapping.x = 550 - wrapping.width;
-wrapping.y = 1220;
+wrapping.y = 1600;
 stage.addChild(wrapping);
 
 // Wrapping and Alignment II
@@ -302,7 +327,7 @@ let wrapping2 = new MultiStyleText("全局设置的<blue>对齐</blue>属性由�
 });
 
 wrapping2.x = 440 - wrapping2.width;
-wrapping2.y = 1700;
+wrapping2.y = 2100;
 stage.addChild(wrapping2);
 
 // Debug Mode
@@ -329,7 +354,7 @@ MultiStyleText.debugOptions.spans.enabled = true;
 MultiStyleText.debugOptions.objects.enabled = true;
 
 debug.x = 300 - debug.width / 2;
-debug.y = 2050;
+debug.y = 2400;
 stage.addChild(debug);
 
 MultiStyleText.debugOptions.spans.enabled = false;
@@ -352,7 +377,7 @@ let interaction = new MultiStyleText(`If you enable <link name="interaction">int
 });
 
 interaction.x = 300 - interaction.width / 2;
-interaction.y = 2480;
+interaction.y = 2800;
 stage.addChild(interaction);
 
 interaction.interactive = true;
@@ -382,7 +407,7 @@ let funStyles = {
 let fun = new MultiStyleText("Now have fun making some <blue>beautiful</blue> <red>multistyle</red> text!", funStyles);
 
 fun.x = 300 - fun.width / 2;
-fun.y = 2900;
+fun.y = 3250;
 stage.addChild(fun);
 
 // Animate
