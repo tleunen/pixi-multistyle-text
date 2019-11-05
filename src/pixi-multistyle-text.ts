@@ -226,7 +226,6 @@ export default class MultiStyleText extends PIXI.Text {
 	private getTagRegex(captureName: boolean, captureMatch: boolean): RegExp {
 		let tagAlternation = Object.keys(this.textStyles).join("|");
 		const { tagStyle } = this.textStyles.default;
-		if (tagStyle === TAG_STYLE.bbcode) tagAlternation = "[A-z]+";
 
 		if (captureName) {
 			tagAlternation = `(${tagAlternation})`;
@@ -306,7 +305,7 @@ export default class MultiStyleText extends PIXI.Text {
 
 						const { tagStyle } = this.textStyles.default;
 						// if using bbtag style, take styling information in a different way
-						if (tagStyle === TAG_STYLE.bbcode && matches[j][0].includes('=')) {
+						if (tagStyle === TAG_STYLE.bbcode && matches[j][0].includes('=') && this.textStyles[matches[j][1]]) {
 							const bbcodeRegex = this.getBBcodePropertyRegex();
 							const bbcodeTags = bbcodeRegex.exec(matches[j][0]);
 							let bbStyle:{ [key: string]: string } = {};
@@ -338,15 +337,11 @@ export default class MultiStyleText extends PIXI.Text {
 			outputTextData.push(lineTextData);
 		}
 
-		// when using bbcode and part of the text is clipped, remove any incomplete tags, preserve the style - good for scrolling text in games
+		// don't display any incomplete tags at the end of text- good for scrolling text in games
 		const { tagStyle } = this.textStyles.default;
-		if (tagStyle === TAG_STYLE.bbcode) {
-			outputTextData.map( lineTextData => 
-				lineTextData.map( data => {
-					if (data.text.includes(TAG.bbcode[0])) data.text = data.text.match(/^(.*)\[/)[1]	
-				})
-			)
-		}
+		outputTextData[outputTextData.length-1].map( data => {
+			if (data.text.includes(TAG[tagStyle][0])) data.text = data.text.match(tagStyle === TAG_STYLE.bbcode ? /^(.*)\[/:  /^(.*)\</)[1]	
+		});
 
 		return outputTextData;
 	}
