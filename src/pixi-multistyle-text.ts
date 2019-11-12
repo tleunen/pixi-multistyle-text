@@ -5,6 +5,7 @@
 export interface ExtendedTextStyle extends PIXI.TextStyleOptions {
 	valign?: "top" | "middle" | "bottom" | "baseline" | number;
 	debug?: boolean;
+	tagStyle?: "xml" | "bbcode";
 }
 
 export interface TextStyleSet {
@@ -91,6 +92,16 @@ const INTERACTION_EVENTS = [
 	"touchleave"
 ];
 
+const TAG_STYLE = {
+	bbcode: "bbcode",
+	xml: "xml"
+};
+
+const TAG = {
+	bbcode: ["[", "]"],
+	xml: ["<", ">"]
+};
+
 export default class MultiStyleText extends PIXI.Text {
 	private static DEFAULT_TAG_STYLE: ExtendedTextStyle = {
 		align: "left",
@@ -118,7 +129,8 @@ export default class MultiStyleText extends PIXI.Text {
 		textBaseline: "alphabetic",
 		valign: "baseline",
 		wordWrap: false,
-		wordWrapWidth: 100
+		wordWrapWidth: 100,
+		tagStyle: "xml"
 	};
 
 	public static debugOptions: MstDebugOptions = {
@@ -171,6 +183,19 @@ export default class MultiStyleText extends PIXI.Text {
 				this.textStyles[style] = this.assign({}, styles[style]);
 			}
 		}
+		if (this.textStyles.default.tagStyle === TAG_STYLE.bbcode) {
+			// when using bbcode parsing, register a bunch of standard bbcode tags and some cool pixi ones
+			this.textStyles.b = this.assign({}, {fontStyle: 'bold'});
+			this.textStyles.i = this.assign({}, {fontStyle: 'italic'});
+			this.textStyles.color = this.assign({}, {fill: ''}); // an array would result in gradients
+			this.textStyles.outline = this.assign({}, {stroke: '', strokeThickness: 6});
+			this.textStyles.font = this.assign({}, {fontFamily: ''});
+			this.textStyles.shadow = this.assign({}, {
+				dropShadowColor: '', dropShadow: true, dropShadowBlur: 3, dropShadowDistance: 3, dropShadowAngle: 2,});
+			this.textStyles.size = this.assign({}, {fontSize: 'px'});
+			this.textStyles.spacing = this.assign({}, {letterSpacing: ''});
+			this.textStyles.align = this.assign({}, {align: ''});
+		}
 
 		this._style = new PIXI.TextStyle(this.textStyles["default"]);
 		this.dirty = true;
@@ -200,6 +225,7 @@ export default class MultiStyleText extends PIXI.Text {
 
 	private getTagRegex(captureName: boolean, captureMatch: boolean): RegExp {
 		let tagAlternation = Object.keys(this.textStyles).join("|");
+		const { tagStyle } = this.textStyles.default;
 
 		if (captureName) {
 			tagAlternation = `(${tagAlternation})`;
@@ -207,7 +233,8 @@ export default class MultiStyleText extends PIXI.Text {
 			tagAlternation = `(?:${tagAlternation})`;
 		}
 
-		let reStr = `<${tagAlternation}(?:\\s+[A-Za-z0-9_\\-]+=(?:"(?:[^"]+|\\\\")*"|'(?:[^']+|\\\\')*'))*\\s*>|</${tagAlternation}\\s*>`;
+		let reStr = tagStyle === TAG_STYLE.bbcode ? `\\${TAG.bbcode[0]}${tagAlternation}(?:\\=(?:[A-Za-z0-9_\\-\\#]+|'(?:[^']+|\\\\')*'))*\\s*\\${TAG.bbcode[1]}|\\${TAG.bbcode[0]}\\/${tagAlternation}\\s*\\${TAG.bbcode[1]}`
+		: `\\${TAG.xml[0]}${tagAlternation}(?:\\s+[A-Za-z0-9_\\-]+=(?:"(?:[^"]+|\\\\")*"|'(?:[^']+|\\\\')*'))*\\s*\\${TAG.xml[1]}|\\${TAG.xml[0]}\\/${tagAlternation}\\s*\\${TAG.xml[1]}`;
 
 		if (captureMatch) {
 			reStr = `(${reStr})`;
@@ -218,6 +245,10 @@ export default class MultiStyleText extends PIXI.Text {
 
 	private getPropertyRegex(): RegExp {
 		return new RegExp(`([A-Za-z0-9_\\-]+)=(?:"((?:[^"]+|\\\\")*)"|'((?:[^']+|\\\\')*)')`, "g");
+	}
+
+	private getBBcodePropertyRegex(): RegExp {
+		return new RegExp(`[A-Za-z0-9_\\-]+=([A-Za-z0-9_\\-\\#]+)`, "g");
 	}
 
 	private _getTextDataPerLine (lines: string[]) {
@@ -238,7 +269,6 @@ export default class MultiStyleText extends PIXI.Text {
 			while (matchArray = re.exec(lines[i])) {
 				matches.push(matchArray);
 			}
-
 			// if there is no match, we still need to add the line with the default style
 			if (matches.length === 0) {
 				lineTextData.push(this.createTextData(lines[i], styleStack[styleStack.length - 1], tagStack[tagStack.length - 1]));
@@ -263,8 +293,6 @@ export default class MultiStyleText extends PIXI.Text {
 							tagStack.pop();
 						}
 					} else { // set the current style
-						styleStack.push(this.assign({}, styleStack[styleStack.length - 1], this.textStyles[matches[j][1]]));
-
 						let properties: { [key: string]: string } = {};
 						let propertyRegex = this.getPropertyRegex();
 						let propertyMatch: RegExpMatchArray;
@@ -274,6 +302,21 @@ export default class MultiStyleText extends PIXI.Text {
 						}
 
 						tagStack.push({ name: matches[j][1], properties });
+
+						const { tagStyle } = this.textStyles.default;
+						// if using bbtag style, take styling information in a different way
+						if (tagStyle === TAG_STYLE.bbcode && matches[j][0].includes('=') && this.textStyles[matches[j][1]]) {
+							const bbcodeRegex = this.getBBcodePropertyRegex();
+							const bbcodeTags = bbcodeRegex.exec(matches[j][0]);
+							let bbStyle:{ [key: string]: string } = {};
+							Object.entries(this.textStyles[matches[j][1]]).forEach( style => {
+								bbStyle[style[0]] = typeof style[1] !== 'string'? style[1] : bbcodeTags[1] + style[1];
+							})
+							styleStack.push(this.assign({}, styleStack[styleStack.length - 1], bbStyle));
+
+						} else {
+							styleStack.push(this.assign({}, styleStack[styleStack.length - 1], this.textStyles[matches[j][1]]));
+						}
 					}
 
 					// update the current search index
@@ -282,16 +325,23 @@ export default class MultiStyleText extends PIXI.Text {
 
 				// is there any character left?
 				if (currentSearchIdx < lines[i].length) {
-					lineTextData.push(this.createTextData(
-						lines[i].substring(currentSearchIdx),
+					const result = this.createTextData(
+						currentSearchIdx ? lines[i].substring(currentSearchIdx) : lines[i],
 						styleStack[styleStack.length - 1],
 						tagStack[tagStack.length - 1]
-					));
+					)
+					lineTextData.push(result);
 				}
 			}
 
 			outputTextData.push(lineTextData);
 		}
+
+		// don't display any incomplete tags at the end of text- good for scrolling text in games
+		const { tagStyle } = this.textStyles.default;
+		outputTextData[outputTextData.length-1].map( data => {
+			if (data.text.includes(TAG[tagStyle][0])) data.text = data.text.match(tagStyle === TAG_STYLE.bbcode ? /^(.*)\[/ : /^(.*)\</)[1]	
+		});
 
 		return outputTextData;
 	}
