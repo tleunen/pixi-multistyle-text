@@ -2,6 +2,16 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+<a name="0.8.0"></a>
+# [0.8.0](https://github.com/tleunen/pixi-multistyle-text/compare/v0.7.0...v0.8.0) (2019-11-12)
+
+
+### Features
+
+* Add support for BBCode code style ([#78](https://github.com/tleunen/pixi-multistyle-text/issues/78)) ([2a7be20](https://github.com/tleunen/pixi-multistyle-text/commit/2a7be20))
+
+
+
 <a name="0.7.0"></a>
 # [0.7.0](https://github.com/tleunen/pixi-multistyle-text/compare/v0.6.0...v0.7.0) (2018-10-29)
 
