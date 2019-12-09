@@ -340,7 +340,7 @@ export default class MultiStyleText extends PIXI.Text {
 		// don't display any incomplete tags at the end of text- good for scrolling text in games
 		const { tagStyle } = this.textStyles.default;
 		outputTextData[outputTextData.length-1].map( data => {
-			if (data.text.includes(TAG[tagStyle][0])) data.text = data.text.match(tagStyle === TAG_STYLE.bbcode ? /^(.*)\[/ : /^(.*)\</)[1]	
+			if (data.text.includes(TAG[tagStyle][0])) data.text = data.text.match(tagStyle === TAG_STYLE.bbcode ? /^(.*)\[/ : /^(.*)\</)[1]
 		});
 
 		return outputTextData;
@@ -401,6 +401,7 @@ export default class MultiStyleText extends PIXI.Text {
 		let lineYMaxs: number[] = [];
 		let baselines: number[] = [];
 		let maxLineWidth = 0;
+    let lineHeight = textStyles["default"].lineHeight;
 
 		for (let i = 0; i < lines.length; i++) {
 			let lineWidth = 0;
@@ -461,6 +462,11 @@ export default class MultiStyleText extends PIXI.Text {
 			lineWidths[i] = lineWidth;
 			lineYMins[i] = lineYMin;
 			lineYMaxs[i] = lineYMax;
+
+			if(i > 0 && lineHeight) {
+        lineYMaxs[i] += lineHeight;
+      }
+
 			maxLineWidth = Math.max(maxLineWidth, lineWidth);
 		}
 
