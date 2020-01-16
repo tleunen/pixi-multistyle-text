@@ -2,7 +2,39 @@
 
 "use strict";
 
-export interface ExtendedTextStyle extends PIXI.TextStyleOptions {
+interface TextStyle {
+  align?: string;
+  breakWords?: boolean;
+  dropShadow?: boolean;
+  dropShadowAlpha?: number;
+  dropShadowAngle?: number;
+  dropShadowBlur?: number;
+  dropShadowColor?: string | number;
+  dropShadowDistance?: number;
+  fill?: string | string[] | number | number[] | CanvasGradient | CanvasPattern;
+  fillGradientType?: number;
+  fillGradientStops?: number[];
+  fontFamily?: string | string[];
+  fontSize?: number | string;
+  fontStyle?: string;
+  fontVariant?: string;
+  fontWeight?: string;
+  leading?: number;
+  letterSpacing?: number;
+  lineHeight?: number;
+  lineJoin?: string;
+  miterLimit?: number;
+  padding?: number;
+  stroke?: string | number;
+  strokeThickness?: number;
+  trim?: boolean;
+  textBaseline?: string;
+  whiteSpace?: string;
+  wordWrap?: boolean;
+  wordWrapWidth?: number;
+}
+
+export interface ExtendedTextStyle extends TextStyle {
 	valign?: "top" | "middle" | "bottom" | "baseline" | number;
 	debug?: boolean;
 	tagStyle?: "xml" | "bbcode";
@@ -102,6 +134,14 @@ const TAG = {
 	xml: ["<", ">"]
 };
 
+interface TextWithPrivateMembers extends PIXI.Text {
+  dirty: boolean;
+  _texture: PIXI.Texture;
+  _style: PIXI.TextStyle;
+  _onTextureUpdate(): void;
+  _generateFillStyle(style: object, lines: string[]): string | number | CanvasGradient;
+}
+
 export default class MultiStyleText extends PIXI.Text {
 	private static DEFAULT_TAG_STYLE: ExtendedTextStyle = {
 		align: "left",
@@ -197,8 +237,8 @@ export default class MultiStyleText extends PIXI.Text {
 			this.textStyles.align = this.assign({}, {align: ''});
 		}
 
-		this._style = new PIXI.TextStyle(this.textStyles["default"]);
-		this.dirty = true;
+		this.withPrivateMembers()._style = new PIXI.TextStyle(this.textStyles["default"]);
+		this.withPrivateMembers().dirty = true;
 	}
 
 	public setTagStyle(tag: string, style: ExtendedTextStyle): void {
@@ -208,8 +248,8 @@ export default class MultiStyleText extends PIXI.Text {
 			this.textStyles[tag] = this.assign({}, style);
 		}
 
-		this._style = new PIXI.TextStyle(this.textStyles["default"]);
-		this.dirty = true;
+		this.withPrivateMembers()._style = new PIXI.TextStyle(this.textStyles["default"]);
+		this.withPrivateMembers().dirty = true;
 	}
 
 	public deleteTagStyle(tag: string): void {
@@ -219,8 +259,8 @@ export default class MultiStyleText extends PIXI.Text {
 			delete this.textStyles[tag];
 		}
 
-		this._style = new PIXI.TextStyle(this.textStyles["default"]);
-		this.dirty = true;
+		this.withPrivateMembers()._style = new PIXI.TextStyle(this.textStyles["default"]);
+		this.withPrivateMembers().dirty = true;
 	}
 
 	private getTagRegex(captureName: boolean, captureMatch: boolean): RegExp {
@@ -340,7 +380,7 @@ export default class MultiStyleText extends PIXI.Text {
 		// don't display any incomplete tags at the end of text- good for scrolling text in games
 		const { tagStyle } = this.textStyles.default;
 		outputTextData[outputTextData.length-1].map( data => {
-			if (data.text.includes(TAG[tagStyle][0])) data.text = data.text.match(tagStyle === TAG_STYLE.bbcode ? /^(.*)\[/ : /^(.*)\</)[1]	
+			if (data.text.includes(TAG[tagStyle][0])) data.text = data.text.match(tagStyle === TAG_STYLE.bbcode ? /^(.*)\[/ : /^(.*)\</)[1]
 		});
 
 		return outputTextData;
@@ -374,8 +414,12 @@ export default class MultiStyleText extends PIXI.Text {
 		return maxDistance + maxBlur;
 	}
 
-	public updateText(): void {
-		if (!this.dirty) {
+  private withPrivateMembers(): TextWithPrivateMembers {
+    return ((this as unknown) as TextWithPrivateMembers);
+  }
+
+  public updateText(): void {
+		if (!this.withPrivateMembers().dirty) {
 			return;
 		}
 
@@ -385,7 +429,7 @@ export default class MultiStyleText extends PIXI.Text {
 		let textStyles = this.textStyles;
 		let outputText = this.text;
 
-		if(this._style.wordWrap) {
+		if(this.withPrivateMembers()._style.wordWrap) {
 			outputText = this.wordWrap(this.text);
 		}
 
@@ -494,7 +538,7 @@ export default class MultiStyleText extends PIXI.Text {
 			let line = outputTextData[i];
 			let linePositionX: number;
 
-			switch (this._style.align) {
+			switch (this.withPrivateMembers()._style.align) {
 				case "left":
 					linePositionX = dropShadowPadding + maxStrokeThickness;
 					break;
@@ -645,7 +689,7 @@ export default class MultiStyleText extends PIXI.Text {
 					}
 				}
 			}
-			this.context.fillStyle = this._generateFillStyle(new PIXI.TextStyle(style), [text]) as string | CanvasGradient;
+			this.context.fillStyle = ((this as unknown) as TextWithPrivateMembers)._generateFillStyle(new PIXI.TextStyle(style), [text]) as string | CanvasGradient;
 			// Typecast required for proper typechecking
 
 			this.context.fillText(text, x, y);
@@ -653,7 +697,7 @@ export default class MultiStyleText extends PIXI.Text {
 
 		// Fourth pass: collect the bounding boxes and draw the debug information
 		drawingData.forEach(({ style, text, x, y, width, ascent, descent, tag }) => {
-			let offset = -this._style.padding - this.getDropShadowPadding();
+			let offset = -this.withPrivateMembers()._style.padding - this.getDropShadowPadding();
 
 			this.hitboxes.push({
 				tag,
@@ -744,7 +788,7 @@ export default class MultiStyleText extends PIXI.Text {
 		let re = this.getTagRegex(true, true);
 
 		const lines = text.split("\n");
-		const wordWrapWidth = this._style.wordWrapWidth;
+		const wordWrapWidth = this.withPrivateMembers()._style.wordWrapWidth;
 		let styleStack = [this.assign({}, this.textStyles["default"])];
 		this.context.font = this.getFontString(this.textStyles["default"]);
 
@@ -771,7 +815,7 @@ export default class MultiStyleText extends PIXI.Text {
 					for (let k = 0; k < words.length; k++) {
 						const wordWidth = this.context.measureText(words[k]).width;
 
-						if (this._style.breakWords && wordWidth > spaceLeft) {
+						if (this.withPrivateMembers()._style.breakWords && wordWidth > spaceLeft) {
 							// Part should be split in the middle
 							const characters = words[k].split('');
 
@@ -791,7 +835,7 @@ export default class MultiStyleText extends PIXI.Text {
 									spaceLeft -= characterWidth;
 								}
 							}
-						} else if(this._style.breakWords) {
+						} else if(this.withPrivateMembers()._style.breakWords) {
 							result += words[k];
 							spaceLeft -= wordWidth;
 						} else {
@@ -831,7 +875,7 @@ export default class MultiStyleText extends PIXI.Text {
 	}
 
 	protected updateTexture() {
-		const texture = this._texture;
+		const texture = this.withPrivateMembers()._texture;
 
 		let dropShadowPadding = this.getDropShadowPadding();
 
@@ -844,18 +888,18 @@ export default class MultiStyleText extends PIXI.Text {
 		texture.trim.width = texture.frame.width = this.canvas.width / this.resolution;
 		texture.trim.height = texture.frame.height = this.canvas.height / this.resolution;
 
-		texture.trim.x = -this._style.padding - dropShadowPadding;
-		texture.trim.y = -this._style.padding - dropShadowPadding;
+		texture.trim.x = -this.withPrivateMembers()._style.padding - dropShadowPadding;
+		texture.trim.y = -this.withPrivateMembers()._style.padding - dropShadowPadding;
 
-		texture.orig.width = texture.frame.width - (this._style.padding + dropShadowPadding) * 2;
-		texture.orig.height = texture.frame.height - (this._style.padding + dropShadowPadding) * 2;
+		texture.orig.width = texture.frame.width - (this.withPrivateMembers()._style.padding + dropShadowPadding) * 2;
+		texture.orig.height = texture.frame.height - (this.withPrivateMembers()._style.padding + dropShadowPadding) * 2;
 
 		// call sprite onTextureUpdate to update scale if _width or _height were set
-		this._onTextureUpdate();
+		this.withPrivateMembers()._onTextureUpdate();
 
 		texture.baseTexture.emit('update', texture.baseTexture);
 
-		this.dirty = false;
+		this.withPrivateMembers().dirty = false;
 	}
 
 	// Lazy fill for Object.assign
