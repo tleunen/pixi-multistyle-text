@@ -35,7 +35,6 @@
   "license": "MIT",
   "dependencies": {},
   "devDependencies": {
-    "@types/pixi.js": "^5.0.0",
     "argos-cli": "0.0.9",
     "fs-extra": "^7.0.0",
     "happo": "^5.0.0",
