@@ -40,7 +40,7 @@
     "happo": "^5.0.0",
     "happo-target-firefox": "^5.0.3",
     "microbundle": "^0.7.0",
-    "pixi.js": "^5.2.0",
+    "pixi.js-legacy": "^5.2.0",
     "standard-version": "^4.4.0",
     "typescript": "^3.1.3"
   },
