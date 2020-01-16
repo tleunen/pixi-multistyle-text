@@ -838,14 +838,7 @@ export default class MultiStyleText extends PIXI.Text {
 		texture.baseTexture.hasLoaded = true;
 		texture.baseTexture.resolution = this.resolution;
 
-    if("setRealSize" in texture.baseTexture) {
-      // PIXI v5.x
-      texture.baseTexture.setRealSize(this.canvas.width, this.canvas.height);
-    } else {
-      // PIXI v4.x
-		  texture.baseTexture.realWidth = this.canvas.width;
-		  texture.baseTexture.realHeight = this.canvas.height;
-    }
+    texture.baseTexture.setRealSize(this.canvas.width, this.canvas.height);
 		texture.baseTexture.width = this.canvas.width / this.resolution;
 		texture.baseTexture.height = this.canvas.height / this.resolution;
 		texture.trim.width = texture.frame.width = this.canvas.width / this.resolution;
