@@ -11,7 +11,7 @@ module.exports = {
 		  bind: '0.0.0.0',
 		  port: 4567,
 		  sourceFiles: [
-        'node_modules/pixi.js/dist/pixi.js',
+        'node_modules/pixi.js-legacy/dist/pixi-legacy.js',
         'dist/pixi-multistyle-text.umd.js',
         'test/tests.js'
 		  ],
