@@ -1,6 +1,19 @@
-# Change Log
+# Changelog
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
+
+## [0.9.0](https://github.com/tleunen/pixi-multistyle-text/compare/v0.8.0...v0.9.0) (2020-01-24)
+
+
+### ⚠ BREAKING CHANGES
+
+* The support for Pixi v4 has been dropped
+
+Co-authored-by: Romain <benzen@hotmail.fr>
+
+### Features
+
+* Support PIXI v5 ([#88](https://github.com/tleunen/pixi-multistyle-text/issues/88)) ([eee5534](https://github.com/tleunen/pixi-multistyle-text/commit/eee5534b268b2c4ad6d2cb4dba8fb61ba7f9d22f))
 
 <a name="0.8.0"></a>
 # [0.8.0](https://github.com/tleunen/pixi-multistyle-text/compare/v0.7.0...v0.8.0) (2019-11-12)
