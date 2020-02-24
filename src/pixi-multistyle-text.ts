@@ -1,4 +1,24 @@
-import * as PIXI from "pixi.js"
+import {
+  Text,
+  TextMetrics,
+  TextStyle as PixiTextStyle,
+  TEXT_GRADIENT,
+  Texture,
+  interaction,
+  utils,
+  Rectangle,
+} from "pixi.js";
+
+const PIXI = {
+  Text,
+  TextMetrics,
+  TextStyle:PixiTextStyle,
+  TEXT_GRADIENT,
+  Texture,
+  interaction,
+  utils,
+  Rectangle
+};
 
 /// <reference types="pixi.js" />
 
