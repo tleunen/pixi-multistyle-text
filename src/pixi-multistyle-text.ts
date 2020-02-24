@@ -1,3 +1,5 @@
+import * as PIXI from "pixi.js"
+
 /// <reference types="pixi.js" />
 
 "use strict";
