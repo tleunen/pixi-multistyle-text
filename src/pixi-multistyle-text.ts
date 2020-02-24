@@ -1,30 +1,17 @@
 import {
   Text,
+  TextStyle,
   TextMetrics,
-  TextStyle as PixiTextStyle,
   TEXT_GRADIENT,
   Texture,
-  interaction,
-  utils,
   Rectangle,
+  interaction as pixiInteraction,
+  utils as pixiUtils,
 } from "pixi.js";
-
-const PIXI = {
-  Text,
-  TextMetrics,
-  TextStyle:PixiTextStyle,
-  TEXT_GRADIENT,
-  Texture,
-  interaction,
-  utils,
-  Rectangle
-};
-
-/// <reference types="pixi.js" />
 
 "use strict";
 
-interface TextStyle {
+interface TextStyleBase {
   align?: string;
   breakWords?: boolean;
   dropShadow?: boolean;
@@ -56,14 +43,14 @@ interface TextStyle {
   wordWrapWidth?: number;
 }
 
-export interface ExtendedTextStyle extends TextStyle {
+export interface TextStyleExtended extends TextStyleBase {
 	valign?: "top" | "middle" | "bottom" | "baseline" | number;
 	debug?: boolean;
 	tagStyle?: "xml" | "bbcode";
 }
 
 export interface TextStyleSet {
-	[key: string]: ExtendedTextStyle;
+	[key: string]: TextStyleExtended;
 }
 
 interface FontProperties {
@@ -74,7 +61,7 @@ interface FontProperties {
 
 interface TextData {
 	text: string;
-	style: ExtendedTextStyle;
+	style: TextStyleExtended;
 	width: number;
 	height: number;
 	fontProperties: FontProperties;
@@ -83,7 +70,7 @@ interface TextData {
 
 interface TextDrawingData {
 	text: string;
-	style: ExtendedTextStyle;
+	style: TextStyleExtended;
 	x: number;
 	y: number;
 	width: number;
@@ -113,7 +100,7 @@ export interface TagData {
 	properties: { [key: string]: string };
 }
 
-export interface MstInteractionEvent extends PIXI.interaction.InteractionEvent {
+export interface MstInteractionEvent extends pixiInteraction.InteractionEvent {
 	targetTag: TagData;
 }
 
@@ -156,16 +143,16 @@ const TAG = {
 	xml: ["<", ">"]
 };
 
-interface TextWithPrivateMembers extends PIXI.Text {
+interface TextWithPrivateMembers extends Text {
   dirty: boolean;
-  _texture: PIXI.Texture;
-  _style: PIXI.TextStyle;
+  _texture: Texture;
+  _style: TextStyle;
   _onTextureUpdate(): void;
   _generateFillStyle(style: object, lines: string[]): string | number | CanvasGradient;
 }
 
-export default class MultiStyleText extends PIXI.Text {
-	private static DEFAULT_TAG_STYLE: ExtendedTextStyle = {
+export default class MultiStyleText extends Text {
+	private static DEFAULT_TAG_STYLE: TextStyleExtended = {
 		align: "left",
 		breakWords: false,
 		// debug intentionally not included
@@ -175,7 +162,7 @@ export default class MultiStyleText extends PIXI.Text {
 		dropShadowColor: "#000000",
 		dropShadowDistance: 5,
 		fill: "black",
-		fillGradientType: PIXI.TEXT_GRADIENT.LINEAR_VERTICAL,
+		fillGradientType: TEXT_GRADIENT.LINEAR_VERTICAL,
 		fontFamily: "Arial",
 		fontSize: 26,
 		fontStyle: "normal",
@@ -213,7 +200,7 @@ export default class MultiStyleText extends PIXI.Text {
 
 	private textStyles: TextStyleSet;
 
-	private hitboxes: { tag: TagData, hitbox: PIXI.Rectangle }[];
+	private hitboxes: { tag: TagData, hitbox: Rectangle }[];
 
 	constructor(text: string, styles: TextStyleSet) {
 		super(text);
@@ -221,11 +208,11 @@ export default class MultiStyleText extends PIXI.Text {
 		this.styles = styles;
 
 		INTERACTION_EVENTS.forEach((event) => {
-			this.on(event, (e: PIXI.interaction.InteractionEvent) => this.handleInteraction(e));
+			this.on(event, (e: pixiInteraction.InteractionEvent) => this.handleInteraction(e));
 		});
 	}
 
-	private handleInteraction(e: PIXI.interaction.InteractionEvent) {
+	private handleInteraction(e: pixiInteraction.InteractionEvent) {
 		let ev = e as MstInteractionEvent;
 
 		let localPoint = e.data.getLocalPosition(this);
@@ -259,18 +246,18 @@ export default class MultiStyleText extends PIXI.Text {
 			this.textStyles.align = this.assign({}, {align: ''});
 		}
 
-		this.withPrivateMembers()._style = new PIXI.TextStyle(this.textStyles["default"]);
+		this.withPrivateMembers()._style = new TextStyle(this.textStyles["default"]);
 		this.withPrivateMembers().dirty = true;
 	}
 
-	public setTagStyle(tag: string, style: ExtendedTextStyle): void {
+	public setTagStyle(tag: string, style: TextStyleExtended): void {
 		if (tag in this.textStyles) {
 			this.assign(this.textStyles[tag], style);
 		} else {
 			this.textStyles[tag] = this.assign({}, style);
 		}
 
-		this.withPrivateMembers()._style = new PIXI.TextStyle(this.textStyles["default"]);
+		this.withPrivateMembers()._style = new TextStyle(this.textStyles["default"]);
 		this.withPrivateMembers().dirty = true;
 	}
 
@@ -281,7 +268,7 @@ export default class MultiStyleText extends PIXI.Text {
 			delete this.textStyles[tag];
 		}
 
-		this.withPrivateMembers()._style = new PIXI.TextStyle(this.textStyles["default"]);
+		this.withPrivateMembers()._style = new TextStyle(this.textStyles["default"]);
 		this.withPrivateMembers().dirty = true;
 	}
 
@@ -408,11 +395,11 @@ export default class MultiStyleText extends PIXI.Text {
 		return outputTextData;
 	}
 
-	private getFontString(style: ExtendedTextStyle): string {
-		return new PIXI.TextStyle(style).toFontString();
+	private getFontString(style: TextStyleExtended): string {
+		return new TextStyle(style).toFontString();
 	}
 
-	private createTextData(text: string, style: ExtendedTextStyle, tag: TagData): TextData {
+	private createTextData(text: string, style: TextStyleExtended, tag: TagData): TextData {
 		return {
 			text,
 			style,
@@ -496,7 +483,7 @@ export default class MultiStyleText extends PIXI.Text {
 				lineWidth += outputTextData[i][j].width;
 
 				// save the font properties
-				outputTextData[i][j].fontProperties = PIXI.TextMetrics.measureFont(this.context.font);
+				outputTextData[i][j].fontProperties = TextMetrics.measureFont(this.context.font);
 
 				// save the height
 				outputTextData[i][j].height = outputTextData[i][j].fontProperties.fontSize;
@@ -660,7 +647,7 @@ export default class MultiStyleText extends PIXI.Text {
 
 			let dropFillStyle = style.dropShadowColor;
 			if (typeof dropFillStyle === "number") {
-				dropFillStyle = PIXI.utils.hex2string(dropFillStyle);
+				dropFillStyle = pixiUtils.hex2string(dropFillStyle);
 			}
 			this.context.shadowColor = dropFillStyle;
 			this.context.shadowBlur = style.dropShadowBlur;
@@ -682,7 +669,7 @@ export default class MultiStyleText extends PIXI.Text {
 
 			let strokeStyle = style.stroke;
 			if (typeof strokeStyle === "number") {
-				strokeStyle = PIXI.utils.hex2string(strokeStyle);
+				strokeStyle = pixiUtils.hex2string(strokeStyle);
 			}
 
 			this.context.strokeStyle = strokeStyle;
@@ -702,16 +689,16 @@ export default class MultiStyleText extends PIXI.Text {
 			// set canvas text styles
 			let fillStyle = style.fill;
 			if (typeof fillStyle === "number") {
-				fillStyle = PIXI.utils.hex2string(fillStyle);
+				fillStyle = pixiUtils.hex2string(fillStyle);
 			} else if (Array.isArray(fillStyle)) {
 				for (let i = 0; i < fillStyle.length; i++) {
 					let fill = fillStyle[i];
 					if (typeof fill === "number") {
-						fillStyle[i] = PIXI.utils.hex2string(fill);
+						fillStyle[i] = pixiUtils.hex2string(fill);
 					}
 				}
 			}
-			this.context.fillStyle = ((this as unknown) as TextWithPrivateMembers)._generateFillStyle(new PIXI.TextStyle(style), [text]) as string | CanvasGradient;
+			this.context.fillStyle = ((this as unknown) as TextWithPrivateMembers)._generateFillStyle(new TextStyle(style), [text]) as string | CanvasGradient;
 			// Typecast required for proper typechecking
 
 			this.context.fillText(text, x, y);
@@ -723,7 +710,7 @@ export default class MultiStyleText extends PIXI.Text {
 
 			this.hitboxes.push({
 				tag,
-				hitbox: new PIXI.Rectangle(x + offset, y - ascent + offset, width, ascent + descent)
+				hitbox: new Rectangle(x + offset, y - ascent + offset, width, ascent + descent)
 			});
 
 			let debugSpan = style.debug === undefined
