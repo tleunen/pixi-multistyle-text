@@ -879,7 +879,9 @@ export default class MultiStyleText extends PIXI.Text {
 
 		let dropShadowPadding = this.getDropShadowPadding();
 
-    texture.baseTexture.setRealSize(this.canvas.width, this.canvas.height, this.resolution);
+    if (texture.baseTexture.setRealSize) {
+      texture.baseTexture.setRealSize(this.canvas.width, this.canvas.height, this.resolution);
+    }
 		texture.trim.width = texture.frame.width = this.canvas.width / this.resolution;
 		texture.trim.height = texture.frame.height = this.canvas.height / this.resolution;
 
