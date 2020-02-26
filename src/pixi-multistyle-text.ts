@@ -34,10 +34,12 @@ interface TextStyle {
   wordWrapWidth?: number;
 }
 
+export type TagStyle = "xml" | "bbcode";
+
 export interface ExtendedTextStyle extends TextStyle {
 	valign?: "top" | "middle" | "bottom" | "baseline" | number;
 	debug?: boolean;
-	tagStyle?: "xml" | "bbcode";
+	tagStyle?: TagStyle;
 }
 
 export interface TextStyleSet {
