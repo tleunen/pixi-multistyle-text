@@ -2,7 +2,7 @@ import * as PIXI from "pixi.js";
 
 "use strict";
 
-interface TextStyleBase {
+interface TextStyle {
   align?: string;
   breakWords?: boolean;
   dropShadow?: boolean;
@@ -34,7 +34,7 @@ interface TextStyleBase {
   wordWrapWidth?: number;
 }
 
-export interface TextStyleExtended extends TextStyleBase {
+export interface TextStyleExtended extends TextStyle {
 	valign?: "top" | "middle" | "bottom" | "baseline" | number;
 	debug?: boolean;
 	tagStyle?: "xml" | "bbcode";
