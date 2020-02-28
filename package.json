@@ -1,6 +1,6 @@
 {
   "name": "pixi-multistyle-text",
-  "version": "0.9.0",
+  "version": "0.10.0",
   "description": "Multi-Style Text for pixi.js",
   "source": "src/pixi-multistyle-text.ts",
   "main": "dist/pixi-multistyle-text.js",
