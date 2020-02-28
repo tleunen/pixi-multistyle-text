@@ -60,8 +60,8 @@
     "happo": "./scripts/happo-ci.sh",
     "test": "npm run happo",
     "test:local": "happo run",
-    "lint": "prettier ./**/*",
-    "lint:fix": "prettier --write ./**/*"
+    "lint": "prettier -l ./**/*.{ts,js,tsx,jsx,json,html,css,md}",
+    "lint:fix": "npm run lint -- --write"
   },
   "husky": {
     "hooks": {
