@@ -39,8 +39,11 @@
     "fs-extra": "^8.1.0",
     "happo": "^5.0.0",
     "happo-target-firefox": "^5.1.2",
+    "husky": ">=4",
+    "lint-staged": ">=10",
     "microbundle": "^0.11.0",
     "pixi.js-legacy": "^5.2.1",
+    "prettier": "^1.19.1",
     "standard-version": "^7.1.0",
     "typescript": "^3.8.2"
   },
@@ -56,6 +59,16 @@
     "snapshot": "rm -rf happo-snapshots && happo run",
     "happo": "./scripts/happo-ci.sh",
     "test": "npm run happo",
-    "test:local": "happo run"
+    "test:local": "happo run",
+    "lint": "prettier ./**/*",
+    "lint:fix": "prettier --write ./**/*"
+  },
+  "husky": {
+    "hooks": {
+      "pre-commit": "lint-staged"
+    }
+  },
+  "lint-staged": {
+    "*.{js,css,md}": "prettier --write"
   }
 }
