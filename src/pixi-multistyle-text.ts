@@ -4,7 +4,7 @@ import * as PIXI from "pixi.js";
 
 const majorVersion = parseInt(PIXI.VERSION.split(".")[0], 10);
 if (majorVersion< 5) {
-  throw new Error(`Detected Pixi.js version ${PIXI.VERSION}. pixi-multistyle-text supports Pixi.js version 5+.`);
+  throw new Error(`Detected Pixi.js version ${PIXI.VERSION}. pixi-multistyle-text supports Pixi.js version 5+. (Please use v0.8.0 for Pixi 4 support.)`);
 }
 
 interface TextStyle {
