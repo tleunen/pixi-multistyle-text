@@ -2,6 +2,22 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [0.10.0](https://github.com/tleunen/pixi-multistyle-text/compare/v0.9.0...v0.10.0) (2020-02-28)
+
+
+### ⚠ BREAKING CHANGES
+
+* Releasing as a breaking change to make sure this doesn't break for any other existing users without any notice. This commit introduces an import for pixi.js to make it work properly in a commonjs/es modules world
+
+### Features
+
+* Add support for commonjs/es module ([#92](https://github.com/tleunen/pixi-multistyle-text/issues/92)) ([d1e108c](https://github.com/tleunen/pixi-multistyle-text/commit/d1e108c6c3bf55a883f5be79cee58823fec21274))
+
+
+### Bug Fixes
+
+* Fix demo pixi renderer ([7ca3aaf](https://github.com/tleunen/pixi-multistyle-text/commit/7ca3aaf11fa20ef242074da1940b119d30c2e0f8))
+
 ## [0.9.0](https://github.com/tleunen/pixi-multistyle-text/compare/v0.8.0...v0.9.0) (2020-01-24)
 
 

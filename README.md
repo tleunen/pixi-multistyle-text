@@ -35,8 +35,8 @@ let text = new MultiStyleText("Let's make some <ml>multiline</ml>\nand <ms>multi
 ## Build instructions
 
 ```
-$ npm install
-$ npm run build
+$ yarn install
+$ yarn build
 ```
 
 ## Usage
@@ -58,7 +58,7 @@ If text is rendered without any value assigned to a given parameter, Pixi's defa
 
 ## Demo
 ```
-$ npm run demo
+$ yarn demo
 ```
 
 

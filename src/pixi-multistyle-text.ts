@@ -1,4 +1,4 @@
-/// <reference types="pixi.js" />
+import * as PIXI from "pixi.js";
 
 "use strict";
 
@@ -39,14 +39,14 @@ interface TextStyle {
   wordWrapWidth?: number;
 }
 
-export interface ExtendedTextStyle extends TextStyle {
+export interface TextStyleExtended extends TextStyle {
 	valign?: "top" | "middle" | "bottom" | "baseline" | number;
 	debug?: boolean;
 	tagStyle?: "xml" | "bbcode";
 }
 
 export interface TextStyleSet {
-	[key: string]: ExtendedTextStyle;
+	[key: string]: TextStyleExtended;
 }
 
 interface FontProperties {
@@ -57,7 +57,7 @@ interface FontProperties {
 
 interface TextData {
 	text: string;
-	style: ExtendedTextStyle;
+	style: TextStyleExtended;
 	width: number;
 	height: number;
 	fontProperties: FontProperties;
@@ -66,7 +66,7 @@ interface TextData {
 
 interface TextDrawingData {
 	text: string;
-	style: ExtendedTextStyle;
+	style: TextStyleExtended;
 	x: number;
 	y: number;
 	width: number;
@@ -148,7 +148,7 @@ interface TextWithPrivateMembers extends PIXI.Text {
 }
 
 export default class MultiStyleText extends PIXI.Text {
-	private static DEFAULT_TAG_STYLE: ExtendedTextStyle = {
+	private static DEFAULT_TAG_STYLE: TextStyleExtended = {
 		align: "left",
 		breakWords: false,
 		// debug intentionally not included
@@ -246,7 +246,7 @@ export default class MultiStyleText extends PIXI.Text {
 		this.withPrivateMembers().dirty = true;
 	}
 
-	public setTagStyle(tag: string, style: ExtendedTextStyle): void {
+	public setTagStyle(tag: string, style: TextStyleExtended): void {
 		if (tag in this.textStyles) {
 			this.assign(this.textStyles[tag], style);
 		} else {
@@ -391,11 +391,11 @@ export default class MultiStyleText extends PIXI.Text {
 		return outputTextData;
 	}
 
-	private getFontString(style: ExtendedTextStyle): string {
+	private getFontString(style: TextStyleExtended): string {
 		return new PIXI.TextStyle(style).toFontString();
 	}
 
-	private createTextData(text: string, style: ExtendedTextStyle, tag: TagData): TextData {
+	private createTextData(text: string, style: TextStyleExtended, tag: TagData): TextData {
 		return {
 			text,
 			style,

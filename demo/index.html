@@ -199,7 +199,10 @@ requestAnimationFrame(animate);</code></pre>
 			<div id="pixi-container">
 				<script>
 PIXI.settings.RESOLUTION = 2;
-let renderer = PIXI.autoDetectRenderer(600, 3425);
+let renderer = PIXI.autoDetectRenderer({
+  width: 600,
+  height: 3425
+});
 renderer.backgroundColor = 0x333333;
 document.getElementById("pixi-container").appendChild(renderer.view);
 let stage = new PIXI.Container();
