@@ -42,6 +42,7 @@
     "husky": ">=4",
     "lint-staged": ">=10",
     "microbundle": "^0.11.0",
+    "opener": "^1.5.1",
     "pixi.js-legacy": "^5.2.1",
     "prettier": "^1.19.1",
     "standard-version": "^7.1.0",
@@ -51,7 +52,7 @@
     "pixi.js": "^5.2.0"
   },
   "scripts": {
-    "demo": "npm run build && open demo/index.html",
+    "demo": "npm run build && opener demo/index.html",
     "dev": "microbundle watch",
     "build": "microbundle --name MultiStyleText",
     "prepublishOnly": "npm run build",
