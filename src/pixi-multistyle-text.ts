@@ -349,14 +349,21 @@ export default class MultiStyleText extends PIXI.Text {
 			tagAlternation = `(?:${tagAlternation})`;
 		}
 
-		let reStr = tagStyle === TAG_STYLE.bbcode ? `\\${TAG.bbcode[0]}${tagAlternation}(?:\\=(?:[A-Za-z0-9_\\-\\#]+|'(?:[^']+|\\\\')*'))*\\s*\\${TAG.bbcode[1]}|\\${TAG.bbcode[0]}\\/${tagAlternation}\\s*\\${TAG.bbcode[1]}`
-		: `\\${TAG.xml[0]}${tagAlternation}(?:\\s+[A-Za-z0-9_\\-]+=(?:"(?:[^"]+|\\\\")*"|'(?:[^']+|\\\\')*'))*\\s*\\${TAG.xml[1]}|\\${TAG.xml[0]}\\/${tagAlternation}\\s*\\${TAG.xml[1]}`;
+    let pattern;
+    if (tagStyle === TAG_STYLE.bbcode) {
+      const [openTag, closeTag] = TAG.bbcode;
+      pattern = `\\${openTag}${tagAlternation}(?:\\=(?:[A-Za-z0-9_\\-\\#]+|'(?:[^']+|\\\\')*'))*\\s*\\${closeTag}|\\${openTag}\\/${tagAlternation}\\s*\\${closeTag}`;
+    }  else {
+      const [openTag, closeTag] = TAG.xml;
+      pattern = `\\${openTag}${tagAlternation}(?:\\s+[A-Za-z0-9_\\-]+=(?:"(?:[^"]+|\\\\")*"|'(?:[^']+|\\\\')*'))*\\s*\\${closeTag}|\\${openTag}\\/${tagAlternation}\\s*\\${closeTag}`;
+    }
+
 
 		if (captureMatch) {
-			reStr = `(${reStr})`;
+			pattern = `(${pattern})`;
 		}
 
-		return new RegExp(reStr, "g");
+		return new RegExp(pattern, "g");
 	}
 
 	private getPropertyRegex(): RegExp {
