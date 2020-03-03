@@ -256,23 +256,22 @@ export default class MultiStyleText extends PIXI.Text {
 
 		for (let styleName in styles) {
 			if (styleName === "default") {
-				this.assign(this._textStyles.default, styles.default);
+        this._textStyles.default = {...this._textStyles.default, ...styles.default};
 			} else {
-				this._textStyles[styleName] = this.assign({}, styles[styleName]);
+				this._textStyles[styleName] = { ...styles[styleName] };
 			}
 		}
 		if (this._textStyles.default.tagStyle === TAG_STYLE.bbcode) {
 			// when using bbcode parsing, register a bunch of standard bbcode tags and some cool pixi ones
-			this._textStyles.b = this.assign({}, {fontStyle: 'bold'});
-			this._textStyles.i = this.assign({}, {fontStyle: 'italic'});
-			this._textStyles.color = this.assign({}, {fill: ''}); // an array would result in gradients
-			this._textStyles.outline = this.assign({}, {stroke: '', strokeThickness: 6});
-			this._textStyles.font = this.assign({}, {fontFamily: ''});
-			this._textStyles.shadow = this.assign({}, {
-				dropShadowColor: '', dropShadow: true, dropShadowBlur: 3, dropShadowDistance: 3, dropShadowAngle: 2,});
-			this._textStyles.size = this.assign({}, {fontSize: 'px'});
-			this._textStyles.spacing = this.assign({}, {letterSpacing: ''});
-			this._textStyles.align = this.assign({}, {align: ''});
+			this._textStyles.b = {fontStyle: 'bold'};
+			this._textStyles.i = {fontStyle: 'italic'};
+			this._textStyles.color = {fill: ''}; // an array would result in gradiens
+			this._textStyles.outline = {stroke: '', strokeThickness: 6};
+			this._textStyles.font = {fontFamily: ''};
+			this._textStyles.shadow ={ dropShadowColor: '', dropShadow: true, dropShadowBlur: 3, dropShadowDistance: 3, dropShadowAngle: 2};
+			this._textStyles.size = {fontSize: 'px'};
+			this._textStyles.spacing = {letterSpacing: 0};
+			this._textStyles.align = {align: ''};
 		}
 
 		this.withPrivateMembers()._style = new PIXI.TextStyle(this._textStyles.default);
@@ -317,9 +316,9 @@ export default class MultiStyleText extends PIXI.Text {
 
 	public setTagStyle(tag: string, style: TextStyleExtended): void {
 		if (tag in this.textStyles) {
-			this.assign(this.textStyles[tag], style);
+			this.textStyles[tag] = {...this.textStyles[tag], ...style};
 		} else {
-			this.textStyles[tag] = this.assign({}, style);
+			this.textStyles[tag] = {...style };
 		}
 
 		this.withPrivateMembers()._style = new PIXI.TextStyle(this.textStyles.default);
@@ -328,7 +327,7 @@ export default class MultiStyleText extends PIXI.Text {
 
 	public deleteTagStyle(tag: string): void {
 		if (tag === "default") {
-			this.textStyles.default = this.assign({}, MultiStyleText.DEFAULT_TAG_STYLE);
+			this.textStyles.default = {...MultiStyleText.DEFAULT_TAG_STYLE};
 		} else {
 			delete this.textStyles[tag];
 		}
@@ -369,7 +368,7 @@ export default class MultiStyleText extends PIXI.Text {
 		let outputTextData: TextData[][] = [];
 		let re = this.getTagRegex(true, false);
 
-		let styleStack = [this.assign({}, this.textStyles.default)];
+		let styleStack = [{...this.textStyles.default}];
 		let tagStack: TagData[] = [{ name: "default", properties: {} }];
 
 		// determine the group of word for each line
@@ -433,10 +432,10 @@ export default class MultiStyleText extends PIXI.Text {
                 }
 							});
 
-              styleStack.push(this.assign({}, styleStack[styleStack.length - 1], bbStyle));
+              styleStack.push({...styleStack[styleStack.length - 1], ...bbStyle });
 
 						} else {
-							styleStack.push(this.assign({}, styleStack[styleStack.length - 1], this.textStyles[matches[j][1]]));
+							styleStack.push({...styleStack[styleStack.length - 1], ...this.textStyles[matches[j][1]] });
 						}
 					}
 
@@ -885,7 +884,7 @@ export default class MultiStyleText extends PIXI.Text {
 
 		const lines = text.split("\n");
 		const wordWrapWidth = this.withPrivateMembers()._style.wordWrapWidth;
-		let styleStack = [this.assign({}, this.textStyles["default"])];
+		let styleStack = [{...this.textStyles.default}];
 		this.context.font = this.getFontString(this.textStyles["default"]);
 
 		for (let i = 0; i < lines.length; i++) {
@@ -901,7 +900,7 @@ export default class MultiStyleText extends PIXI.Text {
 						styleStack.pop();
 					} else {
 						j++;
-						styleStack.push(this.assign({}, styleStack[styleStack.length - 1], this.textStyles[tagSplit[j]]));
+						styleStack.push({...styleStack[styleStack.length - 1], ...this.textStyles[tagSplit[j]]});
 						j++;
 					}
 					this.context.font = this.getFontString(styleStack[styleStack.length - 1]);
@@ -991,16 +990,5 @@ export default class MultiStyleText extends PIXI.Text {
 		texture.baseTexture.emit('update', texture.baseTexture);
 
 		this.withPrivateMembers().dirty = false;
-	}
-
-	// Lazy fill for Object.assign
-	private assign(destination: any, ...sources: any[]): any {
-		for (let source of sources) {
-			for (let key in source) {
-				destination[key] = source[key];
-			}
-		}
-
-		return destination;
 	}
 }
