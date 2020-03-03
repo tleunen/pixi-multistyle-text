@@ -471,13 +471,13 @@ export default class MultiStyleText extends PIXI.Text {
 		const { tagStyle } = this.defaultTextStyle;
 		outputTextData[outputTextData.length-1].map( data => {
 			if (data.text.includes(TAG[tagStyle][0])) {
-        let re;
+        let pattern;
         if (tagStyle === TAG_STYLE.bbcode) {
-          re = /^(.*)\[/;
+          pattern = /^(.*)\[/;
         } else {
-          re = /^(.*)\</;
+          pattern = /^(.*)\</;
         }
-        const matches = data.text.match(re);
+        const matches = data.text.match(pattern);
         if (matches) {
           data.text = matches[1];
         }
@@ -549,8 +549,8 @@ export default class MultiStyleText extends PIXI.Text {
 		for (let i = 0; i < lines.length; i++) {
 			let lineWidth = 0;
 			let lineYMin = 0;
-			let lineYMax = 0;
-			let baseline = 0;
+      let lineYMax = 0;
+
 			for (let j = 0; j < outputTextData[i].length; j++) {
         let sty = outputTextData[i][j].style;
         const ls = sty.letterSpacing || 0;
@@ -801,7 +801,7 @@ export default class MultiStyleText extends PIXI.Text {
 		});
 
 		// Fourth pass: collect the bounding boxes and draw the debug information
-		drawingData.forEach(({ style, text, x, y, width, ascent, descent, tag }) => {
+		drawingData.forEach(({ style, x, y, width, ascent, descent, tag }) => {
 			let offset = -this.withPrivateMembers()._style.padding - this.getDropShadowPadding();
 
 			this.hitboxes.push({
