@@ -251,6 +251,9 @@ export default class MultiStyleText extends PIXI.Text {
     throw new Error("Don't set textStyles directly. Use setStyles()");
   }
 
+  public get defaultTextStyle () { return this.textStyles.default; }
+  public set defaultTextStyle (style) { this.textStyles.default = style; }
+
   public setStyles(styles:TextStyleSet):void {
 		this.resetTextStyles();
 
@@ -321,24 +324,24 @@ export default class MultiStyleText extends PIXI.Text {
 			this.textStyles[tag] = {...style };
 		}
 
-		this.withPrivateMembers()._style = new PIXI.TextStyle(this.textStyles.default);
+		this.withPrivateMembers()._style = new PIXI.TextStyle(this.defaultTextStyle);
 		this.withPrivateMembers().dirty = true;
 	}
 
 	public deleteTagStyle(tag: string): void {
 		if (tag === "default") {
-			this.textStyles.default = {...MultiStyleText.DEFAULT_TAG_STYLE};
+			this.defaultTextStyle = {...MultiStyleText.DEFAULT_TAG_STYLE};
 		} else {
 			delete this.textStyles[tag];
 		}
 
-		this.withPrivateMembers()._style = new PIXI.TextStyle(this.textStyles.default);
+		this.withPrivateMembers()._style = new PIXI.TextStyle(this.defaultTextStyle);
 		this.withPrivateMembers().dirty = true;
 	}
 
 	private getTagRegex(captureName: boolean, captureMatch: boolean): RegExp {
 		let tagAlternation = Object.keys(this.textStyles).join("|");
-		const { tagStyle } = this.textStyles.default;
+		const { tagStyle } = this.defaultTextStyle;
 
 		if (captureName) {
 			tagAlternation = `(${tagAlternation})`;
@@ -368,7 +371,7 @@ export default class MultiStyleText extends PIXI.Text {
 		let outputTextData: TextData[][] = [];
 		let re = this.getTagRegex(true, false);
 
-		let styleStack = [{...this.textStyles.default}];
+		let styleStack = [{...this.defaultTextStyle}];
 		let tagStack: TagData[] = [{ name: "default", properties: {} }];
 
 		// determine the group of word for each line
@@ -416,7 +419,7 @@ export default class MultiStyleText extends PIXI.Text {
 
 						tagStack.push({ name: matches[j][1], properties });
 
-						const { tagStyle } = this.textStyles.default;
+						const { tagStyle } = this.defaultTextStyle;
 						// if using bbtag style, take styling information in a different way
 						if (tagStyle === TAG_STYLE.bbcode && matches[j][0].includes('=') && this.textStyles[matches[j][1]]) {
 							const bbcodeRegex = this.getBBcodePropertyRegex();
@@ -458,7 +461,7 @@ export default class MultiStyleText extends PIXI.Text {
 		}
 
 		// don't display any incomplete tags at the end of text- good for scrolling text in games
-		const { tagStyle } = this.textStyles.default;
+		const { tagStyle } = this.defaultTextStyle;
 		outputTextData[outputTextData.length-1].map( data => {
 			if (data.text.includes(TAG[tagStyle][0])) {
         let re;
@@ -884,7 +887,7 @@ export default class MultiStyleText extends PIXI.Text {
 
 		const lines = text.split("\n");
 		const wordWrapWidth = this.withPrivateMembers()._style.wordWrapWidth;
-		let styleStack = [{...this.textStyles.default}];
+		let styleStack = [{...this.defaultTextStyle}];
 		this.context.font = this.getFontString(this.textStyles["default"]);
 
 		for (let i = 0; i < lines.length; i++) {
