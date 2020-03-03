@@ -96,13 +96,11 @@ export interface TextStyleExtendedWithDefault extends TextStyleExtended {
 	tagStyle: TagStyle;
 }
 
-export interface DefaultTextStyleSet {
-  default:TextStyleExtendedWithDefault;
-}
-export interface CustomTextStyleSet {
+export type TextStyleSet = {
+  default:TextStyleExtendedWithDefault
+} & {
 	[key: string]: TextStyleExtended;
-}
-export type TextStyleSet = DefaultTextStyleSet & CustomTextStyleSet;
+};
 
 interface FontProperties {
 	ascent: number;
@@ -282,7 +280,7 @@ export default class MultiStyleText extends PIXI.Text {
   }
 
   private resetTextStyles() {
-    this.textStyles = { default : {...MultiStyleText.DEFAULT_TAG_STYLE} };
+    this._textStyles = { default : {...MultiStyleText.DEFAULT_TAG_STYLE} };
   }
 
 	private hitboxes: HitboxData[] = [];
@@ -464,7 +462,12 @@ export default class MultiStyleText extends PIXI.Text {
 		const { tagStyle } = this.textStyles.default;
 		outputTextData[outputTextData.length-1].map( data => {
 			if (data.text.includes(TAG[tagStyle][0])) {
-        const re = tagStyle === TAG_STYLE.bbcode ? /^(.*)\[/ : /^(.*)\</;
+        let re;
+        if (tagStyle === TAG_STYLE.bbcode) {
+          re = /^(.*)\[/;
+        } else {
+          re = /^(.*)\</;
+        }
         const matches = data.text.match(re);
         if (matches) {
           data.text = matches[1];
@@ -726,15 +729,15 @@ export default class MultiStyleText extends PIXI.Text {
 
 			this.context.font = this.getFontString(style);
 
-			let dropFillStyle = style.dropShadowColor;
+			let dropFillStyle = style.dropShadowColor || 0;
 			if (typeof dropFillStyle === "number") {
 				dropFillStyle = PIXI.utils.hex2string(dropFillStyle);
       }
-
+      const blur = style.dropShadowBlur || 0;
       const angle = style.dropShadowAngle || 0;
       const distance = style.dropShadowDistance || 0;
 			this.context.shadowColor = dropFillStyle;
-			this.context.shadowBlur = style.dropShadowBlur;
+			this.context.shadowBlur = blur;
 			this.context.shadowOffsetX = Math.cos(angle) * distance * this.resolution;
 			this.context.shadowOffsetY = Math.sin(angle) * distance * this.resolution;
 
