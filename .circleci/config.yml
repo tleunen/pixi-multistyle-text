@@ -2,7 +2,7 @@ version: 2
 jobs:
    build:
      docker:
-       - image: cypress/browsers:chrome67-ff57
+       - image: cypress/browsers:node12.16.1-chrome80-ff73
      steps:
        - checkout
        - run: npm i
