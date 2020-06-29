@@ -35,7 +35,7 @@
   "license": "MIT",
   "dependencies": {},
   "devDependencies": {
-    "argos-cli": "0.1.3",
+    "argos-cli": "0.3.0",
     "fs-extra": "^8.1.0",
     "happo": "^5.0.0",
     "happo-target-firefox": "^5.1.2",
