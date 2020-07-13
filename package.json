@@ -42,7 +42,7 @@
     "microbundle": "^0.11.0",
     "opener": "^1.5.1",
     "pixi.js-legacy": "^5.2.1",
-    "standard-version": "^7.1.0",
+    "standard-version": "^8.0.1",
     "typescript": "^3.8.2"
   },
   "peerDependencies": {
