@@ -96,7 +96,7 @@ export interface TagData {
 	properties: { [key: string]: string };
 }
 
-export interface MstInteractionEvent extends PIXI.interaction.InteractionEvent {
+export interface MstInteractionEvent extends PIXI.InteractionEvent {
 	targetTag: TagData;
 }
 
@@ -139,7 +139,7 @@ const TAG = {
 	xml: ["<", ">"]
 };
 
-interface TextWithPrivateMembers extends PIXI.Text {
+interface TextWithPrivateMembers {
   dirty: boolean;
   _texture: PIXI.Texture;
   _style: PIXI.TextStyle;
@@ -204,11 +204,11 @@ export default class MultiStyleText extends PIXI.Text {
 		this.styles = styles;
 
 		INTERACTION_EVENTS.forEach((event) => {
-			this.on(event, (e: PIXI.interaction.InteractionEvent) => this.handleInteraction(e));
+			this.on(event, (e: PIXI.InteractionEvent) => this.handleInteraction(e));
 		});
 	}
 
-	private handleInteraction(e: PIXI.interaction.InteractionEvent) {
+	private handleInteraction(e: PIXI.InteractionEvent) {
 		let ev = e as MstInteractionEvent;
 
 		let localPoint = e.data.getLocalPosition(this);
