@@ -39,7 +39,7 @@
     "fs-extra": "^8.1.0",
     "happo": "^5.0.0",
     "happo-target-firefox": "^5.1.2",
-    "microbundle": "^0.11.0",
+    "microbundle": "^0.13.0",
     "opener": "^1.5.1",
     "pixi.js-legacy": "^5.2.1",
     "standard-version": "^7.1.0",
