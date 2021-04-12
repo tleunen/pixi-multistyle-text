@@ -41,7 +41,7 @@
     "happo-target-firefox": "^5.1.2",
     "microbundle": "^0.11.0",
     "opener": "^1.5.1",
-    "pixi.js-legacy": "^5.2.1",
+    "pixi.js-legacy": "^6.0.2",
     "standard-version": "^7.1.0",
     "typescript": "^3.8.2"
   },
