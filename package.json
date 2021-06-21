@@ -43,7 +43,7 @@
     "opener": "^1.5.1",
     "pixi.js-legacy": "^5.2.1",
     "standard-version": "^7.1.0",
-    "typescript": "^3.8.2"
+    "typescript": "^4.3.4"
   },
   "peerDependencies": {
     "pixi.js": "^5.2.0"
