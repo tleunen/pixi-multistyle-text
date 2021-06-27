@@ -2,8 +2,8 @@
 
 **Note: this repository has fallen out of active development. While it still works great for many purposes, you may want to take a look at these other packages as well:**
 
-- [mimshwright/pixi-tagged-text](https://github.com/mimshwright/pixi-tagged-text)
-- [pixijs/html-text](https://github.com/pixijs/html-text)
+- [mimshwright/pixi-tagged-text](https://github.com/mimshwright/pixi-tagged-text) - Similar in features and syntax to this library. Adds ability to include nested images in the text. Renders and lays out text as several PIXI.Text objects while pixi-multistyle-text renders text into a single canvas. 
+- [pixijs/html-text](https://github.com/pixijs/html-text) - Generates a PIXI component by rendering HTML content in the browser and outputting to canvas.
 
 
 [![NPM](https://nodei.co/npm/pixi-multistyle-text.png)](https://nodei.co/npm/pixi-multistyle-text/)
