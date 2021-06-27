@@ -1,5 +1,11 @@
 # pixi-multistyle-text
 
+**Note: this repository has fallen out of active development. While it still works great for many purposes, you may want to take a look at these other packages as well:**
+
+- [mimshwright/pixi-tagged-text](https://github.com/mimshwright/pixi-tagged-text)
+- [pixijs/html-text](https://github.com/pixijs/html-text)
+
+
 [![NPM](https://nodei.co/npm/pixi-multistyle-text.png)](https://nodei.co/npm/pixi-multistyle-text/)
 
 Add a `MultiStyleText` object inside [pixi.js](https://github.com/GoodBoyDigital/pixi.js) to easily create text using different styles.
